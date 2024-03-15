@@ -18,13 +18,15 @@ class Player:
     def update_add (self, new_add_score):
         self.add_score = new_add_score
 
-    # update Player's add high score
+    # update Player's mul high score
     def update_mul (self, new_mul_score):
         self.mul_score = new_mul_score
 
+    # update Player's div high score
     def update_div (self, new_div_score):
         self.div_score = new_div_score
-    
+
+    # update Player's sub high score
     def update_sub (self, new_sub_score):
         self.sub_score = new_sub_score
 
@@ -36,6 +38,20 @@ class Player:
     
     def get_best_game (self):
         return self.best_game
+    
+    def get_add (self):
+        return self.add_score
+    
+    def get_mul (self):
+        return self.mul_score
+    
+    def get_div (self):
+        return self.div_score
+    
+    def get_sub (self):
+        return self.sub_score
+    
+    
     
 
     
