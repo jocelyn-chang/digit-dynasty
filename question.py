@@ -25,11 +25,17 @@ class Question (Player):
         if self.level <= 5:
             digits = (1, 9)  # Single-digit numbers    
         elif 5 < self.level <= 10:
-            digits = (1, 99)  # Single and double-digit numbers
+            digits = (1, 20)  # Single and double-digit numbers
         elif 10 < self.level <= 15:
-            digits = (1, 999)  # Single, double, and triple-digit numbers
-        elif self.level > 20:
-            digits = (1, 999)
+            digits = (1, 50)  # Single, harder double-digit numbers
+        elif 15 < self.level <= 20:
+            digits = (1, 99)  # Single, and all double-digit numbers
+        elif 20 < self.level <= 25:
+            digits = (1, 250)  # Single, double, and easier triple-digit numbers
+        elif 25 < self.level <= 30:
+            digits = (1, 500)  # Single, double, and harder triple-digit numbers
+        elif self.level > 30:
+            digits = (1, 999)   # Single, double, and triple-digit numbers
             
         num1 = random.randint(*digits)
         num2 = random.randint(*digits)

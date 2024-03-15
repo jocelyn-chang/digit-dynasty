@@ -16,3 +16,9 @@ class Button():
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
                 return True
             return False
+
+        def changeColour(self, position):
+            if posiiton[0] in range(self.rect.left, self.rect.right) and position[1] inr ange(self.rect.top, self.rect.bottom):
+                self.text = self.font.render(self.text_input, TRUE, self.hovering_colour)
+            else:
+                self.text = self.font.render(self.text_input, True, self.base_colour)
