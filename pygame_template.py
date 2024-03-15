@@ -1,4 +1,5 @@
 import pygame
+import os
 
 pygame.init()
 
@@ -7,6 +8,7 @@ SCREEN_HEIGHT = 600
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('DIGIT DYNASTY')
+BACKGROUND = pygame.image.load("images/map_screen.png")
 
 # Main Colours
 gold1 = (230, 224, 174)
@@ -28,5 +30,11 @@ while run:
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       run = False
+  
+      # Draw the background image onto the screen
+  screen.blit(BACKGROUND, (0, 0))
+
+  # Update the display
+  pygame.display.flip()
 
 pygame.quit()
