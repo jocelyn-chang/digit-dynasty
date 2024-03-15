@@ -11,6 +11,31 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 # for bg
 # background = pygame.image.load("assets/Background.png")
 
+# Return text in desired size
+def get_font(size):
+
+# Main Menu screen
+def main_menu():
+    pygame.display.set_caption("Menu")
+
+    while True:
+        SCREEN.blit(background, (0, 0))
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        
+
+# Go to screen with main map
+def start_game():
+
+# Intructions screen
+def instructions():
+
+# Controls screen
+def controls():
+
+
+
 run = True
 while run:
 
