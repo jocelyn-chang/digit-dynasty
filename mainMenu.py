@@ -10,9 +10,6 @@ SCREEN_HEIGHT = 600
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 BACKGROUND = pygame.image.load("images/background.png")
 
-
-        
-
 # Go to login screen
 def start_game():
     while True:
@@ -20,6 +17,31 @@ def start_game():
 
         SCREEN.fill("black")
         LOGIN = pygame.image.load("images/login_screen.png")
+
+        input_username = pygame.Rect(300, 200, 140, 32)
+        input_password = pygame.Rect(300, 250, 140, 32)
+        inactive_colour = pygame.Color('lightskyblue3')
+        active_colour = pygame.Color('dodgerblue2')
+        active = False  # track is input box active
+
+        username = ''
+        password = ''
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN: # if user clicks on input box, toggle active variable
+                    if input_username.collidepoint(event.pos):
+                        active = not active
+                    else:
+                        active = False
+                    colour = active_colour if active else inactive_colour
+                if event.type == pygame.KEYDOWN:
+                    if active:
+                        if event.key == pygame.K_RETURN:
+                            
 
 # Go to load screen 
 def load_game():
