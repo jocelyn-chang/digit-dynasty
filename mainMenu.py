@@ -8,16 +8,21 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-BACKGROUND = pygame.image.load("images/Background.png")
+BACKGROUND = pygame.image.load("images/background.png")
 
 # Main Menu screen
 def main_menu():
-    pygame.display.set_caption("Menu")
 
     while True:
-        SCREEN.blit(background, (0, 0))
+        SCREEN.blit(BACKGROUND, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        START_BUTTON = Button(image = pygame.image.load("images/new_game.png"), pos = (640, 250))
+        LOAD_BUTTON = Button(image = pygame.image.load("images/load_game.png"), pos = (640, 350))
+        HIGH_SCORE_BUTTON = Button(image = pygame.image.load("image/high_score.png"), pos = (640, 450))
+        INSTRUCTION_BUTTON = Button(image = pygame.image.load("image/instructions.png"), pos = (640, 550))
+        EXIT_BUTTON = Button(image = pygame.image.load("images/exit.png"), pos = (640, 650))
 
         
 
@@ -26,7 +31,7 @@ def start_game():
     while True:
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("bl")
+        SCREEN.fill("black")
 
 # Intructions screen
 def instructions():
