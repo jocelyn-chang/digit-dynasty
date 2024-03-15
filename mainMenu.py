@@ -7,8 +7,8 @@ pygame.init()
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-background = pygame.image.load("images/Background.png")
+SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+BACKGROUND = pygame.image.load("images/Background.png")
 
 # Main Menu screen
 def main_menu():
@@ -23,6 +23,10 @@ def main_menu():
 
 # Go to screen with main map
 def start_game():
+    while True:
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.fill("bl")
 
 # Intructions screen
 def instructions():
