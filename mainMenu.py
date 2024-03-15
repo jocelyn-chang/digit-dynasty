@@ -13,18 +13,37 @@ BACKGROUND = pygame.image.load("images/background.png")
 
         
 
-# Go to screen with main map
+# Go to login screen
 def start_game():
     while True:
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("black")
+        LOGIN = pygame.image.load("images/login_screen.png")
+
+# Go to load screen 
+def load_game():
+    while True:
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.fill("black")
+        SIGN_UP = pygame.image.load("images/sign_up_screen.png")
+
+# Go to the high score table
+def high_score():
+    while True:
+        GAME_MOUSE_POS = pygame.get_pos()
+
+        SCREEN.fill("black")
+        HIGH_SCORE = pygame.image.load("images/high_score_screen.png")
 
 # Intructions screen
 def instructions():
+    while True:
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-# Controls screen
-def controls():
+        SCREEN.fill("black")
+        INSTRUCTIONS = pygame.image.load("images/instruction_screen.png")
 
 # Main Menu screen
 def main_menu():
