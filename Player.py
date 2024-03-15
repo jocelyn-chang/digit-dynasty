@@ -1,7 +1,8 @@
 class Player: 
     # initialize Player object
-    def __init__ (self, name, best_game, best_score, add_score, mul_score, div_score, sub_score, games):
+    def __init__ (self, name, password, best_game, best_score, add_score, mul_score, div_score, sub_score, games):
         self.name = name
+        self.password = password
         self.best_game = best_game
         self.best_score = best_score
         self.add_score = add_score
@@ -13,6 +14,10 @@ class Player:
     # add game to list of Player's game
     def add_game (self, game):
         self.games.append(game)
+
+    # set Player's password
+    def set_password (self, password):
+        self.password = password
 
     # update Player's add high score
     def update_add (self, new_add_score):
