@@ -35,5 +35,12 @@ while run:
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       run = False
+  
+      # Draw the background image onto the screen
+  screen.blit(BACKGROUND, (0, 0))
+
+  # Update the display
+  pygame.display.flip()
 
 pygame.quit()
+print("Hello World!")
