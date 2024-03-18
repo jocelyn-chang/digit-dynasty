@@ -10,19 +10,41 @@ pygame.init()
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 BACKGROUND = pygame.image.load("images/background.png")
 
+def get_font(size):
+    return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
+
 # Button class for image-based buttons
 class Button():
-    def __init__(self, image = None, pos = (0,0)):
+    def __init__(self, image = None, pos = (0,0), text_input = "", font = 0, base_colour = "Black", hovering_colour = "White"):
         self.image = image
         self.x_pos, self.y_pos = pos
+        self.font = font
+        self.base_colour, self.hovering_colour = base_colour, hovering_colour
+        self.text_input = text_input
+        if self.font:
+            self.text = self.font.render(self.text_input, True, pygame.Color(self.base_colour))
+        else:
+            self.text = None
+        #self.text = self.font.render(self.text_input, True, self.base_colour)
         self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
 
     def update(self, screen):
         if self.image is not None:
             screen.blit(self.image, self.rect)
+        if self.text:
+            text_rect = self.text.get_rect(center = self.rect.center)
+            screen.blit(self.text, text_rect)
 
     def checkInput(self, position):
         return self.rect.collidepoint(position)
+    
+    def changeColour(self, position):
+        if self.rect.collidepoint(position):
+            if self.font:
+                self.text = self.font.render(self.text_input, True, pygame.Color(self.hovering_colour))
+            else:
+                if self.font:
+                    self.text = self.font.render(self.text_input, True, pygame.Color(self.base_colour))
 
 
 # Go to login screen
@@ -94,13 +116,14 @@ def main_menu():
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        START_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 100))
-        LOAD_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 200))
-        HIGH_SCORE_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 300))
-        INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 400))
-        EXIT_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 500))
+        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 75), text_input = "NEW GAME", font = get_font(75), base_colour = "#b51f09", hovering_colour = "White")
+        LOAD_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 189), text_input = "LOAD GAME", font = get_font(75), base_colour = "#b51f09", hovering_colour = "White")
+        HIGH_SCORE_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 303), text_input = "HIGH SCORES", font = get_font(75), base_colour = "#b51f09", hovering_colour = "White")
+        INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 417), text_input = "INSTRUCTIONS", font = get_font(75), base_colour = "#b51f09", hovering_colour = "White")
+        EXIT_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "EXIT", font = get_font(75), base_colour = "#b51f09", hovering_colour = "White")
 
         for button in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON]:
+            button.changeColour(MENU_MOUSE_POS)
             button.update(SCREEN)
 
         for event in pygame.event.get():
