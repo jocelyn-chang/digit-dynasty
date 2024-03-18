@@ -1,14 +1,30 @@
 # Import appropriate libraries
 import pygame, sys
-from button import Button
 
-# Initialize the Pygame library
-pygame.init()
+# Define screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+# Initialize Pygame
+pygame.init()
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 BACKGROUND = pygame.image.load("images/background.png")
+
+# Button class for image-based buttons
+class Button():
+    def __init__(self, image = None, pos = (0,0)):
+        self.image = image
+        self.x_pos, self.y_pos = pos
+        self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
+
+        def update(self, screen):
+            if self.image is not None:
+                screen.blit(elf.image, self.rect)
+            screen.blit(self.text, self.text_rect)
+
+        def checkInput(self, position):
+            return self.rect.collidepoint(position)
+
 
 # Go to login screen
 def start_game():
@@ -81,8 +97,7 @@ def main_menu():
         INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("image/instructions.png"), pos = (640, 550))
         EXIT_BUTTON = Button(image = pygame.image.load("images/exit.png"), pos = (640, 650))
 
-        for event in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON]:
-            button.changeColour(MENU_MOUSE_POS)
+        for button in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON]:
             button.update(SCREEN)
 
         for event in pygame.event.get():
@@ -102,30 +117,5 @@ def main_menu():
                     pygame.quit()
                     sys.exit()
         pygame.dsplay.update()
-
-class Button():
-    def __init__(self, image, pos, base_colour, hovering_colour):
-        self.image = image
-        self.x_pos = pos[0]
-        self.y_pos = pos[1]
-        self.base_colour, self.hovering_colour = base_colour, hovering_colour
-        self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
-        self.text_rect = self.text.get_rect(center = (self.x_pos, self.y_pos))
-
-        def update(self, screen):
-            if self.image is not None:
-                screen.blit(elf.image, self.rect)
-            screen.blit(self.text, self.text_rect)
-
-        def checkInput(self, position):
-            if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
-                return True
-            return False
-
-        def changeColour(self, position):
-            if posiiton[0] in range(self.rect.left, self.rect.right) and position[1] inr ange(self.rect.top, self.rect.bottom):
-                self.text = self.font.render(self.text_input, TRUE, self.hovering_colour)
-            else:
-                self.text = self.font.render(self.text_input, True, self.base_colour)
 
 main_menu()
