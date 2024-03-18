@@ -52,9 +52,15 @@ def start_game():
     while True:
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
-        LOGIN = pygame.image.load("images/login_screen.png")
+        SCREEN.blit(BACKGROUND, (0, 0))
 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        pygame.display.update()
+        '''
         input_username = pygame.Rect(300, 200, 140, 32)
         input_password = pygame.Rect(300, 250, 140, 32)
         inactive_colour = pygame.Color('lightskyblue3')
@@ -64,7 +70,6 @@ def start_game():
         username = ''
         password = ''
 
-        '''
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -116,11 +121,11 @@ def main_menu():
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 75), text_input = "NEW GAME", font = get_font(75), base_colour = "#b51f09", hovering_colour = "White")
-        LOAD_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 189), text_input = "LOAD GAME", font = get_font(75), base_colour = "#b51f09", hovering_colour = "White")
-        HIGH_SCORE_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 303), text_input = "HIGH SCORES", font = get_font(75), base_colour = "#b51f09", hovering_colour = "White")
-        INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 417), text_input = "INSTRUCTIONS", font = get_font(75), base_colour = "#b51f09", hovering_colour = "White")
-        EXIT_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "EXIT", font = get_font(75), base_colour = "#b51f09", hovering_colour = "White")
+        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 75), text_input = "NEW GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        LOAD_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 189), text_input = "LOAD GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        HIGH_SCORE_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 303), text_input = "HIGH SCORES", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 417), text_input = "INSTRUCTIONS", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        EXIT_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "EXIT", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
 
         for button in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON]:
             button.changeColour(MENU_MOUSE_POS)
