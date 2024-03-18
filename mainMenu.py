@@ -1,14 +1,30 @@
 # Import appropriate libraries
 import pygame, sys
-from button import Button
 
-# Initialize the Pygame library
-pygame.init()
+# Define screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+# Initialize Pygame
+pygame.init()
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 BACKGROUND = pygame.image.load("images/background.png")
+
+# Button class for image-based buttons
+class Button():
+    def __init__(self, image = None, pos = (0,0)):
+        self.image = image
+        self.x_pos, self.y_pos = pos
+        self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
+
+        def update(self, screen):
+            if self.image is not None:
+                screen.blit(elf.image, self.rect)
+            screen.blit(self.text, self.text_rect)
+
+        def checkInput(self, position):
+            return self.rect.collidepoint(position)
+
 
 # Go to login screen
 def start_game():
@@ -81,8 +97,7 @@ def main_menu():
         INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("image/instructions.png"), pos = (640, 550))
         EXIT_BUTTON = Button(image = pygame.image.load("images/exit.png"), pos = (640, 650))
 
-        for event in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON]:
-            button.changeColour(MENU_MOUSE_POS)
+        for button in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON]:
             button.update(SCREEN)
 
         for event in pygame.event.get():
