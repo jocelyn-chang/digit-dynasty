@@ -38,6 +38,13 @@ while run:
       # Draw the background image onto the screen
   screen.blit(BACKGROUND, (0, 0))
 
+  # Get the current mouse position
+  mouse_x, mouse_y = pygame.mouse.get_pos()
+
+  if (133<mouse_x<180 and 139<mouse_y<202):
+    screen.blit(LEFTTEMP, (105, 109))
+
+
   # Update the display
   pygame.display.flip()
 
