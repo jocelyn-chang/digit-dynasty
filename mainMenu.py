@@ -35,6 +35,18 @@ class Button():
             text_rect = self.text.get_rect(center = self.rect.center)
             screen.blit(self.text, text_rect)
 
+            # Shadow offset
+            shadow_offset = 2
+
+            # Draw shadow first
+            shadow_color = (135, 135, 135)  # Black shadow
+            shadow_text = self.font.render(self.text_input, True, shadow_color)
+            shadow_rect = shadow_text.get_rect(center=(self.rect.centerx + shadow_offset, self.rect.centery + shadow_offset))
+            screen.blit(shadow_text, shadow_rect)
+
+            # Draw the actual text
+            screen.blit(self.text, text_rect)
+
     def checkInput(self, position):
         return self.rect.collidepoint(position)
     
@@ -53,6 +65,11 @@ def start_game():
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(BACKGROUND, (0, 0))
+
+        START_TEXT = get_font(75).render("LOGIN", True, "White")
+        START_RECT = START_TEXT.get_rect(center = (405, 125))
+        
+        SCREEN.blit(START_TEXT, START_RECT)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
