@@ -8,7 +8,11 @@ SCREEN_HEIGHT = 600
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('DIGIT DYNASTY')
-BACKGROUND = pygame.image.load("images/map_screen.png")
+BACKGROUND = pygame.image.load("images/Map Screen.png")
+LEFTTEMP = pygame.image.load("images/templeleft.png")
+RIGHTTEMP = pygame.image.load("images/templeright.png")
+TOPTEMP = pygame.image.load("images/templetop.png")
+BOTTOMTEMP = pygame.image.load("images/templebottom.png")
 
 # Main Colours
 gold1 = (230, 224, 174)
