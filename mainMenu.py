@@ -1,14 +1,29 @@
 # Import appropriate libraries
 import pygame, sys
-from button import Button
 
-# Initialize the Pygame library
-pygame.init()
+# Define screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+# Initialize Pygame
+pygame.init()
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 BACKGROUND = pygame.image.load("images/background.png")
+
+# Button class for image-based buttons
+class Button():
+    def __init__(self, image = None, pos = (0,0)):
+        self.image = image
+        self.x_pos, self.y_pos = pos
+        self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
+
+    def update(self, screen):
+        if self.image is not None:
+            screen.blit(self.image, self.rect)
+
+    def checkInput(self, position):
+        return self.rect.collidepoint(position)
+
 
 # Go to login screen
 def start_game():
@@ -27,6 +42,7 @@ def start_game():
         username = ''
         password = ''
 
+        '''
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -41,6 +57,9 @@ def start_game():
                 if event.type == pygame.KEYDOWN:
                     if active:
                         if event.key == pygame.K_RETURN:
+        '''
+
+
                             
 
 # Go to load screen 
@@ -75,14 +94,13 @@ def main_menu():
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        START_BUTTON = Button(image = pygame.image.load("images/new_game.png"), pos = (640, 250))
-        LOAD_BUTTON = Button(image = pygame.image.load("images/load_game.png"), pos = (640, 350))
-        HIGH_SCORE_BUTTON = Button(image = pygame.image.load("image/high_score.png"), pos = (640, 450))
-        INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("image/instructions.png"), pos = (640, 550))
-        EXIT_BUTTON = Button(image = pygame.image.load("images/exit.png"), pos = (640, 650))
+        START_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 100))
+        LOAD_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 200))
+        HIGH_SCORE_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 300))
+        INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 400))
+        EXIT_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 500))
 
-        for event in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON]:
-            button.changeColour(MENU_MOUSE_POS)
+        for button in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON]:
             button.update(SCREEN)
 
         for event in pygame.event.get():
@@ -96,11 +114,11 @@ def main_menu():
                     load_game()
                 if HIGH_SCORE_BUTTON.checkInput(MENU_MOUSE_POS):
                     high_score()
-                if INSTRUCTIONS.checkInput(MENU_MOUSE_POS):
+                if INSTRUCTIONS_BUTTON.checkInput(MENU_MOUSE_POS):
                     instructions()
-                if QUIT_BUTTON.checkInput(MENU_MOUSE_POS):
+                if EXIT_BUTTON.checkInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
-        pygame.dsplay.update()
+        pygame.display.update()
 
 main_menu()

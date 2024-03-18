@@ -25,9 +25,21 @@ green3 = (113, 182, 135)
 green4 = (88, 133, 120)
 green5 = (117, 132, 133)
 
+# basic colours
+black = (0, 0, 0)
+white = (255, 255, 255)
+
 snake_block = 10
 snake_speed = 15
 
+font_style = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 25)
+
+def current_score(score):
+  shadow = font_style.render("Score: " + str(score), True, green4)
+  screen.blit(shadow, [652, 12])
+  
+  main = font_style.render("Score: " + str(score), True, white)
+  screen.blit(main, [650, 10])
 
 run = True
 while run:
@@ -38,7 +50,7 @@ while run:
   
       # Draw the background image onto the screen
   screen.blit(BACKGROUND, (0, 0))
-
+  current_score(5)
   # Update the display
   pygame.display.flip()
 
