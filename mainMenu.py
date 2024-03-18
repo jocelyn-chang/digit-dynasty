@@ -94,11 +94,11 @@ def main_menu():
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        START_BUTTON = Button(image = pygame.image.load("images/new_game.png"), pos = (395, 95))
-        LOAD_BUTTON = Button(image = pygame.image.load("images/load_game.png"), pos = (395, 195))
-        HIGH_SCORE_BUTTON = Button(image = pygame.image.load("images/high_score.png"), pos = (395, 295))
-        INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("images/instructions.png"), pos = (395, 395))
-        EXIT_BUTTON = Button(image = pygame.image.load("images/exit.png"), pos = (395, 495))
+        START_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 100))
+        LOAD_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 200))
+        HIGH_SCORE_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 300))
+        INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 400))
+        EXIT_BUTTON = Button(image = pygame.image.load("images/scoll_button.png"), pos = (395, 500))
 
         for button in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON]:
             button.update(SCREEN)
