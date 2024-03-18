@@ -25,7 +25,6 @@ class Button():
             self.text = self.font.render(self.text_input, True, pygame.Color(self.base_colour))
         else:
             self.text = None
-        #self.text = self.font.render(self.text_input, True, self.base_colour)
         self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
 
     def update(self, screen):
@@ -68,43 +67,21 @@ def start_game():
 
         START_TEXT = get_font(75).render("LOGIN", True, "White")
         START_RECT = START_TEXT.get_rect(center = (405, 125))
-        
         SCREEN.blit(START_TEXT, START_RECT)
+
+        START_BACK = Button(image = "images/back_button.png", pos = (300, 300), text_input = "BACK", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        START_BACK.changeColour(GAME_MOUSE_POS)
+        START_BACK.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if START_BACK.checkForInput(GAME_MOUSE_POS):
+                    main_menu()
 
-        pygame.display.update()
-        '''
-        input_username = pygame.Rect(300, 200, 140, 32)
-        input_password = pygame.Rect(300, 250, 140, 32)
-        inactive_colour = pygame.Color('lightskyblue3')
-        active_colour = pygame.Color('dodgerblue2')
-        active = False  # track is input box active
-
-        username = ''
-        password = ''
-
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN: # if user clicks on input box, toggle active variable
-                    if input_username.collidepoint(event.pos):
-                        active = not active
-                    else:
-                        active = False
-                    colour = active_colour if active else inactive_colour
-                if event.type == pygame.KEYDOWN:
-                    if active:
-                        if event.key == pygame.K_RETURN:
-        '''
-
-
-                            
+        pygame.display.update()             
 
 # Go to load screen 
 def load_game():
@@ -117,10 +94,10 @@ def load_game():
 # Go to the high score table
 def high_score():
     while True:
-        GAME_MOUSE_POS = pygame.get_pos()
+        SCORE_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
-        HIGH_SCORE = pygame.image.load("images/high_score_screen.png")
+        HIGH_SCORE = pygame.image.load("images/leaderboard_screen.png")
+        SCREEN.blit(HIGH_SCORE, (0, 0))
 
 # Intructions screen
 def instructions():
