@@ -1,6 +1,7 @@
 # Import appropriate libraries
 import pygame, sys, csv
 from Button import Button
+from GameMap import load_map
 
 # Define screen dimensions
 SCREEN_WIDTH = 800
@@ -99,6 +100,7 @@ def start_game():
                     main_menu()
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
                     append_to_csv(username, password)
+                    load_map()
                 elif username_rect.collidepoint(event.pos):
                     username_active = not username_active
                     password_active = False
