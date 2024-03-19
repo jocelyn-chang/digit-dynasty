@@ -11,6 +11,8 @@ SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 BACKGROUND = pygame.image.load("images/background.png")
 LOGIN = pygame.image.load("images/login_screen.png")
 HIGH_SCORE = pygame.image.load("images/leaderboard_screen.png")
+BACK = pygame.image.load("images/back_button.png")
+RESIZED_BACK = pygame.image.load("images/resized_back.png")
 
 def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
@@ -66,11 +68,15 @@ class Button():
 # Go to login screen
 def start_game():
     while True:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(LOGIN, (0, 0))
+        
         START_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        START_BACK.changeColour(GAME_MOUSE_POS)
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            SCREEN.blit(RESIZED_BACK, (-90,-96))
+        
         START_BACK.update(SCREEN)
 
 
@@ -95,7 +101,16 @@ def load_game():
 # Go to the high score table
 def high_score():
     while True:
-        SCORE_MOUSE_POS = pygame.mouse.get_pos()
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(LOGIN, (0, 0))
+        
+        START_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            SCREEN.blit(RESIZED_BACK, (-90,-96))
+        
+        START_BACK.update(SCREEN)
 
         SCREEN.blit(HIGH_SCORE, (0, 0))
 
@@ -103,6 +118,9 @@ def high_score():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if START_BACK.checkInput(GAME_MOUSE_POS):
+                    main_menu()
 
         pygame.display.update()
 
