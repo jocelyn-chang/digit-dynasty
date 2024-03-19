@@ -43,10 +43,10 @@ def start_game():
     password = ''
     username_active = False
     password_active = False
-    input_font = pygame.font.Font(None, 25)
+    input_font = get_font(35)
 
-    username_rect = pygame.Rect(250, 243, 340, 52)
-    password_rect = pygame.Rect(250, 443, 340, 52)
+    username_rect = pygame.Rect(254, 237, 300, 50)
+    password_rect = pygame.Rect(254, 378, 300, 50)
 
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
@@ -96,6 +96,15 @@ def start_game():
 
 # Go to load screen 
 def load_game():
+    username = ''
+    password = ''
+    username_active = False
+    password_active = False
+    input_font = get_font(35)
+
+    username_rect = pygame.Rect(254, 237, 300, 50)
+    password_rect = pygame.Rect(254, 378, 300, 50)
+
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -116,8 +125,31 @@ def load_game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if LOAD_BACK.checkInput(GAME_MOUSE_POS):
                     main_menu()
+                elif username_rect.collidepoint(event.pos):
+                    username_active = not username_active
+                    password_active = False
+                elif password_rect.collidepoint(event.pos):
+                    password_active = not password_active
+                    username_active = False
+                else:
+                    username_active = False
+                    password_active = False
+            if event.type== pygame.KEYDOWN:
+                if username_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        username = username[:-1]
+                    else:
+                        username += event.unicode
+                elif password_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        password = password[:-1]
+                    else:
+                        password += event.unicode
 
-        pygame.display.update()
+        input_box(SCREEN, username_rect, username, input_font, active = username_active)
+        input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
+        
+        pygame.display.flip()
 
 # Go to the high score table
 def high_score():
