@@ -10,7 +10,11 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('DIGIT DYNASTY')
 
 # Load the tall image
-image = pygame.image.load("images/pixil-frame-0-3.png")
+image = pygame.image.load("images/running_army_bg.png")
+panda = pygame.transform.scale(pygame.image.load("images/panda1.png"), (50, 50))
+gate = pygame.transform.scale(pygame.image.load("images/gates.png"), (400, 125))
+qbox = pygame.transform.scale(pygame.image.load("images/questionscreen.png"), (400, 125))
+
 image_height = image.get_height()
 image_width = image.get_width()
 
@@ -42,6 +46,10 @@ while run:
     # Draw the scaled image twice to create the looping effect
     screen.blit(scaled_image, (0, scroll_y - scaled_height))
     screen.blit(scaled_image, (0, scroll_y))
+
+    # Draw the panda
+    screen.blit(panda, (300, 400))
+    screen.blit(gate, (200, scroll_y-125))
 
     # Update the display
     pygame.display.flip()
