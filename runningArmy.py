@@ -39,6 +39,10 @@ scaled_image = pygame.transform.scale(image, (SCREEN_WIDTH, scaled_height))
 scroll = 0
 scroll_speed = 2
 
+# get the font
+def get_font(size):
+    return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
+
 # Intructions screen
 def instructions():
     while True:
@@ -110,6 +114,10 @@ def running_army():
         START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 75), text_input = "NEW GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
         INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 417), text_input = "INSTRUCTIONS", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
 
+        for button in [START_BUTTON, INSTRUCTION_BUTTON]:
+            button.changeColour(MOUSE_POS)
+            button.update(screen)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -122,7 +130,7 @@ def running_army():
         screen.blit(start_screen, (0,0))
 
         # Update the display
-        pygame.display.flip()
+        pygame.display.update()
 
     # Quit Pygame
     pygame.quit()
