@@ -10,7 +10,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('DIGIT DYNASTY')
 
 # Load the tall image
-image = pygame.image.load("images/pixil-frame-0-3.png")
+image = pygame.image.load("images/running_army_bg.png")
 image_height = image.get_height()
 image_width = image.get_width()
 
