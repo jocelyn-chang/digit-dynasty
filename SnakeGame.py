@@ -1,133 +1,131 @@
 import pygame
-import time
 import random
 
+# Initialize Pygame
 pygame.init()
 
+# Screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+# Create the screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('SNAKE GAME')
+
+# Load background image
 BACKGROUND = pygame.image.load("images/snakegamebg.png")
 
+# Load fruit image
+FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
+
+# Clock for controlling game speed
 clock = pygame.time.Clock()
 
-# Main Colours
+# Colors
 gold1 = (230, 224, 174)
 gold2 = (223, 188, 94)
 red1 = (238, 97, 70)
 red2 = (215, 60, 55)
 red3 = (181, 31, 9)
-
-# Secondary Colours
 green1 = (116, 217, 219)
 green2 = (153, 216, 196)
 green3 = (113, 182, 135)
 green4 = (88, 133, 120)
 green5 = (117, 132, 133)
-
-# basic colours
 black = (0, 0, 0)
 white = (255, 255, 255)
 
+# Snake block size and speed
 snake_block = 15
 snake_speed = 15
 
+# Font for displaying score
 font_style = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 25)
 
+# Function to display current score
 def current_score(score):
-  # shadow text
-  shadow = font_style.render("Score: " + str(score), True, green4)
-  screen.blit(shadow, [652, 12])
+    # Shadow text
+    shadow = font_style.render("Score: " + str(score), True, green4)
+    screen.blit(shadow, [652, 12])
+    
+    # Main text
+    main = font_style.render("Score: " + str(score), True, white)
+    screen.blit(main, [650, 10])
 
-  # main text
-  main = font_style.render("Score: " + str(score), True, white)
-  screen.blit(main, [650, 10])
-
+# Function to draw the snake
 def snake(snake_block, snake_list):
-  for i in snake_list:
-    pygame.draw.rect(screen, green2, [i[0], i[1], snake_block, snake_block])
+    for i in snake_list:
+        pygame.draw.rect(screen, green2, [i[0], i[1], snake_block, snake_block])
 
+# Main game function
 def game():
-  run = True 
-  end = False
+    run = True 
+    end = False
 
-  x1 = SCREEN_WIDTH / 2
-  y1 = SCREEN_HEIGHT /2
+    # Snake starting coordinates
+    x1 = SCREEN_WIDTH / 2
+    y1 = SCREEN_HEIGHT / 2
 
-  x1_change = 0
-  y1_change = 0
+    # Initialize change in coordinates
+    x1_change = 0
+    y1_change = 0
 
-  snake_list = []
-  snake_len = 1
+    # List of snake body parts coordinates
+    snake_list = []
+    snake_len = 1
 
-  foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-  foody = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
+    # Randomize position of fruit
+    foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
+    foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
 
-  while run:
-    # when player loses
-    while end == True:
-      print("poop")
-    
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        run = False
+    while run:
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
 
-    screen.blit(BACKGROUND, (0, 0))
+        # Control snake movement
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            x1_change = -snake_block
+            y1_change = 0
+        elif keys[pygame.K_RIGHT]:
+            x1_change = snake_block
+            y1_change = 0
+        elif keys[pygame.K_UP]:
+            y1_change = -snake_block
+            x1_change = 0
+        elif keys[pygame.K_DOWN]:
+            y1_change = snake_block
+            x1_change = 0
 
-    for event in pygame.event.get():
-      if event.type == pygame.KEYDOWN:
-          if event.key == pygame.K_LEFT:
-            if snake_block >= snake_block:
-              x1_change = -snake_block
-          elif event.key == pygame.K_RIGHT:
-            if snake_block < SCREEN_WIDTH - snake_block:
-              x1_change = snake_block
-          elif event.key == pygame.K_UP:
-            if y1_change >= snake_block:
-              y1_change = -snake_block
-          elif event.key == pygame.K_DOWN:
-            if y1_change < SCREEN_HEIGHT - snake_block:
-              y1_change = snake_block
-    
-    x1 += x1_change
-    y1 += y1_change
+        # Update snake position
+        x1 += x1_change
+        y1 += y1_change
 
-    snake_list.append([x1, y1])
+        snake_list.append([x1, y1])
 
-    # if len(snake_list) > snake_len:
-    #   del snake_list
+        # If snake length exceeds current length, remove the tail
+        if len(snake_list) > snake_len:
+            del snake_list[0]
 
-    snake(snake_block, snake_list)
+        # Draw elements on screen
+        screen.blit(BACKGROUND, (0, 0))
+        snake(snake_block, snake_list)
+        screen.blit(FRUIT_A, (foodx, foody))
+        current_score(snake_len - 1)
 
-    current_score(snake_len - 1)
+        pygame.display.flip()
 
-    pygame.display.flip()
+        # Check if snake has eaten the fruit
+        if x1 == foodx and y1 == foody:
+            foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
+            foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+            snake_len += 1
 
-    if x1 == foodx and y1 == foody:
-      foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-      foody = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-    
-      snake_len += 1
+        clock.tick(snake_speed)
 
-    clock.tick(snake_speed)
-  pygame.quit()
+    pygame.quit()
 
+# Run the game
 game()
-# run = True
-# while run:
-
-#   for event in pygame.event.get():
-#     if event.type == pygame.QUIT:
-#       run = False
-  
-#   # Draw the background image onto the screen
-#   screen.blit(BACKGROUND, (0, 0))
-#   # testing
-#   current_score(5)
-#   snake(snake_block, [[300, 300], [315, 300]])
-#   # Update the display
-#   pygame.display.flip()
-
-# pygame.quit()
