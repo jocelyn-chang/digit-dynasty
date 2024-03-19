@@ -12,7 +12,7 @@ BACKGROUND = pygame.image.load("images/background.png")
 LOGIN = pygame.image.load("images/login_screen.png")
 SIGNUP = pygame.image.load("images/sign_up_screen.png")
 HIGH_SCORE = pygame.image.load("images/leaderboard_screen.png")
-#INSTRUCTIONS = pygame.image.load("images/instructions.png")
+INSTRUCTIONS = pygame.image.load("images/instructions_screen.png")
 BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
 
@@ -66,9 +66,34 @@ class Button():
                 if self.font:
                     self.text = self.font.render(self.text_input, True, pygame.Color(self.base_colour))
 
+# Create a function to create the input boxes
+def input_box(screen, input_rect, text, font, active = False, is_password = False):
+    colour_active = pygame.Color('lightskyblue3')
+    colour_passive = pygame.Color('gray15')
+    colour = colour_active if active else colour_passive
+
+    box = pygame.Surface((input_rect.width, input_rect.height), pygame.SRCALPHA)
+    box.fill((255, 255, 255, 100))
+    SCREEN.blit(box, input_rect.topleft)
+
+    if active:
+        pygame.draw.rect(SCREEN, colour, input_rect, 2)
+
+    display_text = ''.join('*' for _ in text) if is_password else text
+    text_surface = font.render(display_text, True, pygame.Color('black'))
+    SCREEN.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
 
 # Go to login screen
 def start_game():
+    username = ''
+    password = ''
+    username_active = False
+    password_active = False
+    input_font = pygame.font.Font(None, 25)
+
+    username_rect = pygame.Rect(250, 243, 340, 52)
+    password_rect = pygame.Rect(250, 443, 340, 52)
+
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -89,8 +114,31 @@ def start_game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BACK.checkInput(GAME_MOUSE_POS):
                     main_menu()
+                elif username_rect.collidepoint(event.pos):
+                    username_active = not username_active
+                    password_active = False
+                elif password_rect.collidepoint(event.pos):
+                    password_active = not password_active
+                    username_active = False
+                else:
+                    username_active = False
+                    password_active = False
+            if event.type== pygame.KEYDOWN:
+                if username_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        username = username[:-1]
+                    else:
+                        username += event.unicode
+                elif password_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        password = password[:-1]
+                    else:
+                        password += event.unicode
 
-        pygame.display.update()             
+        input_box(SCREEN, username_rect, username, input_font, active = username_active)
+        input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
+        
+        pygame.display.flip()             
 
 # Go to load screen 
 def load_game():
@@ -148,7 +196,7 @@ def instructions():
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.blit(HIGH_SCORE, (0, 0))
+        SCREEN.blit(INSTRUCTIONS, (0, 0))
         
         INSTRUCTIONS_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
