@@ -1,5 +1,5 @@
 # Import appropriate libraries
-import pygame, sys
+import pygame, sys, csv
 from Button import Button
 
 # Define screen dimensions
@@ -40,6 +40,27 @@ def input_box(screen, input_rect, text, font, active = False, is_password = Fals
     text_surface = font.render(display_text, True, pygame.Color('black'))
     SCREEN.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
 
+# Write to the csv file
+def append_to_csv(username, password):
+    name = username
+    password = password
+    addition = "0"
+    subtraction = "0"
+    multiplication = "0"
+    division = "0"
+    bosses = "0"
+
+    # CSV file path
+    csv_file = "data.csv"
+
+    # Data row to append
+    row = [name, password, addition, subtraction, multiplication, division, bosses]
+
+    # Write to the CSV file
+    with open(csv_file, 'a', newline = '') as file:
+        writer = csv.writer(file)
+        writer.writerow(row)
+
 # Go to login screen
 def start_game():
     username = ''
@@ -75,6 +96,8 @@ def start_game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BACK.checkInput(GAME_MOUSE_POS):
                     main_menu()
+                elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
+                    append_to_csv(username, password)
                 elif username_rect.collidepoint(event.pos):
                     username_active = not username_active
                     password_active = False
