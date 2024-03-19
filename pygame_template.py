@@ -35,35 +35,37 @@ green4 = (88, 133, 120)
 green5 = (117, 132, 133)
 
 run = True
-while run:
 
-  for event in pygame.event.get():
-    if event.type == pygame.QUIT:
-      run = False
-  
-      # Draw the background image onto the screen
-  screen.blit(BACKGROUND, (0, 0))
+def load_map():
+  while run:
 
-  # Get the current mouse position
-  mouse_x, mouse_y = pygame.mouse.get_pos()
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        run = False
+    
+        # Draw the background image onto the screen
+    screen.blit(BACKGROUND, (0, 0))
 
-  if (133<mouse_x<180 and 139<mouse_y<202):
-    screen.blit(RESIZED_LEFTTEMP, (110, 92))
+    # Get the current mouse position
+    mouse_x, mouse_y = pygame.mouse.get_pos()
 
-  if (372<mouse_x<419 and 32<mouse_y<95):
-    screen.blit(RESIZED_TOPTEMP, (348, -2))
-  
-  if (600<mouse_x<647 and 131<mouse_y<194):
-    screen.blit(RESIZED_RIGHTTEMP, (582, 90))
-  
-  if (363<mouse_x<410 and 383<mouse_y<446):
-    screen.blit(RESIZED_BOTTOMTEMP, (340, 352))
-  
-  if (350<mouse_x<450 and 220<mouse_y<380):
-    screen.blit(RESIZED_MIDDLETEMP, (326, 180))
+    if (133<mouse_x<180 and 139<mouse_y<202):
+      screen.blit(RESIZED_LEFTTEMP, (110, 92))
+
+    if (372<mouse_x<419 and 32<mouse_y<95):
+      screen.blit(RESIZED_TOPTEMP, (348, -2))
+    
+    if (600<mouse_x<647 and 131<mouse_y<194):
+      screen.blit(RESIZED_RIGHTTEMP, (582, 90))
+    
+    if (363<mouse_x<410 and 383<mouse_y<446):
+      screen.blit(RESIZED_BOTTOMTEMP, (340, 352))
+    
+    if (350<mouse_x<450 and 220<mouse_y<380):
+      screen.blit(RESIZED_MIDDLETEMP, (326, 180))
 
 
-  # Update the display
-  pygame.display.flip()
+    # Update the display
+    pygame.display.flip()
 
-pygame.quit()
+  pygame.quit()
