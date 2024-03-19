@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 
 pygame.init()
 
@@ -62,6 +62,10 @@ def load_map():
     if (350<mouse_x<450 and 220<mouse_y<380):
       screen.blit(RESIZED_MIDDLETEMP, (326, 180))
 
+    for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
     # Update the display
     pygame.display.flip()
