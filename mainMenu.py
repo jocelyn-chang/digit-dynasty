@@ -10,7 +10,9 @@ pygame.init()
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 BACKGROUND = pygame.image.load("images/background.png")
 LOGIN = pygame.image.load("images/login_screen.png")
+SIGNUP = pygame.image.load("images/sign_up_screen.png")
 HIGH_SCORE = pygame.image.load("images/leaderboard_screen.png")
+#INSTRUCTIONS = pygame.image.load("images/instructions.png")
 BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
 
@@ -71,7 +73,7 @@ def start_game():
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.blit(LOGIN, (0, 0))
+        SCREEN.blit(SIGNUP, (0, 0))
         
         START_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
@@ -93,10 +95,27 @@ def start_game():
 # Go to load screen 
 def load_game():
     while True:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
-        SIGN_UP = pygame.image.load("images/sign_up_screen.png")
+        SCREEN.blit(LOGIN, (0, 0))
+        
+        LOAD_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            SCREEN.blit(RESIZED_BACK, (-90,-96))
+        
+        LOAD_BACK.update(SCREEN)
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if LOAD_BACK.checkInput(GAME_MOUSE_POS):
+                    main_menu()
+
+        pygame.display.update()
 
 # Go to the high score table
 def high_score():
@@ -104,33 +123,48 @@ def high_score():
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.blit(LOGIN, (0, 0))
+        SCREEN.blit(HIGH_SCORE, (0, 0))
         
-        START_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        SCORE_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             SCREEN.blit(RESIZED_BACK, (-90,-96))
         
-        START_BACK.update(SCREEN)
-
-        SCREEN.blit(HIGH_SCORE, (0, 0))
+        SCORE_BACK.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if START_BACK.checkInput(GAME_MOUSE_POS):
+                if SCORE_BACK.checkInput(GAME_MOUSE_POS):
                     main_menu()
 
         pygame.display.update()
 
+
 # Intructions screen
 def instructions():
     while True:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
-        INSTRUCTIONS = pygame.image.load("images/instruction_screen.png")
+        SCREEN.blit(HIGH_SCORE, (0, 0))
+        
+        INSTRUCTIONS_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            SCREEN.blit(RESIZED_BACK, (-90,-96))
+        
+        INSTRUCTIONS_BACK.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    main_menu()
+
+        pygame.display.update()
 
 # Main Menu screen
 def main_menu():
