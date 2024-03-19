@@ -1,5 +1,5 @@
 import random
-from player import Player
+from Player import Player
 
 #inherits stuff from player class
 class Question (Player):
