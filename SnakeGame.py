@@ -69,6 +69,10 @@ def game():
     # when player loses
     while end == True:
       print("poop")
+    
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        run = False
 
     screen.blit(BACKGROUND, (0, 0))
 
