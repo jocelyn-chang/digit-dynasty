@@ -26,8 +26,7 @@ image_width = image.get_width()
 # movement for panda/arrow
 arrow_rect = arrow.get_rect()
 panda_rect = panda.get_rect()
-x = (SCREEN_WIDTH) // 2
-speed = 5
+
 
 # Calculate the new height of the image to maintain the aspect ratio
 scaled_height = int(image_height * (SCREEN_WIDTH / image_width))
@@ -35,9 +34,6 @@ scaled_height = int(image_height * (SCREEN_WIDTH / image_width))
 # Scale the image to fill the width of the screen while maintaining the aspect ratio
 scaled_image = pygame.transform.scale(image, (SCREEN_WIDTH, scaled_height))
 
-# Scrolling variables
-scroll = 0
-scroll_speed = 2
 
 # get the font
 def get_font(size):
@@ -69,50 +65,62 @@ def instructions():
 
 
 def start_game():
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
+    # Scrolling variables
+    scroll = 0
+    scroll_speed = 2
+    x = (SCREEN_WIDTH) // 2
+    speed = 5
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        x -= speed
-    if keys[pygame.K_RIGHT]:
-        x += speed
+    # Main game loop
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
-    # Scroll the image
-    scroll += scroll_speed
-    if scroll >= scaled_height:
-        scroll = 0
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            x -= speed
+        if keys[pygame.K_RIGHT]:
+            x += speed
 
-    # Clear the screen
-    screen.fill((0, 0, 0))
+        # Scroll the image
+        scroll += scroll_speed
+        if scroll >= scaled_height:
+            scroll = 0
 
-    # Draw the scaled image twice to create the looping effect and gates
-    screen.blit(scaled_image, (0, scroll - scaled_height))
-    screen.blit(scaled_image, (0, scroll))
-    screen.blit(gate, (200, scroll-125))
+        # Clear the screen
+        screen.fill((0, 0, 0))
 
-    # Draw the panda and arrow
-    screen.blit(panda, panda_rect)
-    screen.blit(arrow, (x, scroll-450))
+        # Draw the scaled image twice to create the looping effect and gates
+        screen.blit(scaled_image, (0, scroll - scaled_height))
+        screen.blit(scaled_image, (0, scroll))
+        screen.blit(gate, (200, scroll-125))
 
-    panda_rect.topleft = (x, 400)
-    arrow_rect.topleft = (x, scroll)
+        # Draw the panda and arrow
+        screen.blit(panda, panda_rect)
+        screen.blit(arrow, (x, scroll-450))
 
-    # Update the display
-    pygame.display.flip()
+        panda_rect.topleft = (x, 400)
+        arrow_rect.topleft = (x, scroll)
 
-    # Cap the frame rate
-    pygame.time.Clock().tick(60)
+        # Update the display
+        pygame.display.flip()
+
+        # Cap the frame rate
+        pygame.time.Clock().tick(60)
+
 
 def running_army():
     # Main game loop
     run = True
     while run:
+        # display start screen
+        screen.blit(start_screen, (0,0))
         MOUSE_POS = pygame.mouse.get_pos()
 
-        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 75), text_input = "NEW GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
-        INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 417), text_input = "INSTRUCTIONS", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 320), text_input = "NEW GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 450), text_input = "INSTRUCTIONS", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
 
         for button in [START_BUTTON, INSTRUCTION_BUTTON]:
             button.changeColour(MOUSE_POS)
@@ -126,8 +134,7 @@ def running_army():
                         start_game()
                     if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
                         instructions()
-        # display start screen
-        screen.blit(start_screen, (0,0))
+
 
         # Update the display
         pygame.display.update()
