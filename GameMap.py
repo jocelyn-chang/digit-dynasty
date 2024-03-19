@@ -34,10 +34,8 @@ green3 = (113, 182, 135)
 green4 = (88, 133, 120)
 green5 = (117, 132, 133)
 
-run = True
-
 def load_map():
-  while run:
+  while True:
 
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
