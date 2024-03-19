@@ -9,6 +9,7 @@ SCREEN_HEIGHT = 600
 # Initialize Pygame
 pygame.init()
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption('DIGIT DYNASTY')
 BACKGROUND = pygame.image.load("images/background.png")
 LOGIN = pygame.image.load("images/login_screen.png")
 SIGNUP = pygame.image.load("images/sign_up_screen.png")
@@ -24,7 +25,7 @@ def get_font(font, size):
         return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 # Create a function to create the input boxes
-def input_box(screen, input_rect, text, font, active = False, is_password = False):
+def input_box(SCREEN, input_rect, text, font, active = False, is_password = False):
     colour_active = pygame.Color('lightskyblue3')
     colour_passive = pygame.Color('gray15')
     colour = colour_active if active else colour_passive
