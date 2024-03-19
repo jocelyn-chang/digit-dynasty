@@ -18,7 +18,10 @@ def get_font(size):
 # Button class for image-based buttons
 class Button():
     def __init__(self, image = None, pos = (0,0), text_input = "", font = 0, base_colour = "Black", hovering_colour = "White"):
-        self.image = image
+        if isinstance(image, str):
+            self.image = pygame.image.load(image)
+        else:
+            self.image = image
         self.x_pos, self.y_pos = pos
         self.font = font
         self.base_colour, self.hovering_colour = base_colour, hovering_colour
@@ -66,21 +69,18 @@ def start_game():
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(LOGIN, (0, 0))
-        '''
-        START_BACK = Button(image = "images/back_button.png", pos = (300, 300), text_input = "BACK", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        START_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
         START_BACK.changeColour(GAME_MOUSE_POS)
         START_BACK.update(SCREEN)
-        '''
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-                '''
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if START_BACK.checkForInput(GAME_MOUSE_POS):
+                if START_BACK.checkInput(GAME_MOUSE_POS):
                     main_menu()
-                    '''
 
         pygame.display.update()             
 
