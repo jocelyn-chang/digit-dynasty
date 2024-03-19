@@ -27,10 +27,7 @@ class CookingGame:
         
         
         
-        self.player = Question("PlayerName", "PlayerPassword", "CookingGame", 100, 10, 10, 10, 5, ["CookingGame"])
-        
-        
-        
+        self.player = Question("PlayerName", "PlayerPassword", "CookingGame", 10, 5, 5, 5, 5, ["CookingGame"])
         
 
     def run(self):
