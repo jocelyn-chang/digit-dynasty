@@ -124,7 +124,7 @@ def running_army():
 
         for button in [START_BUTTON, INSTRUCTION_BUTTON]:
             button.changeColour(MOUSE_POS)
-            button.update(SCREEN)
+            button.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

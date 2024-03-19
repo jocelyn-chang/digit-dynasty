@@ -120,6 +120,7 @@ def start_game():
                     else:
                         password += event.unicode
 
+        PLAY_BUTTON.changeColour(GAME_MOUSE_POS)
         PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()             
 
