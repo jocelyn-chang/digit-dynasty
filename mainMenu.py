@@ -60,7 +60,11 @@ def start_game():
         
         START_BACK.update(SCREEN)
 
+        input_box(SCREEN, username_rect, username, input_font, active = username_active)
+        input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
 
+        PLAY_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "PLAY", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -89,9 +93,7 @@ def start_game():
                     else:
                         password += event.unicode
 
-        input_box(SCREEN, username_rect, username, input_font, active = username_active)
-        input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
-        
+        PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()             
 
 # Go to load screen 
@@ -116,7 +118,6 @@ def load_game():
             SCREEN.blit(RESIZED_BACK, (-90,-96))
         
         LOAD_BACK.update(SCREEN)
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
