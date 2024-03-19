@@ -38,8 +38,9 @@ def load_map():
   while True:
 
     for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        run = False
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
     
         # Draw the background image onto the screen
     screen.blit(BACKGROUND, (0, 0))
@@ -62,10 +63,6 @@ def load_map():
     if (350<mouse_x<450 and 220<mouse_y<380):
       screen.blit(RESIZED_MIDDLETEMP, (326, 180))
 
-    for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
 
     # Update the display
     pygame.display.flip()
