@@ -9,6 +9,8 @@ class Question (Player):
         
     def generate_question(self, operation):
         
+        level = 0
+        
         if operation == '+':
             level = self.get_add()
             
