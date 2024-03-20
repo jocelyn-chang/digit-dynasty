@@ -27,19 +27,31 @@ def get_font(font, size):
 
 # Create a function to create the input boxes
 def input_box(SCREEN, input_rect, text, font, active = False, is_password = False):
-    colour_active = pygame.Color('lightskyblue3')
+    colour_active = pygame.Color('black')
     colour_passive = pygame.Color('gray15')
     colour = colour_active if active else colour_passive
 
     box = pygame.Surface((input_rect.width, input_rect.height), pygame.SRCALPHA)
-    box.fill((255, 255, 255, 100))
+    box.fill((255, 255, 255, 10))
     SCREEN.blit(box, input_rect.topleft)
 
     if active:
         pygame.draw.rect(SCREEN, colour, input_rect, 2)
 
     display_text = ''.join('*' for _ in text) if is_password else text
+
     text_surface = font.render(display_text, True, pygame.Color('black'))
+    text_width, _ = text_surface.get_size()
+
+    if text_width > input_rect.width - 10:
+        trim_chars = 0
+        for trim_chars in range(len(display_text)):
+            partial_text = font.render(display_text[trim_chars:], True, pygame.Color('black'))
+            partial_text_width, _ = partial_text.get_size()
+            if partial_text_width <= input_rect.width - 10:
+                break
+        text_surface = font.render(display_text[trim_chars:], True, pygame.Color('black'))
+
     SCREEN.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
 
 # Write to the csv file
