@@ -63,6 +63,14 @@ def append_to_csv(username, password):
         writer = csv.writer(file)
         writer.writerow(row)
 
+# Method to validate the password entered
+def valid_password(password):
+    if len(password) < 8 or len(password) > 16:
+        return False
+    if not password.isalnum():
+        return False
+    return True
+
 # Go to login screen
 def start_game():
     username = ''
@@ -70,6 +78,7 @@ def start_game():
     username_active = False
     password_active = False
     existing_player = False
+    invalid_password = False
     input_font = get_font("Sawarabi",35)
 
     username_rect = pygame.Rect(254, 237, 300, 50)
@@ -101,6 +110,7 @@ def start_game():
                     main_menu()
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
                     existing_player = False
+                    invalid_password = False
 
                     with open("data.csv", newline = '') as csvfile:
                         reader = csv.reader(csvfile)
@@ -109,6 +119,8 @@ def start_game():
 
                     if username == compare_Username:
                         existing_player = True
+                    elif not valid_password(password):
+                        invalid_password = True
                     else:
                         append_to_csv(username, password)
                         load_map()
@@ -137,6 +149,10 @@ def start_game():
             font = get_font('Shojumaru', 15)
             text_surface = font.render('Existing player. Enter a new username or log in.', True, 'white')
             SCREEN.blit(text_surface, (165, 455))
+        if invalid_password:
+            font = get_font('Shojumaru', 13)
+            text_surface = font.render('Your password should be 8 - 16 characters and only have letters and numbers.', True, 'white')
+            SCREEN.blit(text_surface, (65, 455))
         
         PLAY_BUTTON.changeColour(GAME_MOUSE_POS)
         PLAY_BUTTON.update(SCREEN)
@@ -160,7 +176,6 @@ def load_player(input_username, input_password):
                 }
                 return player_info
     return None
-
 
 # Go to load screen 
 def load_game():
