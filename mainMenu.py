@@ -69,6 +69,7 @@ def start_game():
     password = ''
     username_active = False
     password_active = False
+    existing_player = False
     input_font = get_font("Sawarabi",35)
 
     username_rect = pygame.Rect(254, 237, 300, 50)
@@ -99,8 +100,18 @@ def start_game():
                 if START_BACK.checkInput(GAME_MOUSE_POS):
                     main_menu()
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
-                    append_to_csv(username, password)
-                    load_map()
+                    existing_player = False
+
+                    with open("data.csv", newline = '') as csvfile:
+                        reader = csv.reader(csvfile)
+                        for row in reader:
+                            compare_Username = row[0]
+
+                    if username == compare_Username:
+                        existing_player = True
+                    else:
+                        append_to_csv(username, password)
+                        load_map()
                 elif username_rect.collidepoint(event.pos):
                     username_active = not username_active
                     password_active = False
@@ -122,6 +133,11 @@ def start_game():
                     else:
                         password += event.unicode
 
+        if existing_player:
+            font = get_font('Shojumaru', 15)
+            text_surface = font.render('Existing player. Enter a new username or log in.', True, 'white')
+            SCREEN.blit(text_surface, (165, 455))
+        
         PLAY_BUTTON.changeColour(GAME_MOUSE_POS)
         PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()             
