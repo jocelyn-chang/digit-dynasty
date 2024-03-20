@@ -15,8 +15,12 @@ pygame.display.set_caption('SNAKE GAME')
 # Load background image
 BACKGROUND = pygame.image.load("images/snakegamebg.png")
 
-# Load fruit image
-FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
+# # Load fruit image
+# FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
+fruit_size = (100, 100)
+
+# # Scale the fruit image to the new size
+# FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
 
 # Clock for controlling game speed
 clock = pygame.time.Clock()
@@ -36,8 +40,8 @@ black = (0, 0, 0)
 white = (255, 255, 255)
 
 # Snake block size and speed
-snake_block = 15
-snake_speed = 15
+snake_block = 20
+snake_speed = 10
 
 # Font for displaying score
 font_style = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 25)
@@ -74,6 +78,11 @@ def game():
     snake_list = []
     snake_len = 1
 
+    # Load fruit image
+    FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
+    # Scale the fruit image to the new size
+    FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
+
     # Randomize position of fruit
     foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
     foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
@@ -102,6 +111,8 @@ def game():
         # Update snake position
         x1 += x1_change
         y1 += y1_change
+        print("x1: " + str(x1))
+        print("y1: " + str(y1))
 
         snake_list.append([x1, y1])
 
@@ -114,14 +125,31 @@ def game():
         snake(snake_block, snake_list)
         screen.blit(FRUIT_A, (foodx, foody))
         current_score(snake_len - 1)
-
-        pygame.display.flip()
+        print("poo")
+        print("foodx: " + str(foodx))
+        print("foody: " + str(foody))
 
         # Check if snake has eaten the fruit
-        if x1 == foodx and y1 == foody:
+        # if x1 == foodx and y1 == foody:
+        if x1 >= (foodx-40) and x1 <= (foodx+40) and y1 >= (foody-40) and y1 <= (foody+50):
+            if y1 >= (foody-40) and y1 <= (foody+50):
+                print("foody: " + str(foody))
+                run = False
+            else: 
+                print("foodx: " + str(foodx))
+                run = False 
+                
             foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
             foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
             snake_len += 1
+            # # Load fruit image
+            # FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
+            # # fruit_size = (100, 100)
+
+            # # Scale the fruit image to the new size
+            # FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
+            # screen.blit(FRUIT_A, (foodx, foody))
+        pygame.display.flip()
 
         clock.tick(snake_speed)
 

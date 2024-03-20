@@ -1,6 +1,6 @@
 class Player: 
     # initialize Player object
-    def __init__ (self, name, password, best_game, best_score, add_score, mul_score, div_score, sub_score, games):
+    def __init__ (self, name, password, best_game, best_score, add_score, mul_score, div_score, sub_score):
         self.name = name
         self.password = password
         self.best_game = best_game
@@ -9,7 +9,7 @@ class Player:
         self.mul_score = mul_score
         self.div_score = div_score
         self.sub_score = sub_score
-        self.games = games
+        # self.games = games
     
     # add game to list of Player's game
     def add_game (self, game):
@@ -39,13 +39,13 @@ class Player:
     def get_name (self):
         return self.name
     
-    # get Player's games
-    def get_games(self):
-        return self.games
+    # # get Player's games
+    # def get_games(self):
+    #     return self.games
     
-    # get Player's best game
-    def get_best_game (self):
-        return self.best_game
+    # # get Player's best game
+    # def get_best_game (self):
+    #     return self.best_game
     
     # get Player's addition score
     def get_add (self):
