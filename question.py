@@ -4,10 +4,12 @@ from Player import Player
 #inherits stuff from player class
 class Question (Player):
     
-    def __init__(self, name, best_game, best_score, add_score, mul_score, div_score, sub_score, games):
-        super().__init__(name, best_game, best_score, add_score, mul_score, div_score, sub_score, games)
+    def __init__(self, name, password, best_game, best_score, add_score, mul_score, div_score, sub_score):
+        super().__init__(name, password, best_game, best_score, add_score, mul_score, div_score, sub_score)
         
     def generate_question(self, operation):
+        
+        level = 0
         
         if operation == '+':
             level = self.get_add()
