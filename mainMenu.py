@@ -126,12 +126,33 @@ def start_game():
         PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()             
 
+# Function to load a previous player's information
+def load_player(input_username, input_password):
+    with open("data.csv", newline = '') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            username, password = row[0], row[1]
+
+            if username == input_username and password == input_password:
+                player_info = {
+                    'Name': username,
+                    'Addition': row[2],
+                    'Subtraction': row[3],
+                    'Multiplication': row[4],
+                    'Division': row[5],
+                    'Bosses': row[6]
+                }
+                return player_info
+    return None
+
+
 # Go to load screen 
 def load_game():
     username = ''
     password = ''
     username_active = False
     password_active = False
+    player_not_found = False
     input_font = get_font("Sawarabi",35)
 
     username_rect = pygame.Rect(254, 237, 300, 50)
@@ -158,6 +179,18 @@ def load_game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if LOAD_BACK.checkInput(GAME_MOUSE_POS):
                     main_menu()
+                elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
+                    player_not_found = False
+                    input_username = username
+                    input_password = password
+
+                    player_info = load_player(input_username, input_password)
+
+                    if player_info:
+                        load_map()
+                    else:
+                        player_not_found = True
+
                 elif username_rect.collidepoint(event.pos):
                     username_active = not username_active
                     password_active = False
@@ -182,6 +215,11 @@ def load_game():
         input_box(SCREEN, username_rect, username, input_font, active = username_active)
         input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
         
+        if player_not_found:
+            font = get_font('Shojumaru', 15)
+            text_surface = font.render('Player not found. Try again.', True, 'white')
+            SCREEN.blit(text_surface, (255, 455))
+
         PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()
 
