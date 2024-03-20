@@ -1,6 +1,7 @@
 # Import appropriate libraries
 import pygame, sys, csv
 from Button import Button
+from GameMap import load_map
 
 # Define screen dimensions
 SCREEN_WIDTH = 800
@@ -26,19 +27,31 @@ def get_font(font, size):
 
 # Create a function to create the input boxes
 def input_box(SCREEN, input_rect, text, font, active = False, is_password = False):
-    colour_active = pygame.Color('lightskyblue3')
+    colour_active = pygame.Color('black')
     colour_passive = pygame.Color('gray15')
     colour = colour_active if active else colour_passive
 
     box = pygame.Surface((input_rect.width, input_rect.height), pygame.SRCALPHA)
-    box.fill((255, 255, 255, 100))
+    box.fill((255, 255, 255, 10))
     SCREEN.blit(box, input_rect.topleft)
 
     if active:
         pygame.draw.rect(SCREEN, colour, input_rect, 2)
 
     display_text = ''.join('*' for _ in text) if is_password else text
+
     text_surface = font.render(display_text, True, pygame.Color('black'))
+    text_width, _ = text_surface.get_size()
+
+    if text_width > input_rect.width - 10:
+        trim_chars = 0
+        for trim_chars in range(len(display_text)):
+            partial_text = font.render(display_text[trim_chars:], True, pygame.Color('black'))
+            partial_text_width, _ = partial_text.get_size()
+            if partial_text_width <= input_rect.width - 10:
+                break
+        text_surface = font.render(display_text[trim_chars:], True, pygame.Color('black'))
+
     SCREEN.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
 
 # Write to the csv file
@@ -62,12 +75,23 @@ def append_to_csv(username, password):
         writer = csv.writer(file)
         writer.writerow(row)
 
+# Method to validate the password entered
+def valid_password(password):
+    if len(password) < 8 or len(password) > 16:
+        return False
+    if not password.isalnum():
+        return False
+    return True
+
 # Go to login screen
 def start_game():
     username = ''
     password = ''
     username_active = False
     password_active = False
+    existing_player = False
+    invalid_password = False
+    no_entry = False
     input_font = get_font("Sawarabi",35)
 
     username_rect = pygame.Rect(254, 237, 300, 50)
@@ -98,7 +122,24 @@ def start_game():
                 if START_BACK.checkInput(GAME_MOUSE_POS):
                     main_menu()
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
-                    append_to_csv(username, password)
+                    existing_player = False
+                    invalid_password = False
+                    no_entry = False
+
+                    with open("data.csv", newline = '') as csvfile:
+                        reader = csv.reader(csvfile)
+                        for row in reader:
+                            compare_Username = row[0]
+
+                    if username == "" or password == "":
+                        no_entry = True
+                    elif username == compare_Username:
+                        existing_player = True
+                    elif not valid_password(password):
+                        invalid_password = True
+                    else:
+                        append_to_csv(username, password)
+                        load_map()
                 elif username_rect.collidepoint(event.pos):
                     username_active = not username_active
                     password_active = False
@@ -120,8 +161,42 @@ def start_game():
                     else:
                         password += event.unicode
 
+        if no_entry:
+            font = get_font('Shojumaru', 13)
+            text_surface = font.render('Enter a username and a password.', True, 'white')
+            SCREEN.blit(text_surface, (249, 455))
+        if existing_player:
+            font = get_font('Shojumaru', 15)
+            text_surface = font.render('Existing player. Enter a new username or log in.', True, 'white')
+            SCREEN.blit(text_surface, (165, 455))
+        if invalid_password:
+            font = get_font('Shojumaru', 13)
+            text_surface = font.render('Your password should be 8 - 16 characters and only have letters and numbers.', True, 'white')
+            SCREEN.blit(text_surface, (45, 455))
+        
+        PLAY_BUTTON.changeColour(GAME_MOUSE_POS)
         PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()             
+
+# Function to load a previous player's information
+def load_player(input_username, input_password):
+    with open("data.csv", newline = '') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            username, password = row[0], row[1]
+
+            if username == input_username and password == input_password:
+                player_info = {
+                    'Name': username,
+                    'Addition': row[2],
+                    'Subtraction': row[3],
+                    'Multiplication': row[4],
+                    'Division': row[5],
+                    'Bosses': row[6]
+                }
+                return player_info
+    return None
+
 
 # Go to load screen 
 def load_game():
@@ -129,6 +204,7 @@ def load_game():
     password = ''
     username_active = False
     password_active = False
+    player_not_found = False
     input_font = get_font("Sawarabi",35)
 
     username_rect = pygame.Rect(254, 237, 300, 50)
@@ -155,6 +231,18 @@ def load_game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if LOAD_BACK.checkInput(GAME_MOUSE_POS):
                     main_menu()
+                elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
+                    player_not_found = False
+                    input_username = username
+                    input_password = password
+
+                    player_info = load_player(input_username, input_password)
+
+                    if player_info:
+                        load_map()
+                    else:
+                        player_not_found = True
+
                 elif username_rect.collidepoint(event.pos):
                     username_active = not username_active
                     password_active = False
@@ -179,6 +267,11 @@ def load_game():
         input_box(SCREEN, username_rect, username, input_font, active = username_active)
         input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
         
+        if player_not_found:
+            font = get_font('Shojumaru', 15)
+            text_surface = font.render('Player not found. Try again.', True, 'white')
+            SCREEN.blit(text_surface, (255, 455))
+
         PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()
 
