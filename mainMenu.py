@@ -197,7 +197,6 @@ def load_player(input_username, input_password):
                 return player_info
     return None
 
-
 # Go to load screen 
 def load_game():
     username = ''
@@ -277,12 +276,61 @@ def load_game():
 
 # Go to the high score table
 def high_score():
+    # Define constants for layout
+    HEADER_SIZE = 17
+    SCORE_SIZE = 20
+    DETAILS_SIZE = 15
+    HEADER_Y = 200
+    START_Y = HEADER_Y + 30
+    RANK_X = 100
+    USERNAME_X = 190
+    BOSSES_X = 340
+    SKILLS_X = 570
+    ROW_HEIGHT = 40
+
+    header_font = get_font("Shojumaru", HEADER_SIZE)
+    score_font = get_font("Shojumaru", SCORE_SIZE)
+    details_font = get_font("Shojumaru", DETAILS_SIZE)
+
+    black = pygame.Color('black')
+
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(HIGH_SCORE, (0, 0))
-        
+
+        headers = ["Rank", "Username", "Bosses Defeated", "Skill Levels"]
+        header_texts = [header_font.render(header, True, black) for header in headers]
+        SCREEN.blit(header_texts[0], (RANK_X, HEADER_Y))
+        SCREEN.blit(header_texts[1], (USERNAME_X, HEADER_Y))
+        SCREEN.blit(header_texts[2], (BOSSES_X, HEADER_Y))
+        SCREEN.blit(header_texts[3], (SKILLS_X, HEADER_Y))
+
+        player_scores = []
+        with open("data.csv", newline = '') as csvfile:
+            reader = csv.reader(csvfile)
+
+            for i, row in enumerate(reader):
+                name, bosses, addition, subtraction, multiplication, division = row[0], row[6], row[2], row[3], row[4], row[5]
+
+                rank_text = score_font.render(str(i + 1), True, black)
+                name_text = score_font.render(name, True, black)
+                bosses_text = score_font.render(bosses, True, black)
+                add_sub_text = details_font.render(f"+   {addition}    -  {subtraction}", True, black)
+                mul_div_text = details_font.render(f"x  {multiplication}   /  {division}", True, black)
+
+                row_y = START_Y + i * ROW_HEIGHT
+
+                SCREEN.blit(rank_text, (RANK_X + 20, row_y))
+                SCREEN.blit(name_text, (USERNAME_X + 10, row_y))
+                SCREEN.blit(bosses_text, (BOSSES_X + 90, row_y))
+                SCREEN.blit(add_sub_text, (SKILLS_X + 25, row_y))
+                SCREEN.blit(mul_div_text, (SKILLS_X + 24, row_y + 18))
+
+                if row_y > SCREEN_HEIGHT - ROW_HEIGHT or i >= 9:
+                    break
+
         SCORE_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             SCREEN.blit(RESIZED_BACK, (-90,-96))
@@ -299,6 +347,28 @@ def high_score():
 
         pygame.display.update()
 
+'''
+            for row in reader:
+                name = row[0]
+                bosses = int(row[6])
+                score_sum = sum(map(int, row[2:5]))
+                addition = row[2]
+                subtraction = row[3]
+                multiplication = row[4]
+                division = row[5]
+                player_scores.append((name, bosses, score_sum, addition, subtraction, multiplication, division))
+
+        sorted_scores = sorted(player_scores, key = lambda x: (x[1], x[2]), reverse = True)
+        start_y = 200
+        for i, (name, bosses, score_sum, addition, subtraction, multiplication, division) in enumerate(sorted_scores[:10]):
+            header = "Rank         Name          Bosses"
+            top_score_text = f"{i+1}. {name} - Bosses defeated: {bosses}  |  Score: {score_sum}\n"
+            bot_score_text = f"Addition Score: {addition}  |  Subtraction Score: {subtraction}  |  Multiplication Score: {multiplication}  |  Division Score: {division}"
+            top_text_surface = get_font("Shojumaru", 20).render(top_score_text, True, pygame.Color('black'))
+            bot_text_surface = get_font("Shojumaru", 11).render(bot_score_text, True, pygame.Color('black'))
+            SCREEN.blit(top_text_surface, (100, start_y + i * 45))
+            SCREEN.blit(bot_text_surface, (100, start_y + 20 + i * 45))
+'''     
 
 # Intructions screen
 def instructions():
