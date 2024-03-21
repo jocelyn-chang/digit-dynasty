@@ -21,9 +21,13 @@ panda = pygame.transform.scale(pygame.image.load("images/panda1.png"), (50, 50))
 gate = pygame.transform.scale(pygame.image.load("images/gates.png"), (400, 125))
 qbox = pygame.transform.scale(pygame.image.load("images/questionscreen.png"), (400, 125))
 arrow = pygame.transform.scale(pygame.image.load("images/parrow.png"), (50, 50))
+question_scroll = pygame.image.load("images/bigScroll.png")
 
 image_height = image.get_height()
 image_width = image.get_width()
+
+# define colours
+white = (255, 255, 255)
 
 # movement for panda/arrow
 arrow_rect = arrow.get_rect()
@@ -111,12 +115,82 @@ def instruction2():
 
         pygame.display.update()
 
+def check_answer(answer, correct_answer):
+    # Display question screen
+    screen.blit(question_scroll, (25, 100))
+    title = get_font(25).render("Answer the Following Question:", True, white)
+    titleRect = title.get_rect()
+    titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
+    screen.blit(title, titleRect)
+            
+    if answer == correct_answer:
+        # Display user's input text
+        correct = get_font(20).render('CORRECT', True, white)
+        inputRect = correct.get_rect()
+        inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
+        screen.blit(correct, inputRect)
+
+    else:
+        # Display user's input text
+        incorrect = get_font(20).render('Incorrect', True, white)
+        inputRect = incorrect.get_rect()
+        inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
+        screen.blit(incorrect, inputRect)
+
+    # Update the display
+    pygame.display.update()
+    pygame.time.delay(5000)
+
+    return True
+
+
+def question():
+    answer = ""
+    correct_answer = "5"
+    run = True
+
+    while run:
+        # Display question screen
+        screen.blit(question_scroll, (25, 100))
+        title = get_font(25).render("Answer the Following Question:", True, white)
+        titleRect = title.get_rect()
+        titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
+        screen.blit(title, titleRect)
+
+        # Display user's input text
+        input_text = get_font(20).render(answer, True, white)
+        inputRect = input_text.get_rect()
+        inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
+        screen.blit(input_text, inputRect)
+
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:  # Check if Enter key is pressed to submit answer
+                    if check_answer(answer, correct_answer):
+                       run = False
+                elif event.key == pygame.K_BACKSPACE:  # Check if Backspace key is pressed to delete characters
+                    answer = answer[:-1]
+                else:
+                    # Check if a printable character is pressed and append it to the answer
+                    if event.unicode.isprintable():
+                        answer += event.unicode
+
+        # Update the display
+        pygame.display.update()
+
+
 def start_game():
     # Scrolling variables
     scroll = 0
     scroll_speed = 2
     x = (SCREEN_WIDTH) // 2
     speed = 5
+    arrow_size = 1
+    panda_size = 1
 
     # Main game loop
     while True:
@@ -127,17 +201,20 @@ def start_game():
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            x -= speed
+            if x > 200:
+                x -= speed
         if keys[pygame.K_RIGHT]:
-            x += speed
+            if x < 550:
+                x += speed
 
         # Scroll the image
         scroll += scroll_speed
         if scroll >= scaled_height:
             scroll = 0
 
+        # pauses 
         if scroll-40 == 400:
-            pygame.time.delay(3000)
+            question()
 
         # Clear the screen
         screen.fill((0, 0, 0))
@@ -169,7 +246,7 @@ def running_army():
         screen.blit(start_screen, (0,0))
         MOUSE_POS = pygame.mouse.get_pos()
 
-        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 320), text_input = "NEW GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 320), text_input = "START GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
         INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 450), text_input = "INSTRUCTIONS", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
 
         for button in [START_BUTTON, INSTRUCTION_BUTTON]:
@@ -193,4 +270,3 @@ def running_army():
     pygame.quit()
     sys.exit()
 
-running_army()
