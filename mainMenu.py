@@ -286,7 +286,7 @@ def high_score():
     USERNAME_X = 190
     BOSSES_X = 340
     SKILLS_X = 570
-    ROW_HEIGHT = 40
+    ROW_HEIGHT = 60
 
     header_font = get_font("Shojumaru", HEADER_SIZE)
     score_font = get_font("Shojumaru", SCORE_SIZE)
@@ -297,6 +297,7 @@ def high_score():
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
+        MAX_USERNAME_WIDTH = 120
 
         SCREEN.blit(HIGH_SCORE, (0, 0))
 
@@ -307,29 +308,32 @@ def high_score():
         SCREEN.blit(header_texts[2], (BOSSES_X, HEADER_Y))
         SCREEN.blit(header_texts[3], (SKILLS_X, HEADER_Y))
 
-        player_scores = []
         with open("data.csv", newline = '') as csvfile:
             reader = csv.reader(csvfile)
+            player_scores = [(row[0], int(row[6]), int(row[2]), int(row[3]), int(row[4]), int(row[5])) for row in reader]
 
-            for i, row in enumerate(reader):
-                name, bosses, addition, subtraction, multiplication, division = row[0], row[6], row[2], row[3], row[4], row[5]
+        sorted_scores = sorted(player_scores, key=lambda x: (-x[1], -sum(x[2:])))
 
-                rank_text = score_font.render(str(i + 1), True, black)
-                name_text = score_font.render(name, True, black)
-                bosses_text = score_font.render(bosses, True, black)
-                add_sub_text = details_font.render(f"+   {addition}    -  {subtraction}", True, black)
-                mul_div_text = details_font.render(f"x  {multiplication}   /  {division}", True, black)
+        for i, (name, bosses, addition, subtraction, multiplication, division) in enumerate(sorted_scores[:5]):
+            rank_text = score_font.render(str(i + 1), True, black)
+            name_surface = score_font.render(name, True, black)
+            if name_surface.get_width() > MAX_USERNAME_WIDTH:
+                while name_surface.get_width() > MAX_USERNAME_WIDTH:
+                    name = name[:-1]
+                    name_surface = score_font.render(name + '...', True, black)
+                name = name + '...'
+            name_text = score_font.render(name, True, black)
+            bosses_text = score_font.render(str(bosses), True, black)
+            add_sub_text = details_font.render(f" +   {addition}    -  {subtraction}", True, black)
+            mul_div_text = details_font.render(f"x   {multiplication}    ÷  {division}", True, black)
 
-                row_y = START_Y + i * ROW_HEIGHT
+            row_y = START_Y + i * ROW_HEIGHT
 
-                SCREEN.blit(rank_text, (RANK_X + 20, row_y))
-                SCREEN.blit(name_text, (USERNAME_X + 10, row_y))
-                SCREEN.blit(bosses_text, (BOSSES_X + 90, row_y))
-                SCREEN.blit(add_sub_text, (SKILLS_X + 25, row_y))
-                SCREEN.blit(mul_div_text, (SKILLS_X + 24, row_y + 18))
-
-                if row_y > SCREEN_HEIGHT - ROW_HEIGHT or i >= 9:
-                    break
+            SCREEN.blit(rank_text, (RANK_X + 20, row_y))
+            SCREEN.blit(name_text, (USERNAME_X + 10, row_y))
+            SCREEN.blit(bosses_text, (BOSSES_X + 90, row_y))
+            SCREEN.blit(add_sub_text, (SKILLS_X + 25, row_y))
+            SCREEN.blit(mul_div_text, (SKILLS_X + 24, row_y + 18))
 
         SCORE_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
@@ -346,29 +350,6 @@ def high_score():
                     main_menu()
 
         pygame.display.update()
-
-'''
-            for row in reader:
-                name = row[0]
-                bosses = int(row[6])
-                score_sum = sum(map(int, row[2:5]))
-                addition = row[2]
-                subtraction = row[3]
-                multiplication = row[4]
-                division = row[5]
-                player_scores.append((name, bosses, score_sum, addition, subtraction, multiplication, division))
-
-        sorted_scores = sorted(player_scores, key = lambda x: (x[1], x[2]), reverse = True)
-        start_y = 200
-        for i, (name, bosses, score_sum, addition, subtraction, multiplication, division) in enumerate(sorted_scores[:10]):
-            header = "Rank         Name          Bosses"
-            top_score_text = f"{i+1}. {name} - Bosses defeated: {bosses}  |  Score: {score_sum}\n"
-            bot_score_text = f"Addition Score: {addition}  |  Subtraction Score: {subtraction}  |  Multiplication Score: {multiplication}  |  Division Score: {division}"
-            top_text_surface = get_font("Shojumaru", 20).render(top_score_text, True, pygame.Color('black'))
-            bot_text_surface = get_font("Shojumaru", 11).render(bot_score_text, True, pygame.Color('black'))
-            SCREEN.blit(top_text_surface, (100, start_y + i * 45))
-            SCREEN.blit(bot_text_surface, (100, start_y + 20 + i * 45))
-'''     
 
 # Intructions screen
 def instructions():
