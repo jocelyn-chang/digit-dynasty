@@ -136,6 +136,9 @@ def start_game():
         if scroll >= scaled_height:
             scroll = 0
 
+        if scroll-40 == 400:
+            pygame.time.delay(3000)
+
         # Clear the screen
         screen.fill((0, 0, 0))
 
