@@ -197,7 +197,6 @@ def load_player(input_username, input_password):
                 return player_info
     return None
 
-
 # Go to load screen 
 def load_game():
     username = ''
@@ -277,12 +276,65 @@ def load_game():
 
 # Go to the high score table
 def high_score():
+    # Define constants for layout
+    HEADER_SIZE = 17
+    SCORE_SIZE = 20
+    DETAILS_SIZE = 15
+    HEADER_Y = 200
+    START_Y = HEADER_Y + 30
+    RANK_X = 100
+    USERNAME_X = 190
+    BOSSES_X = 340
+    SKILLS_X = 570
+    ROW_HEIGHT = 60
+
+    header_font = get_font("Shojumaru", HEADER_SIZE)
+    score_font = get_font("Shojumaru", SCORE_SIZE)
+    details_font = get_font("Shojumaru", DETAILS_SIZE)
+
+    black = pygame.Color('black')
+
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
+        MAX_USERNAME_WIDTH = 120
 
         SCREEN.blit(HIGH_SCORE, (0, 0))
-        
+
+        headers = ["Rank", "Username", "Bosses Defeated", "Skill Levels"]
+        header_texts = [header_font.render(header, True, black) for header in headers]
+        SCREEN.blit(header_texts[0], (RANK_X, HEADER_Y))
+        SCREEN.blit(header_texts[1], (USERNAME_X, HEADER_Y))
+        SCREEN.blit(header_texts[2], (BOSSES_X, HEADER_Y))
+        SCREEN.blit(header_texts[3], (SKILLS_X, HEADER_Y))
+
+        with open("data.csv", newline = '') as csvfile:
+            reader = csv.reader(csvfile)
+            player_scores = [(row[0], int(row[6]), int(row[2]), int(row[3]), int(row[4]), int(row[5])) for row in reader]
+
+        sorted_scores = sorted(player_scores, key=lambda x: (-x[1], -sum(x[2:])))
+
+        for i, (name, bosses, addition, subtraction, multiplication, division) in enumerate(sorted_scores[:5]):
+            rank_text = score_font.render(str(i + 1), True, black)
+            name_surface = score_font.render(name, True, black)
+            if name_surface.get_width() > MAX_USERNAME_WIDTH:
+                while name_surface.get_width() > MAX_USERNAME_WIDTH:
+                    name = name[:-1]
+                    name_surface = score_font.render(name + '...', True, black)
+                name = name + '...'
+            name_text = score_font.render(name, True, black)
+            bosses_text = score_font.render(str(bosses), True, black)
+            add_sub_text = details_font.render(f" +   {addition}    -  {subtraction}", True, black)
+            mul_div_text = details_font.render(f"x   {multiplication}    ÷  {division}", True, black)
+
+            row_y = START_Y + i * ROW_HEIGHT
+
+            SCREEN.blit(rank_text, (RANK_X + 20, row_y))
+            SCREEN.blit(name_text, (USERNAME_X + 10, row_y))
+            SCREEN.blit(bosses_text, (BOSSES_X + 90, row_y))
+            SCREEN.blit(add_sub_text, (SKILLS_X + 25, row_y))
+            SCREEN.blit(mul_div_text, (SKILLS_X + 24, row_y + 18))
+
         SCORE_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             SCREEN.blit(RESIZED_BACK, (-90,-96))
@@ -298,7 +350,6 @@ def high_score():
                     main_menu()
 
         pygame.display.update()
-
 
 # Intructions screen
 def instructions():
