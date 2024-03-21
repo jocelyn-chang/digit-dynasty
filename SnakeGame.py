@@ -17,7 +17,7 @@ BACKGROUND = pygame.image.load("images/snakegamebg.png")
 
 # # Load fruit image
 # FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
-fruit_size = (100, 100)
+fruit_size = (50, 50)
 
 # # Scale the fruit image to the new size
 # FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
@@ -131,13 +131,12 @@ def game():
 
         # Check if snake has eaten the fruit
         # if x1 == foodx and y1 == foody:
-        if x1 >= (foodx-40) and x1 <= (foodx+40) and y1 >= (foody-40) and y1 <= (foody+50):
-            if y1 >= (foody-40) and y1 <= (foody+50):
-                print("foody: " + str(foody))
-                run = False
-            else: 
-                print("foodx: " + str(foodx))
-                run = False 
+        if x1 >= (foodx-20) and x1 <= (foodx+30) and y1 >= (foody-20) and y1 <= (foody+40):
+            # if y1 >= (foody-20) and y1 <= (foody+20):
+            #     print("foody: " + str(foody))
+            #     print("foodx: " + str(foodx))
+            #     run = False
+            
                 
             foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
             foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
