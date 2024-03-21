@@ -94,4 +94,4 @@ def load_map():
 
   pygame.quit()
 
-load_map()
+# load_map()

@@ -271,3 +271,5 @@ def running_army():
     # Quit Pygame
     pygame.quit()
     sys.exit()
+
+running_army()
