@@ -246,10 +246,11 @@ def running_army():
         screen.blit(start_screen, (0,0))
         MOUSE_POS = pygame.mouse.get_pos()
 
-        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 320), text_input = "START GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
-        INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 450), text_input = "INSTRUCTIONS", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 250), text_input = "START GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 380), text_input = "INSTRUCTIONS", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 510), text_input = "BACK TO MENU", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
 
-        for button in [START_BUTTON, INSTRUCTION_BUTTON]:
+        for button in [START_BUTTON, INSTRUCTION_BUTTON, RETURN_BUTTON] :
             button.changeColour(MOUSE_POS)
             button.update(screen)
 
@@ -261,7 +262,8 @@ def running_army():
                         start_game()
                     if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
                         instruction1()
-
+                    if RETURN_BUTTON.checkInput(MOUSE_POS):
+                        return
 
         # Update the display
         pygame.display.update()
@@ -269,4 +271,3 @@ def running_army():
     # Quit Pygame
     pygame.quit()
     sys.exit()
-
