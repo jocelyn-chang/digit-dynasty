@@ -106,16 +106,7 @@ def question(level):
   # main = get_font(65).render(str(num1) + " + " + str(num2) + " = ?", True, white)
   # screen.blit(main, [240, 180])
 
-# Main game function
-def game(level):
-  run = True 
-  pause = True
-  correct = False
-  currQ = question(level)
-  spliceIndex = currQ.index("?") + 1
-  correctAns = currQ[spliceIndex:]
-  currQ = currQ[:spliceIndex]
-
+def options(correctAns):
   choice1 = int(correctAns) + random.randint(1, 9)
   choice2 = int(correctAns) - random.randint(1, 9)
   choice3 = int(float(correctAns) * (1+random.randint(1, 9)))
@@ -127,7 +118,43 @@ def game(level):
   choices.remove(choiceB)
   choiceC = random.choice(choices)
   choices.remove(choiceC)
-  choiceD = random.choice
+  choiceD = random.choice(choices)
+  choices.remove(choiceD)
+
+  a = get_font(25).render(choiceA, True, black)
+  b = get_font(25).render(choiceB, True, black)
+  c = get_font(25).render(choiceC, True, black)
+  d = get_font(25).render(choiceD, True, black)
+
+  return [a, b, c, d]
+
+
+  
+
+# Main game function
+def game(level):
+  run = True 
+  pause = True
+  correct = False
+  currQ = question(level)
+  spliceIndex = currQ.index("?") + 1
+  correctAns = currQ[spliceIndex:]
+  currQ = currQ[:spliceIndex]
+  optionList = options(correctAns)
+
+  # choice1 = int(correctAns) + random.randint(1, 9)
+  # choice2 = int(correctAns) - random.randint(1, 9)
+  # choice3 = int(float(correctAns) * (1+random.randint(1, 9)))
+
+  # choices = [str(choice1), str(choice2), str(choice3), correctAns]
+  # choiceA = random.choice(choices)
+  # choices.remove(choiceA)
+  # choiceB = random.choice(choices)
+  # choices.remove(choiceB)
+  # choiceC = random.choice(choices)
+  # choices.remove(choiceC)
+  # choiceD = random.choice(choices)
+  # choices.remove(choiceD)
 
   # Snake starting coordinates
   x1 = SCREEN_WIDTH / 2
@@ -216,7 +243,11 @@ def game(level):
         else:
           screen.blit(shadow, [202, 182])
           screen.blit(main, [200, 180])
-  
+        # a = get_font(25).render(optionList[0], True, black)
+        # b = get_font(25).render(optionList[1], True, black)
+        # c = get_font(25).render(optionList[2], True, black)
+        # d = get_font(25).render(optionList[3], True, black)
+        screen.blit(optionList[0], [315, 300])
         if countdown % 10 == 0 and timerDown > 0:
           timerDown -= 1
 

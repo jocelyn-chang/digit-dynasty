@@ -33,8 +33,10 @@ class Question (Player):
             # Ensure b <= a for subtraction
             if num2 > num1:
                 num1, num2 = num2, num1  # Swap values
+            
+            ans = num1 - num2
 
-        if operation == '*':
+        elif operation == '*':
             if level <= 5:
                 digits = (2, 5)  # Single-digit numbers    
             elif 5 < level <= 10:
@@ -63,4 +65,4 @@ class Question (Player):
         # wrtie the question based on the operation given
         question = f"{num1} {operation} {num2}?"
     
-        return question
+        return [question, ans]
