@@ -1,6 +1,9 @@
 import pygame, sys
 from Button import Button
 from runningArmy import running_army
+#from SnakeGame import game
+#from CookingGame import CookingGame
+from SandwichStack import sandwich_stack
 
 pygame.init()
 
@@ -41,18 +44,16 @@ def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 def load_map():
-  run = True
-  while run:
+  while True:
 
     MULTTEMP = Button(pygame.image.load("images/templeright.png"), pos = (600, 131), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-
 
     for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
     
-        # Draw the background image onto the screen
+    # Draw the background image onto the screen
     screen.blit(BACKGROUND, (0, 0))
 
     # Get the current mouse position
@@ -62,10 +63,16 @@ def load_map():
     # cooking game
     if (133<mouse_x<180 and 139<mouse_y<202):
       screen.blit(RESIZED_LEFTTEMP, (110, 92))
+      #if event.type == pygame.MOUSEBUTTONDOWN:
+         #if LEFTTEMP.checkInput(MOUSE_POS):
+            #CookingGame()
 
     # snake game
     if (372<mouse_x<419 and 32<mouse_y<95):
       screen.blit(RESIZED_TOPTEMP, (348, -2))
+      #if event.type == pygame.MOUSEBUTTONDOWN:
+         #if TOPTEMP.checkInput(MOUSE_POS):
+            #game()
     
     # running army
     if (600<mouse_x<647 and 131<mouse_y<194):
@@ -74,9 +81,12 @@ def load_map():
         if MULTTEMP.checkInput(MOUSE_POS):
             running_army()
     
-    # division game
+    # sandwich stack game
     if (363<mouse_x<410 and 383<mouse_y<446):
       screen.blit(RESIZED_BOTTOMTEMP, (340, 352))
+      if event.type == pygame.MOUSEBUTTONDOWN:
+         if BOTTOMTEMP.checkInput(MOUSE_POS):
+            sandwich_stack()
     
     # boss battle (arithmetic emperor)
     if (350<mouse_x<450 and 220<mouse_y<380):
@@ -95,4 +105,4 @@ def load_map():
 
   pygame.quit()
 
-load_map()
+#load_map()

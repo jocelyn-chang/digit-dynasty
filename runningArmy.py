@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random
 from Button import Button
 from question import Question
 from Player import Player
@@ -125,17 +125,20 @@ def check_answer(answer, correct_answer):
     titleRect = title.get_rect()
     titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
     screen.blit(title, titleRect)
-            
-    if answer == correct_answer:
+    
+    correct = False
+
+    if int(answer) == int(correct_answer):
         # Display user's input text
         correct = get_font(20).render('CORRECT', True, white)
         inputRect = correct.get_rect()
         inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
         screen.blit(correct, inputRect)
+        correct = True
 
     else:
         # Display user's input text
-        incorrect = get_font(20).render('Incorrect', True, white)
+        incorrect = get_font(20).render(f"Incorrect, Correct answer = {correct_answer}  your answer = {answer}", True, white)
         inputRect = incorrect.get_rect()
         inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
         screen.blit(incorrect, inputRect)
@@ -144,7 +147,7 @@ def check_answer(answer, correct_answer):
     pygame.display.update()
     pygame.time.delay(3000)
 
-    return True
+    return correct
 
 
 def question(numpandas, multiplier):
@@ -153,17 +156,23 @@ def question(numpandas, multiplier):
     run = True
 
     while run:
+        
         # Display question screen
         screen.blit(question_scroll, (25, 100))
-        title = get_font(25).render("Answer the Following Question:", True, white)
+        title = get_font(20).render("Answer the Following Question:", True, white)
         titleRect = title.get_rect()
         titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
         screen.blit(title, titleRect)
 
+        title = get_font(40).render(f"{numpandas} X {multiplier}", True, white)
+        titleRect = title.get_rect()
+        titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        screen.blit(title, titleRect)
+
         # Display user's input text
-        input_text = get_font(20).render(answer, True, white)
+        input_text = get_font(40).render(answer, True, white)
         inputRect = input_text.get_rect()
-        inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
+        inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100)  # Adjust position as needed
         screen.blit(input_text, inputRect)
 
         # Event handling
@@ -174,6 +183,9 @@ def question(numpandas, multiplier):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:  # Check if Enter key is pressed to submit answer
                     if check_answer(answer, correct_answer):
+                       return True
+                    else:
+                       return False
                        run = False
                 elif event.key == pygame.K_BACKSPACE:  # Check if Backspace key is pressed to delete characters
                     answer = answer[:-1]
@@ -233,7 +245,8 @@ def start_game():
     x = (SCREEN_WIDTH) // 2
     speed = 5
     num_arrows = 1
-    num_pandas = 2
+    num_pandas = 1
+    incorrect_counter = 0
 
     # temporary player
     player = Player(name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1)
@@ -242,7 +255,6 @@ def start_game():
                                 player.best_score, player.add_score, player.mul_score,
                                 player.div_score, player.sub_score)
     question_text = current_question.generate_question('*')
-    print(question_text[1])
     
     run = True
     # Main game loop
@@ -273,15 +285,53 @@ def start_game():
 
             else:
                 num_pandas -= num_arrows
-                print(num_pandas)
+            
+            randomizer = random.randint(1, 100)
+            if incorrect_counter == 0:
+                if num_pandas > 5:
+                    if randomizer < 25:
+                        num_arrows = 2
+                elif num_pandas > 8:
+                    if randomizer < 50:
+                        num_arrows = 3
+                elif num_pandas > 12:
+                    if randomizer < 75:
+                        num_arrows = 4
+                else:
+                    num_arrows = num_pandas/2
+            elif incorrect_counter == 1:
+                if randomizer < 25:
+                    num_arrows = 2
+                else:
+                    num_arrows = 1
+            elif incorrect_counter == 2:
+                if randomizer < 50:
+                    num_arrows = 3
+                elif randomizer < 25:
+                    num_arrows = 2
+            else:
+                num_arrows = num_pandas * 2
+
 
         #checks what gate the panda enters
         if scroll == 400:
-            question()
             if x > SCREEN_WIDTH // 2:
-                print("panda on the right half")
+                print(num_pandas)
+                print(num2)
+
+                if question(num_pandas, question_text[1]):
+                    num_pandas *= question_text[1]
+                    incorrect_counter = 0
+                else:
+                    incorrect_counter +=1
             else:
-                print("panda on the left half")
+                if question(num_pandas, question_text[0]):
+                    num_pandas *= question_text[0]
+                    incorrect_counter = 0
+                else:
+                    incorrect_counter += 1
+            question_text = current_question.generate_question('*')
+
 
         # Clear the screen
         screen.fill((0, 0, 0))
@@ -303,7 +353,11 @@ def start_game():
         screen.blit(panda_text, (x + 15, 450))
 
         # gets numbers for the gates
-        
+        num1 = get_font(40).render(str(question_text[0]), True, white)
+        num2 = get_font(40).render(str(question_text[1]), True, white)
+
+        screen.blit(num1, (285, scroll - 85))
+        screen.blit(num2, (485, scroll - 85))
 
         # Update the display
         pygame.display.flip()
