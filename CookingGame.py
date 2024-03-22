@@ -26,6 +26,13 @@ DUMPLING = pygame.transform.scale(DUMPLING, (DUMPLING_SIZE, DUMPLING_SIZE))
 ORDER = pygame.image.load("images/order.png")
 ORDER = pygame.transform.scale(ORDER, PHOTO_SIZE)
 
+#changing screens
+TUTORIAL = pygame.image.load("images/Subtraction.png")
+INSTRUCTION = pygame.image.load("images/Instructions for cooking game.png")
+BACK = pygame.image.load("images/back_button.png")
+RESIZED_BACK = pygame.image.load("images/resized_back.png")
+RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
+
 # Initialize the game screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('COOKING GAME')
@@ -110,8 +117,8 @@ def CookingGame():
     # Immediately generate a question for the initial photo
     question_text = current_question.generate_question('-')
     questions.append(question_text[0])
-    print(question_text[0])
-    print(question_text[1])
+    #print(question_text[0])
+    #print(question_text[1])
 
     while not done:
         current_time = pygame.time.get_ticks()
@@ -121,8 +128,8 @@ def CookingGame():
             # Generate a new question for each new photo and append it to the questions list
             question_text = current_question.generate_question('-')
             questions.append(question_text[0])
-            print(question_text[0])
-            print(question_text[1])
+            #print(question_text[0])
+            #print(question_text[1])
         draw_screen(dumpling_positions, photo_positions, questions)
         clock.tick(60)  # Limit to 60 frames per second
 
