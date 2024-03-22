@@ -1,7 +1,6 @@
 # Import appropriate libraries
 import pygame, sys, csv
 from Button import Button
-from GameMap import load_map
 
 pygame.init()
 
@@ -22,4 +21,3 @@ def sandwich_stack():
                 sys.exit()
         
         pygame.display.update()
-sandwich_stack()

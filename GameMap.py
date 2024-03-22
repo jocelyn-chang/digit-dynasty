@@ -1,8 +1,8 @@
 import pygame, sys
 from Button import Button
 from runningArmy import running_army
-from SnakeGame import game
-from CookingGame import CookingGame
+#from SnakeGame import game
+#from CookingGame import CookingGame
 from SandwichStack import sandwich_stack
 
 pygame.init()
@@ -63,16 +63,16 @@ def load_map():
     # cooking game
     if (133<mouse_x<180 and 139<mouse_y<202):
       screen.blit(RESIZED_LEFTTEMP, (110, 92))
-      if event.type == pygame.MOUSEBUTTONDOWN:
-         if LEFTTEMP.checkInput(MOUSE_POS):
-            CookingGame()
+      #if event.type == pygame.MOUSEBUTTONDOWN:
+         #if LEFTTEMP.checkInput(MOUSE_POS):
+            #CookingGame()
 
     # snake game
     if (372<mouse_x<419 and 32<mouse_y<95):
       screen.blit(RESIZED_TOPTEMP, (348, -2))
-      if event.type == pygame.MOUSEBUTTONDOWN:
-         if TOPTEMP.checkInput(MOUSE_POS):
-            game()
+      #if event.type == pygame.MOUSEBUTTONDOWN:
+         #if TOPTEMP.checkInput(MOUSE_POS):
+            #game()
     
     # running army
     if (600<mouse_x<647 and 131<mouse_y<194):
@@ -105,4 +105,4 @@ def load_map():
 
   pygame.quit()
 
-load_map()
+#load_map()
