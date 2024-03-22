@@ -1,6 +1,7 @@
 import pygame
 import time
 import random
+from Player import Player
 
 # Initialize Pygame
 pygame.init()
@@ -27,6 +28,10 @@ QBOX = pygame.image.load("images/snakegameqbox.png")
 # # Load fruit image
 # FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
 fruit_size = (50, 50)
+# Load fruit image
+FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
+# Scale the fruit image to the new size
+FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
 
 # # Scale the fruit image to the new size
 # FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
@@ -37,6 +42,7 @@ clock = pygame.time.Clock()
 # Colors
 gold1 = (230, 224, 174)
 gold2 = (223, 188, 94)
+gold3 = (179, 152, 96)
 red1 = (238, 97, 70)
 red2 = (215, 60, 55)
 red3 = (181, 31, 9)
@@ -55,14 +61,17 @@ snake_speed = 10
 # Font for displaying score
 font_style = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 25)
 
+def get_font(size):
+  return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
+
 # Function to display current score
 def current_score(score):
   # Shadow text
-  shadow = font_style.render("Score: " + str(score), True, green4)
+  shadow = get_font(25).render("Score: " + str(score), True, green4)
   screen.blit(shadow, [652, 12])
     
   # Main text
-  main = font_style.render("Score: " + str(score), True, white)
+  main = get_font(25).render("Score: " + str(score), True, white)
   screen.blit(main, [650, 10])
 
 # Function to draw the snake
@@ -72,17 +81,53 @@ def snake(snake_block, snake_list):
 
 def timeLeft(time):
   # Shadow text
-  shadow = font_style.render("Time Left: " + str(time), True, green4)
+  shadow = get_font(25).render("Time Left: " + str(time), True, green4)
   screen.blit(shadow, [282, 62])
     
   # Main text
-  main = font_style.render("Time Left: " + str(time), True, white)
+  main = get_font(25).render("Time Left: " + str(time), True, white)
   screen.blit(main, [280, 60])
 
+def question(level):
+  if level < 5:
+    num1 = random.randint(1, 9)
+    num2 = random.randint(1, 9)
+  else: 
+    num1 = random.randint(1, 99)
+    num2 = random.randint(1, 99)
+
+  ans = num1 + num2
+  return str(num1) + " + " + str(num2) + " = ?" + str(ans)
+  # # Shadow text
+  # shadow = get_font(65).render(str(num1) + " + " + str(num2) + " = ?", True, gold3)
+  # screen.blit(shadow, [242, 182])
+    
+  # # Main text
+  # main = get_font(65).render(str(num1) + " + " + str(num2) + " = ?", True, white)
+  # screen.blit(main, [240, 180])
+
 # Main game function
-def game():
+def game(level):
   run = True 
   pause = True
+  correct = False
+  currQ = question(level)
+  spliceIndex = currQ.index("?") + 1
+  correctAns = currQ[spliceIndex:]
+  currQ = currQ[:spliceIndex]
+
+  choice1 = int(correctAns) + random.randint(1, 9)
+  choice2 = int(correctAns) - random.randint(1, 9)
+  choice3 = int(float(correctAns) * (1+random.randint(1, 9)))
+
+  choices = [str(choice1), str(choice2), str(choice3), correctAns]
+  choiceA = random.choice(choices)
+  choices.remove(choiceA)
+  choiceB = random.choice(choices)
+  choices.remove(choiceB)
+  choiceC = random.choice(choices)
+  choices.remove(choiceC)
+  choiceD = random.choice
 
   # Snake starting coordinates
   x1 = SCREEN_WIDTH / 2
@@ -96,10 +141,10 @@ def game():
   snake_list = []
   snake_len = 1
 
-  # Load fruit image
-  FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
-  # Scale the fruit image to the new size
-  FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
+  # # Load fruit image
+  # FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
+  # # Scale the fruit image to the new size
+  # FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
 
   # Randomize position of fruit
   foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
@@ -159,8 +204,19 @@ def game():
       if countdown > 0:
         countdown -= 1
         screen.blit(overlay, (0, 0))
-        screen.blit(QBOX, (128, 100))
+        screen.blit(QBOX, (141, 115))
         timeLeft(timerDown)
+        # Shadow text
+        shadow = get_font(65).render(currQ, True, gold3)
+        # Main text
+        main = get_font(65).render(currQ, True, white)
+        if level < 5: 
+          screen.blit(shadow, [242, 182])
+          screen.blit(main, [240, 180])
+        else:
+          screen.blit(shadow, [202, 182])
+          screen.blit(main, [200, 180])
+  
         if countdown % 10 == 0 and timerDown > 0:
           timerDown -= 1
 
@@ -180,4 +236,4 @@ def game():
   pygame.quit()
 
 # Run the game
-game()
+game(3)
