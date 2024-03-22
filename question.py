@@ -61,6 +61,6 @@ class Question (Player):
             return [num1, num2]
     
         # wrtie the question based on the operation given
-        question = f"What is {num1} {operation} {num2}?"
+        question = f"{num1} {operation} {num2}?"
     
         return question
