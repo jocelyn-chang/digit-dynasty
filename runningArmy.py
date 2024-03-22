@@ -1,5 +1,7 @@
 import pygame, sys
 from Button import Button
+from question import Question
+
 
 pygame.init()
 
@@ -231,7 +233,7 @@ def start_game():
     x = (SCREEN_WIDTH) // 2
     speed = 5
     num_arrows = 1
-    num_pandas = 1
+    num_pandas = 2
     
     run = True
     # Main game loop
@@ -282,6 +284,16 @@ def start_game():
         # Draw the panda and arrow
         screen.blit(panda, (x, 395))
         screen.blit(arrow, (x, scroll - 450))
+
+        # Display number of arrows and pandas
+        arrow_text = get_font(20).render(str(num_arrows), True, white)
+        screen.blit(arrow_text, (x+20, scroll - 475))
+
+        panda_text = get_font(20).render(str(num_pandas), True, white)
+        screen.blit(panda_text, (x + 15, 450))
+
+        # gets numbers for the gates
+
 
         # Update the display
         pygame.display.flip()
