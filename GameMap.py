@@ -52,7 +52,7 @@ def load_map():
                 pygame.quit()
                 sys.exit()
     
-        # Draw the background image onto the screen
+    # Draw the background image onto the screen
     screen.blit(BACKGROUND, (0, 0))
 
     # Get the current mouse position
