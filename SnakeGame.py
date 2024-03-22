@@ -32,6 +32,18 @@ fruit_size = (50, 50)
 FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
 # Scale the fruit image to the new size
 FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
+# Load fruit image
+FRUIT_B = pygame.image.load("images/orangeb.png").convert_alpha()
+# Scale the fruit image to the new size
+FRUIT_B = pygame.transform.scale(FRUIT_B, fruit_size)
+# Load fruit image
+FRUIT_C = pygame.image.load("images/orangec.png").convert_alpha()
+# Scale the fruit image to the new size
+FRUIT_C = pygame.transform.scale(FRUIT_C, fruit_size)
+# Load fruit image
+FRUIT_D = pygame.image.load("images/oranged.png").convert_alpha()
+# Scale the fruit image to the new size
+FRUIT_D = pygame.transform.scale(FRUIT_D, fruit_size)
 
 # # Scale the fruit image to the new size
 # FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
@@ -108,8 +120,10 @@ def question(level):
 
 def options(correctAns):
   choice1 = int(correctAns) + random.randint(1, 9)
-  choice2 = int(correctAns) - random.randint(1, 9)
-  choice3 = int(float(correctAns) * (1+random.randint(1, 9)))
+  choice2 = int(correctAns) - random.randint(1, int(correctAns))
+  choice3 = int(float(correctAns) * (10+random.randint(1, 9))//10)
+  if choice3 == choice2 or choice3 == choice1:
+    choice3 += 1
 
   choices = [str(choice1), str(choice2), str(choice3), correctAns]
   choiceA = random.choice(choices)
@@ -177,11 +191,14 @@ def game(level):
   foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
   foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
 
-  elements_delay_counter = 30
+  elements_delay_counter = 20
   # change countdown to a minute later
-
-  countdown = 3600
-  timerDown = 60
+  if level < 5:
+    countdown = 600
+    timerDown = 10
+  else: 
+    countdown = 1800
+    timerDown = 30
 
   # time.sleep(2)
 
@@ -247,7 +264,14 @@ def game(level):
         # b = get_font(25).render(optionList[1], True, black)
         # c = get_font(25).render(optionList[2], True, black)
         # d = get_font(25).render(optionList[3], True, black)
-        screen.blit(optionList[0], [315, 300])
+        screen.blit(optionList[0], [315, 290])
+        screen.blit(optionList[1], [315, 395])
+        screen.blit(optionList[2], [505, 290])
+        screen.blit(optionList[3], [505, 395])
+        screen.blit(FRUIT_A, [245, 280])
+        screen.blit(FRUIT_B, [245, 385])
+        screen.blit(FRUIT_C, [438, 280])
+        screen.blit(FRUIT_D, [438, 385])
         if countdown % 10 == 0 and timerDown > 0:
           timerDown -= 1
 
