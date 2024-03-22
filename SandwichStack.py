@@ -24,4 +24,4 @@ def sandwich_stack():
         
         pygame.display.update()
 
-sandwich_stack()
+# sandwich_stack()
