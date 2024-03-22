@@ -81,104 +81,103 @@ def timeLeft(time):
 
 # Main game function
 def game():
-    run = True 
-    pause = True
+  run = True 
+  pause = True
 
-    # Snake starting coordinates
-    x1 = SCREEN_WIDTH / 2
-    y1 = SCREEN_HEIGHT / 2
+  # Snake starting coordinates
+  x1 = SCREEN_WIDTH / 2
+  y1 = SCREEN_HEIGHT / 2
 
-    # Initialize change in coordinates
-    x1_change = 0
-    y1_change = 0
+  # Initialize change in coordinates
+  x1_change = 0
+  y1_change = 0
 
-    # List of snake body parts coordinates
-    snake_list = []
-    snake_len = 1
+  # List of snake body parts coordinates
+  snake_list = []
+  snake_len = 1
 
-    # Load fruit image
-    FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
-    # Scale the fruit image to the new size
-    FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
+  # Load fruit image
+  FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
+  # Scale the fruit image to the new size
+  FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
 
-    # Randomize position of fruit
-    foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-    foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+  # Randomize position of fruit
+  foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
+  foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
 
-    elements_delay_counter = 30
-    # change countdown to a minute later
+  elements_delay_counter = 30
+  # change countdown to a minute later
 
-    countdown = 3600
-    timerDown = 60
+  countdown = 3600
+  timerDown = 60
 
-    # time.sleep(2)
+  # time.sleep(2)
 
-    while run:
-      # Event handling
-      for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-          run = False
+  while run:
+    # Event handling
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        run = False
 
-      # Control snake movement
-      if not pause: 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-          x1_change = -snake_block
-          y1_change = 0
-        elif keys[pygame.K_RIGHT]:
-          x1_change = snake_block
-          y1_change = 0
-        elif keys[pygame.K_UP]:
-          y1_change = -snake_block
-          x1_change = 0
-        elif keys[pygame.K_DOWN]:
-          y1_change = snake_block
-          x1_change = 0
+    # Control snake movement
+    if not pause: 
+      keys = pygame.key.get_pressed()
+      if keys[pygame.K_LEFT]:
+        x1_change = -snake_block
+        y1_change = 0
+      elif keys[pygame.K_RIGHT]:
+        x1_change = snake_block
+        y1_change = 0
+      elif keys[pygame.K_UP]:
+        y1_change = -snake_block
+        x1_change = 0
+      elif keys[pygame.K_DOWN]:
+        y1_change = snake_block
+        x1_change = 0
 
-      # Update snake position
-      x1 += x1_change
-      y1 += y1_change
+    # Update snake position
+    x1 += x1_change
+    y1 += y1_change
       # print("x1: " + str(x1))
       # print("y1: " + str(y1))
 
-      snake_list.append([x1, y1])
+    snake_list.append([x1, y1])
 
-      # If snake length exceeds current length, remove the tail
-      if len(snake_list) > snake_len:
-        del snake_list[0]
+    # If snake length exceeds current length, remove the tail
+    if len(snake_list) > snake_len:
+      del snake_list[0]
 
-      # Draw elements on screen
-      screen.blit(BACKGROUND, (0, 0))
-      snake(snake_block, snake_list)
-      # screen.blit(FRUIT_A, (foodx, foody))
-      current_score(snake_len - 1)
-      # Blit overlay on top of everything
-      if elements_delay_counter > 0:
-        elements_delay_counter -= 1
-      else:
-        if countdown > 0:
-          countdown -= 1
-          screen.blit(overlay, (0, 0))
-          screen.blit(QBOX, (128, 100))
-          timeLeft(timerDown)
-          if countdown % 10 == 0 and timerDown > 0:
-            timerDown -= 1
+    # Draw elements on screen
+    screen.blit(BACKGROUND, (0, 0))
+    snake(snake_block, snake_list)
+    # screen.blit(FRUIT_A, (foodx, foody))
+    current_score(snake_len - 1)
+    # Blit overlay on top of everything
+    if elements_delay_counter > 0:
+      elements_delay_counter -= 1
+    else:
+      if countdown > 0:
+        countdown -= 1
+        screen.blit(overlay, (0, 0))
+        screen.blit(QBOX, (128, 100))
+        timeLeft(timerDown)
+        if countdown % 10 == 0 and timerDown > 0:
+          timerDown -= 1
 
       # print("foodx: " + str(foodx))
       # print("foody: " + str(foody))
 
       # Check if snake has eaten the fruit
       # if x1 == foodx and y1 == foody:
-      if x1 >= (foodx-20) and x1 <= (foodx+30) and y1 >= (foody-20) and y1 <= (foody+40):
-                
-        foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-        foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
-        snake_len += 1
-      pygame.display.flip()
+    if x1 >= (foodx-20) and x1 <= (foodx+30) and y1 >= (foody-20) and y1 <= (foody+40):
+      foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
+      foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+      snake_len += 1
+    pygame.display.flip()
 
-      clock.tick(snake_speed)
+    clock.tick(snake_speed)
 
-    pygame.quit()
+  pygame.quit()
 
 # Run the game
 game()
