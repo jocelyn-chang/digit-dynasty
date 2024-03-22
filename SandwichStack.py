@@ -12,6 +12,10 @@ pygame.display.set_caption('SANDWICH STACK')
 BACKGROUND = pygame.image.load("images/sandwich_stack_bg.png")
 
 PANDA = pygame.image.load("images/panda_tray.png")
+CARROT = pygame.image.load("images/carrot.png")
+BREAD = pygame.image.load("images/bread.png")
+CUCUMBER = pygame.image.load("images/cucumber.png")
+MEAT = pygame.image.load("images/meat.png")
 
 def sandwich_stack():
     while True:
