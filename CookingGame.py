@@ -33,15 +33,24 @@ pygame.display.set_caption('COOKING GAME')
 # Clock for controlling game speed
 clock = pygame.time.Clock()
 
+font = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 36)
+
+number_of_dumplings = 0
+
 def handle_events(dumpling_positions, central_area):
+    global number_of_dumplings
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
                 add_dumpling(dumpling_positions, central_area)
+                number_of_dumplings += 1
+                print(number_of_dumplings)
             elif event.key == pygame.K_LEFT and dumpling_positions:
                 dumpling_positions.pop()
+                number_of_dumplings -= 1
+                print(number_of_dumplings)
     return True
 
 def add_dumpling(dumpling_positions, central_area):
