@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random
 from Button import Button
 from question import Question
 from Player import Player
@@ -245,7 +245,8 @@ def start_game():
     x = (SCREEN_WIDTH) // 2
     speed = 5
     num_arrows = 1
-    num_pandas = 2
+    num_pandas = 1
+    incorrect_counter = 0
 
     # temporary player
     player = Player(name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1)
@@ -284,7 +285,33 @@ def start_game():
 
             else:
                 num_pandas -= num_arrows
-                print(num_pandas)
+            
+            randomizer = random.randint(1, 100)
+            if incorrect_counter == 0:
+                if num_pandas > 5:
+                    if randomizer < 25:
+                        num_arrows = 2
+                elif num_pandas > 8:
+                    if randomizer < 50:
+                        num_arrows = 3
+                elif num_pandas > 12:
+                    if randomizer < 75:
+                        num_arrows = 4
+                else:
+                    num_arrows = num_pandas/2
+            elif incorrect_counter == 1:
+                if randomizer < 25:
+                    num_arrows = 2
+                else:
+                    num_arrows = 1
+            elif incorrect_counter == 2:
+                if randomizer < 50:
+                    num_arrows = 3
+                elif randomizer < 25:
+                    num_arrows = 2
+            else:
+                num_arrows = num_pandas * 2
+
 
         #checks what gate the panda enters
         if scroll == 400:
@@ -294,9 +321,15 @@ def start_game():
 
                 if question(num_pandas, question_text[1]):
                     num_pandas *= question_text[1]
+                    incorrect_counter = 0
+                else:
+                    incorrect_counter +=1
             else:
                 if question(num_pandas, question_text[0]):
-                    num_pandas *= question_text[1]
+                    num_pandas *= question_text[0]
+                    incorrect_counter = 0
+                else:
+                    incorrect_counter += 1
             question_text = current_question.generate_question('*')
 
 

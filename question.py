@@ -36,25 +36,25 @@ class Question (Player):
 
         if operation == '*':
             if level <= 5:
-                digits = (1, 3)  # Single-digit numbers    
+                digits = (2, 5)  # Single-digit numbers    
             elif 5 < level <= 10:
-                digits = (1, 6)  # Single and double-digit numbers
+                digits = (2, 8)  # Single and double-digit numbers
             elif 10 < level <= 15:
-                digits = (1, 9)  # Single, harder double-digit numbers
+                digits = (2, 11)  # Single, harder double-digit numbers
             elif 15 < level <= 20:
-                digits = (1, 12)  # Single, and all double-digit numbers
+                digits = (2, 14)  # Single, and all double-digit numbers
             elif 20 < level <= 25:
-                digits = (1, 15)  # Single, double, and easier triple-digit numbers
+                digits = (2, 20)  # Single, double, and easier triple-digit numbers
             elif 25 < level <= 30:
-                digits = (1, 20)  # Single, double, and harder triple-digit numbers
+                digits = (2, 25)  # Single, double, and harder triple-digit numbers
             elif level > 30:
-                digits = (1, 30)
+                digits = (2, 30)
             
             num1 = random.randint(*digits)
             num2 = random.randint(*digits)
 
             if num2 == num1:
-                if num2 == 0:
+                if num2 == 1:
                     num2+=1
                 else:
                     num2-=1
