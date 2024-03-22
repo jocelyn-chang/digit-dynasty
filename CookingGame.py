@@ -109,7 +109,9 @@ def CookingGame():
     
     # Immediately generate a question for the initial photo
     question_text = current_question.generate_question('-')
-    questions.append(question_text)
+    questions.append(question_text[0])
+    print(question_text[0])
+    print(question_text[1])
 
     while not done:
         current_time = pygame.time.get_ticks()
@@ -118,7 +120,9 @@ def CookingGame():
         if photo_added:
             # Generate a new question for each new photo and append it to the questions list
             question_text = current_question.generate_question('-')
-            questions.append(question_text)
+            questions.append(question_text[0])
+            print(question_text[0])
+            print(question_text[1])
         draw_screen(dumpling_positions, photo_positions, questions)
         clock.tick(60)  # Limit to 60 frames per second
 
