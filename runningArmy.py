@@ -1,6 +1,7 @@
 import pygame, sys
 from Button import Button
 from question import Question
+from Player import Player
 
 
 pygame.init()
@@ -41,7 +42,6 @@ scaled_height = int(image_height * (SCREEN_WIDTH / image_width))
 
 # Scale the image to fill the width of the screen while maintaining the aspect ratio
 scaled_image = pygame.transform.scale(image, (SCREEN_WIDTH, scaled_height))
-
 
 # get the font
 def get_font(size):
@@ -147,9 +147,9 @@ def check_answer(answer, correct_answer):
     return True
 
 
-def question():
+def question(numpandas, multiplier):
     answer = ""
-    correct_answer = "5"
+    correct_answer = numpandas*multiplier
     run = True
 
     while run:
@@ -234,6 +234,15 @@ def start_game():
     speed = 5
     num_arrows = 1
     num_pandas = 2
+
+    # temporary player
+    player = Player(name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1)
+    
+    current_question = Question(player.name, player.password, player.best_game,
+                                player.best_score, player.add_score, player.mul_score,
+                                player.div_score, player.sub_score)
+    question_text = current_question.generate_question('*')
+    print(question_text[1])
     
     run = True
     # Main game loop
@@ -268,6 +277,7 @@ def start_game():
 
         #checks what gate the panda enters
         if scroll == 400:
+            question()
             if x > SCREEN_WIDTH // 2:
                 print("panda on the right half")
             else:
@@ -293,7 +303,7 @@ def start_game():
         screen.blit(panda_text, (x + 15, 450))
 
         # gets numbers for the gates
-
+        
 
         # Update the display
         pygame.display.flip()
@@ -305,6 +315,13 @@ def start_game():
 
 
 def running_army():
+    # # temporary player
+    # player = Player(name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1)
+    
+
+    # #initiate question generator
+    # question_generator = Question(player, name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1);
+
     # Main game loop
     run = True
     while run:
