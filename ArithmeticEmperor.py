@@ -15,6 +15,7 @@ EMPERORMONKEY = pygame.image.load("images/emperor_monkey.png")
 EMPERORPIG = pygame.image.load("images/emperor_pig.png")
 EMPERORPHOENIX = pygame.image.load("images/emperor_phoenix.png")
 EMPERORDRAGON = pygame.image.load("images/emperor_dragon.png")
+QUESTIONSCROLL = pygame.image.load("images/bigScroll.png")
 
 #Set up Variables
 emperorLevel = 0
@@ -27,6 +28,9 @@ subAttackPower = 10
 mulAttackPower = 10
 divAttackPower = 10
 
+# define colours
+white = (255, 255, 255)
+
 def get_font(font, size):
     if font == "Sawarabi":
         return pygame.font.Font("fonts/SawarabiMincho-Regular.ttf", size)
@@ -36,6 +40,83 @@ def get_font(font, size):
 def attack_emperor(attackType):
   global emperorHealth, emperorHealthDisplay
   emperorHealth = emperorHealth - attackType
+
+def check_answer(answer, correct_answer):
+    # Display question screen
+    SCREEN.blit(QUESTIONSCROLL, (25, 100))
+    title = get_font("Shojumaru", 25).render("Answer the Following Question:", True, white)
+    titleRect = title.get_rect()
+    titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
+    SCREEN.blit(title, titleRect)
+    
+    correct = False
+
+    if int(answer) == int(correct_answer):
+        # Display user's input text
+        correct = get_font("Shojumaru", 20).render('CORRECT', True, white)
+        inputRect = correct.get_rect()
+        inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
+        SCREEN.blit(correct, inputRect)
+        correct = True
+
+    else:
+        # Display user's input text
+        incorrect = get_font("Shojumaru", 20).render(f"Incorrect, Correct answer = {correct_answer}  your answer = {answer}", True, white)
+        inputRect = incorrect.get_rect()
+        inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
+        SCREEN.blit(incorrect, inputRect)
+
+    # Update the display
+    pygame.display.update()
+    pygame.time.delay(3000)
+
+    return correct
+
+def question():
+    answer = ""
+    correct_answer = 6
+    run = True
+
+    while run:
+      
+        # Display question screen
+        SCREEN.blit(QUESTIONSCROLL, (25, 100))
+        title = get_font("Shojumaru", 20).render("Answer the Following Question:", True, white)
+        titleRect = title.get_rect()
+        titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
+        SCREEN.blit(title, titleRect)
+
+        title = get_font("Shojumaru", 40).render(f"3 X 2", True, white)
+        titleRect = title.get_rect()
+        titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        SCREEN.blit(title, titleRect)
+
+        # Display user's input text
+        input_text = get_font("Shojumaru", 40).render(answer, True, white)
+        inputRect = input_text.get_rect()
+        inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100)  # Adjust position as needed
+        SCREEN.blit(input_text, inputRect)
+
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:  # Check if Enter key is pressed to submit answer
+                    if check_answer(answer, correct_answer):
+                       return True
+                    else:
+                       return False
+                       run = False
+                elif event.key == pygame.K_BACKSPACE:  # Check if Backspace key is pressed to delete characters
+                    answer = answer[:-1]
+                else:
+                    # Check if a printable character is pressed and append it to the answer
+                    if event.unicode.isprintable():
+                        answer += event.unicode
+
+        # Update the display
+        pygame.display.update()
 
 def start_game():
   global emperorHealth, emperorHealthDisplayFactor, pandaHealthDisplayFactor
@@ -66,12 +147,16 @@ def start_game():
       if event.type == pygame.MOUSEBUTTONDOWN:
         if ADD_BUTTON.checkInput(MOUSE_POS):
             attack_emperor(addAttackPower)
+            question()
         if DIV_BUTTON.checkInput(MOUSE_POS):
             attack_emperor(divAttackPower)
+            question()
         if SUB_BUTTON.checkInput(MOUSE_POS):
             attack_emperor(subAttackPower)
+            question()
         if MUL_BUTTON.checkInput(MOUSE_POS):
             attack_emperor(mulAttackPower)
+            question()
 
     mouse_x, mouse_y = MOUSE_POS
     font = pygame.font.Font(None, 36)
