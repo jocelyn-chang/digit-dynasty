@@ -18,6 +18,8 @@ HIGH_SCORE = pygame.image.load("images/leaderboard_screen.png")
 INSTRUCTIONS = pygame.image.load("images/instructions_screen.png")
 BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
+APPLE = pygame.transform.scale(pygame.image.load("images/apple.png"), (60, 60))
+RESIZED_APPLE = pygame.transform.scale(pygame.image.load("images/apple.png"), (80, 80))
 
 def get_font(font, size):
     if font == "Sawarabi":
@@ -383,15 +385,24 @@ def main_menu():
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        if (20<MOUSE_X<80 and 20<MOUSE_Y<80):
+            SCREEN.blit(RESIZED_APPLE, (0,0))
+
         START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 75), text_input = "NEW GAME", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
         LOAD_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 189), text_input = "LOAD GAME", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
         HIGH_SCORE_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 303), text_input = "HIGH SCORES", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
         INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 417), text_input = "INSTRUCTIONS", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
         EXIT_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "EXIT", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
-
-        for button in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON]:
+        TEACHER_BUTTON = Button(image = APPLE, pos = (40, 40), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
+        
+        TEACHER_BUTTON.update(SCREEN)
+        
+        for button in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON, TEACHER_BUTTON]:
             button.changeColour(MENU_MOUSE_POS)
             button.update(SCREEN)
+
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

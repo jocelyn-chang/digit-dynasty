@@ -289,28 +289,21 @@ def start_game():
             randomizer = random.randint(1, 100)
             if incorrect_counter == 0:
                 if num_pandas > 5:
-                    if randomizer < 25:
-                        num_arrows = 2
+                    num_arrows = 2
                 elif num_pandas > 8:
-                    if randomizer < 50:
-                        num_arrows = 3
+                    num_arrows = 3
                 elif num_pandas > 12:
-                    if randomizer < 75:
-                        num_arrows = 4
+                    num_arrows = 4
                 else:
-                    num_arrows = num_pandas/2
+                    num_arrows = round(num_pandas/2)
             elif incorrect_counter == 1:
                 if randomizer < 25:
-                    num_arrows = 2
-                else:
-                    num_arrows = 1
+                    num_arrows = num_pandas + random.randint(1,20)
             elif incorrect_counter == 2:
                 if randomizer < 50:
-                    num_arrows = 3
-                elif randomizer < 25:
-                    num_arrows = 2
+                    num_arrows = num_pandas + random.randint(1,20)
             else:
-                num_arrows = num_pandas * 2
+                num_arrows = num_pandas + random.randint(1,20)
 
 
         #checks what gate the panda enters
@@ -356,8 +349,9 @@ def start_game():
         num1 = get_font(40).render(str(question_text[0]), True, white)
         num2 = get_font(40).render(str(question_text[1]), True, white)
 
-        screen.blit(num1, (285, scroll - 85))
-        screen.blit(num2, (485, scroll - 85))
+        if scroll-85 < 315:
+            screen.blit(num1, (285, scroll - 85))
+            screen.blit(num2, (485, scroll - 85))
 
         # Update the display
         pygame.display.flip()
