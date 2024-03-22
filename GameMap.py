@@ -41,7 +41,8 @@ def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 def load_map():
-  while True:
+  run = True
+  while run:
 
     MULTTEMP = Button(pygame.image.load("images/templeright.png"), pos = (600, 131), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
 
@@ -94,4 +95,4 @@ def load_map():
 
   pygame.quit()
 
-# load_map()
+load_map()

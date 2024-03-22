@@ -1,5 +1,8 @@
 import pygame, sys
 from Button import Button
+from question import Question
+from Player import Player
+
 
 pygame.init()
 
@@ -40,14 +43,14 @@ scaled_height = int(image_height * (SCREEN_WIDTH / image_width))
 # Scale the image to fill the width of the screen while maintaining the aspect ratio
 scaled_image = pygame.transform.scale(image, (SCREEN_WIDTH, scaled_height))
 
-
 # get the font
 def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 # Intructions screen
 def instruction1():
-    while True:
+    run = True
+    while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -79,14 +82,16 @@ def instruction1():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    running_army()
+                    run = False
                 if INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
                     instruction2()
+                    run = False
 
         pygame.display.update()
 
 def instruction2():
-    while True:
+    run = True
+    while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -108,10 +113,8 @@ def instruction2():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    running_army()
-                if INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
-                    running_army()
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS) or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
+                    run = False
 
         pygame.display.update()
 
@@ -139,14 +142,14 @@ def check_answer(answer, correct_answer):
 
     # Update the display
     pygame.display.update()
-    pygame.time.delay(5000)
+    pygame.time.delay(3000)
 
     return True
 
 
-def question():
+def question(numpandas, multiplier):
     answer = ""
-    correct_answer = "5"
+    correct_answer = numpandas*multiplier
     run = True
 
     while run:
@@ -182,6 +185,46 @@ def question():
         # Update the display
         pygame.display.update()
 
+def end_game_screen(levels):
+    run = True
+    NEXT_BUTTON = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (650, 400), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+
+
+    while run:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+        # Display question screen
+        screen.blit(question_scroll, (25, 100))
+
+        if levels > 0:
+            title = get_font(25).render("Congratulations you imroved " + " levels", True, white)
+        else:
+            title = get_font(25).render("Keep practicing!", True, white)
+        titleRect = title.get_rect()
+        titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
+        screen.blit(title, titleRect)
+
+        # Display user's input text
+        # input_text = get_font(20).render(title, True, white)
+        # inputRect = input_text.get_rect()
+        # inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
+        # screen.blit(input_text, inputRect)
+
+        if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
+            screen.blit(RESIZED_NEXT, (510, 249))
+        
+        NEXT_BUTTON.update(screen)
+
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if NEXT_BUTTON.checkInput(GAME_MOUSE_POS):
+                    run = False
+        # Update the display
+        pygame.display.update()
 
 def start_game():
     # Scrolling variables
@@ -189,11 +232,21 @@ def start_game():
     scroll_speed = 2
     x = (SCREEN_WIDTH) // 2
     speed = 5
-    arrow_size = 1
-    panda_size = 1
+    num_arrows = 1
+    num_pandas = 2
 
+    # temporary player
+    player = Player(name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1)
+    
+    current_question = Question(player.name, player.password, player.best_game,
+                                player.best_score, player.add_score, player.mul_score,
+                                player.div_score, player.sub_score)
+    question_text = current_question.generate_question('*')
+    print(question_text[1])
+    
+    run = True
     # Main game loop
-    while True:
+    while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -212,9 +265,23 @@ def start_game():
         if scroll >= scaled_height:
             scroll = 0
 
-        # pauses 
-        if scroll-40 == 400:
+        # Check if arrow hits the panda
+        if scroll == 0:
+            if num_arrows >= num_pandas:
+                end_game_screen(0)  # Adjust the parameter as needed
+                run = False  # Exit the function if game ends
+
+            else:
+                num_pandas -= num_arrows
+                print(num_pandas)
+
+        #checks what gate the panda enters
+        if scroll == 400:
             question()
+            if x > SCREEN_WIDTH // 2:
+                print("panda on the right half")
+            else:
+                print("panda on the left half")
 
         # Clear the screen
         screen.fill((0, 0, 0))
@@ -222,14 +289,21 @@ def start_game():
         # Draw the scaled image twice to create the looping effect and gates
         screen.blit(scaled_image, (0, scroll - scaled_height))
         screen.blit(scaled_image, (0, scroll))
-        screen.blit(gate, (200, scroll-125))
+        screen.blit(gate, (200, scroll - 125))
 
         # Draw the panda and arrow
-        screen.blit(panda, panda_rect)
-        screen.blit(arrow, (x, scroll-450))
+        screen.blit(panda, (x, 395))
+        screen.blit(arrow, (x, scroll - 450))
 
-        panda_rect.topleft = (x, 400)
-        arrow_rect.topleft = (x, scroll)
+        # Display number of arrows and pandas
+        arrow_text = get_font(20).render(str(num_arrows), True, white)
+        screen.blit(arrow_text, (x+20, scroll - 475))
+
+        panda_text = get_font(20).render(str(num_pandas), True, white)
+        screen.blit(panda_text, (x + 15, 450))
+
+        # gets numbers for the gates
+        
 
         # Update the display
         pygame.display.flip()
@@ -237,8 +311,17 @@ def start_game():
         # Cap the frame rate
         pygame.time.Clock().tick(60)
 
+    return
+
 
 def running_army():
+    # # temporary player
+    # player = Player(name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1)
+    
+
+    # #initiate question generator
+    # question_generator = Question(player, name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1);
+
     # Main game loop
     run = True
     while run:
@@ -261,15 +344,16 @@ def running_army():
                     if START_BUTTON.checkInput(MOUSE_POS):
                         start_game()
                     if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
+                        print("working")
                         instruction1()
                     if RETURN_BUTTON.checkInput(MOUSE_POS):
-                        return
+                        run = False
+                        break
 
         # Update the display
         pygame.display.update()
 
-    # Quit Pygame
-    pygame.quit()
-    sys.exit()
+    # Quit back to the game map
+    return
 
-running_army()
+# running_army()
