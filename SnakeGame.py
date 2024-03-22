@@ -8,151 +8,84 @@ pygame.init()
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-# Create the screen
+# Dumpling and Photo Settings
+DUMPLING_SIZE = 100
+PHOTO_SIZE = (200, 250)
+PHOTO_INTERVAL_MS = 5000
+PHOTO_SPACING = 150
+
+# Colors
+WHITE = (255, 255, 255)
+
+# Load images
+BACKGROUND = pygame.image.load("images/cooking_game.png")
+DUMPLING = pygame.image.load("images/dumpling.png")
+DUMPLING = pygame.transform.scale(DUMPLING, (DUMPLING_SIZE, DUMPLING_SIZE))
+NEW_PHOTO = pygame.image.load("images/order.png")
+NEW_PHOTO = pygame.transform.scale(NEW_PHOTO, PHOTO_SIZE)
+
+# Initialize the game screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('SNAKE GAME')
-
-# Load background image
-BACKGROUND = pygame.image.load("images/snakegamebg.png")
-
-# # Load fruit image
-# FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
-fruit_size = (50, 50)
-
-# # Scale the fruit image to the new size
-# FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
+pygame.display.set_caption('COOKING GAME')
 
 # Clock for controlling game speed
 clock = pygame.time.Clock()
 
-# Colors
-gold1 = (230, 224, 174)
-gold2 = (223, 188, 94)
-red1 = (238, 97, 70)
-red2 = (215, 60, 55)
-red3 = (181, 31, 9)
-green1 = (116, 217, 219)
-green2 = (153, 216, 196)
-green3 = (113, 182, 135)
-green4 = (88, 133, 120)
-green5 = (117, 132, 133)
-black = (0, 0, 0)
-white = (255, 255, 255)
+def handle_events(dumpling_positions, central_area):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                add_dumpling(dumpling_positions, central_area)
+            elif event.key == pygame.K_LEFT and dumpling_positions:
+                dumpling_positions.pop()
+    return True
 
-# Snake block size and speed
-snake_block = 20
-snake_speed = 10
+def add_dumpling(dumpling_positions, central_area):
+    new_x = random.randint(central_area.left, central_area.right - DUMPLING_SIZE)
+    new_y = random.randint(central_area.top, central_area.bottom - DUMPLING_SIZE)
+    dumpling_positions.append((new_x, new_y))
 
-# Font for displaying score
-font_style = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 25)
+def update_photos(photo_positions, last_photo_time, current_time):
+    if current_time - last_photo_time > PHOTO_INTERVAL_MS:
+        last_photo_x, last_photo_y = photo_positions[-1]
+        new_photo_x = last_photo_x + PHOTO_SPACING
+        if new_photo_x + PHOTO_SIZE[0] <= SCREEN_WIDTH:
+            photo_positions.append((new_photo_x, 0))
+            return current_time  # Update the time a photo was last added
+    return last_photo_time
 
-# Function to display current score
-def current_score(score):
-    # Shadow text
-    shadow = font_style.render("Score: " + str(score), True, green4)
-    screen.blit(shadow, [652, 12])
+def draw_screen(dumpling_positions, photo_positions):
+    screen.fill(WHITE)
+    screen.blit(BACKGROUND, (0, 0))
+    for pos in dumpling_positions:
+        screen.blit(DUMPLING, pos)
+    for pos in photo_positions:
+        screen.blit(NEW_PHOTO, pos)
+    pygame.display.flip()
+
+def CookingGame():
+    done = False
+    dumpling_positions = []
+    photo_positions = [(0, 0)]  # Start with one photo at the top left
+    last_photo_time = pygame.time.get_ticks()
     
-    # Main text
-    main = font_style.render("Score: " + str(score), True, white)
-    screen.blit(main, [650, 10])
+    # Define a smaller central area for dumplings to appear
+    central_area = pygame.Rect(
+        (SCREEN_WIDTH - SCREEN_WIDTH // 3) // 2, 
+        (SCREEN_HEIGHT - SCREEN_HEIGHT // 3) // 2, 
+        SCREEN_WIDTH // 3, 
+        SCREEN_HEIGHT // 3
+    )
 
-# Function to draw the snake
-def snake(snake_block, snake_list):
-    for i in snake_list:
-        pygame.draw.rect(screen, green2, [i[0], i[1], snake_block, snake_block])
-
-# Main game function
-def game():
-    run = True 
-    end = False
-
-    # Snake starting coordinates
-    x1 = SCREEN_WIDTH / 2
-    y1 = SCREEN_HEIGHT / 2
-
-    # Initialize change in coordinates
-    x1_change = 0
-    y1_change = 0
-
-    # List of snake body parts coordinates
-    snake_list = []
-    snake_len = 1
-
-    # Load fruit image
-    FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
-    # Scale the fruit image to the new size
-    FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
-
-    # Randomize position of fruit
-    foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-    foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
-
-    while run:
-        # Event handling
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-
-        # Control snake movement
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            x1_change = -snake_block
-            y1_change = 0
-        elif keys[pygame.K_RIGHT]:
-            x1_change = snake_block
-            y1_change = 0
-        elif keys[pygame.K_UP]:
-            y1_change = -snake_block
-            x1_change = 0
-        elif keys[pygame.K_DOWN]:
-            y1_change = snake_block
-            x1_change = 0
-
-        # Update snake position
-        x1 += x1_change
-        y1 += y1_change
-        print("x1: " + str(x1))
-        print("y1: " + str(y1))
-
-        snake_list.append([x1, y1])
-
-        # If snake length exceeds current length, remove the tail
-        if len(snake_list) > snake_len:
-            del snake_list[0]
-
-        # Draw elements on screen
-        screen.blit(BACKGROUND, (0, 0))
-        snake(snake_block, snake_list)
-        screen.blit(FRUIT_A, (foodx, foody))
-        current_score(snake_len - 1)
-        print("poo")
-        print("foodx: " + str(foodx))
-        print("foody: " + str(foody))
-
-        # Check if snake has eaten the fruit
-        # if x1 == foodx and y1 == foody:
-        if x1 >= (foodx-20) and x1 <= (foodx+30) and y1 >= (foody-20) and y1 <= (foody+40):
-            # if y1 >= (foody-20) and y1 <= (foody+20):
-            #     print("foody: " + str(foody))
-            #     print("foodx: " + str(foodx))
-            #     run = False
-            
-                
-            foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-            foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
-            snake_len += 1
-            # # Load fruit image
-            # FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
-            # # fruit_size = (100, 100)
-
-            # # Scale the fruit image to the new size
-            # FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
-            # screen.blit(FRUIT_A, (foodx, foody))
-        pygame.display.flip()
-
-        clock.tick(snake_speed)
+    while not done:
+        current_time = pygame.time.get_ticks()
+        done = not handle_events(dumpling_positions, central_area)
+        last_photo_time = update_photos(photo_positions, last_photo_time, current_time)
+        draw_screen(dumpling_positions, photo_positions)
+        clock.tick(60)  # Limit to 60 frames per second
 
     pygame.quit()
 
-# Run the game
-game()
+CookingGame()
