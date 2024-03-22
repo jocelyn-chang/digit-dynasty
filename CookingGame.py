@@ -1,5 +1,7 @@
 import pygame
 import random
+from question import Question
+from Player import Player
 
 # Initialize Pygame
 pygame.init()
@@ -65,7 +67,7 @@ def draw_screen(dumpling_positions, photo_positions):
         screen.blit(NEW_PHOTO, pos)
     pygame.display.flip()
 
-def game_loop():
+def CookingGame():
     done = False
     dumpling_positions = []
     photo_positions = [(0, 0)]  # Start with one photo at the top left
@@ -78,6 +80,14 @@ def game_loop():
         SCREEN_WIDTH // 3, 
         SCREEN_HEIGHT // 3
     )
+    # temporary player
+    player = Player(name="John", password="CookingForLife", best_game="Cooking Game", best_score=20, add_score=1, mul_score=1, div_score=1, sub_score=1)
+    
+    current_question = Question(player.name, player.password, player.best_game,
+                                player.best_score, player.add_score, player.mul_score,
+                                player.div_score, player.sub_score)
+    show_question = current_question.generate_question('-')
+    print(show_question)
 
     while not done:
         current_time = pygame.time.get_ticks()
@@ -88,4 +98,4 @@ def game_loop():
 
     pygame.quit()
 
-game_loop()
+CookingGame()
