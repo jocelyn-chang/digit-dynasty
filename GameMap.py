@@ -85,7 +85,7 @@ def load_map():
     if (363<mouse_x<410 and 383<mouse_y<446):
       screen.blit(RESIZED_BOTTOMTEMP, (340, 352))
       if event.type == pygame.MOUSEBUTTONDOWN:
-         if BOTTOMTEMP.checkInput(MOUSE_POS):
+         if RESIZED_BOTTOMTEMP.checkInput(MOUSE_POS):
             sandwich_stack()
     
     # boss battle (arithmetic emperor)

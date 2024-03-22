@@ -121,11 +121,10 @@ def sandwich_stack():
                 if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
                      instruction1()
                 if RETURN_BUTTON.checkInput(MOUSE_POS):
-                     break
+                     return
 
         # Update the display
         pygame.display.update()
-    return
 
 def start_game():
     while True:
