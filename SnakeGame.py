@@ -6,47 +6,29 @@ from Player import Player
 # Initialize Pygame
 pygame.init()
 
-# Screen dimensions
+# Initializing screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-
-# Create the screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+# Setting caption for game
 pygame.display.set_caption('SNAKE GAME')
 
-# Create overlay surface
+# Create dark overlay for question screen
 overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 overlay.set_alpha(128)  # Set transparency (0-255)
 overlay.fill((0, 0, 0))  # Fill with black
 
-# Load background image
+# Load images
 BACKGROUND = pygame.image.load("images/snakegamebg.png")
-
-# Load qbox
 QBOX = pygame.image.load("images/snakegameqbox.png")
 
-# # Load fruit image
-# FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
+# Load fruit images and scale to the right size
 fruit_size = (50, 50)
-# Load fruit image
-FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
-# Scale the fruit image to the new size
-FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
-# Load fruit image
-FRUIT_B = pygame.image.load("images/orangeb.png").convert_alpha()
-# Scale the fruit image to the new size
-FRUIT_B = pygame.transform.scale(FRUIT_B, fruit_size)
-# Load fruit image
-FRUIT_C = pygame.image.load("images/orangec.png").convert_alpha()
-# Scale the fruit image to the new size
-FRUIT_C = pygame.transform.scale(FRUIT_C, fruit_size)
-# Load fruit image
-FRUIT_D = pygame.image.load("images/oranged.png").convert_alpha()
-# Scale the fruit image to the new size
-FRUIT_D = pygame.transform.scale(FRUIT_D, fruit_size)
-
-# # Scale the fruit image to the new size
-# FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
+FRUIT_A = pygame.transform.scale(pygame.image.load("images/orangea.png").convert_alpha(), fruit_size)
+FRUIT_B = pygame.transform.scale(pygame.image.load("images/orangeb.png").convert_alpha(), fruit_size)
+FRUIT_C = pygame.transform.scale(pygame.image.load("images/orangec.png").convert_alpha(), fruit_size)
+FRUIT_D = pygame.transform.scale(pygame.image.load("images/oranged.png").convert_alpha(), fruit_size)
 
 # Clock for controlling game speed
 clock = pygame.time.Clock()
@@ -55,14 +37,17 @@ clock = pygame.time.Clock()
 gold1 = (230, 224, 174)
 gold2 = (223, 188, 94)
 gold3 = (179, 152, 96)
+
 red1 = (238, 97, 70)
 red2 = (215, 60, 55)
 red3 = (181, 31, 9)
+
 green1 = (116, 217, 219)
 green2 = (153, 216, 196)
 green3 = (113, 182, 135)
 green4 = (88, 133, 120)
 green5 = (117, 132, 133)
+
 black = (0, 0, 0)
 white = (255, 255, 255)
 
@@ -70,9 +55,7 @@ white = (255, 255, 255)
 snake_block = 20
 snake_speed = 10
 
-# Font for displaying score
-font_style = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 25)
-
+# Access the font style with changeable size
 def get_font(size):
   return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
@@ -80,17 +63,18 @@ def get_font(size):
 def current_score(score):
   # Shadow text
   shadow = get_font(25).render("Score: " + str(score), True, green4)
-  screen.blit(shadow, [652, 12])
+  screen.blit(shadow, [652, 12]) # Displays text
     
   # Main text
   main = get_font(25).render("Score: " + str(score), True, white)
-  screen.blit(main, [650, 10])
+  screen.blit(main, [650, 10]) # Displays text
 
 # Function to draw the snake
 def snake(snake_block, snake_list):
   for i in snake_list:
-    pygame.draw.rect(screen, green2, [i[0], i[1], snake_block, snake_block])
+    pygame.draw.rect(screen, green2, [i[0], i[1], snake_block, snake_block]) # Draws each rectangle of the snake at the right coordinates
 
+# Shows the time left for the question
 def timeLeft(time):
   # Shadow text
   shadow = get_font(25).render("Time Left: " + str(time), True, green4)
@@ -100,79 +84,80 @@ def timeLeft(time):
   main = get_font(25).render("Time Left: " + str(time), True, white)
   screen.blit(main, [280, 60])
 
+# NEED TO CHANGE LATER TO USE THE QUESTION CLASS INSTEAD
+# Generates the question and answer
 def question(level):
-  if level < 5:
+  if level < 5: # For single digit addition
     num1 = random.randint(1, 9)
     num2 = random.randint(1, 9)
-  else: 
+  else: # For double digit addition
     num1 = random.randint(1, 99)
     num2 = random.randint(1, 99)
 
   ans = num1 + num2
-  return str(num1) + " + " + str(num2) + " = ?" + str(ans)
-  # # Shadow text
-  # shadow = get_font(65).render(str(num1) + " + " + str(num2) + " = ?", True, gold3)
-  # screen.blit(shadow, [242, 182])
-    
-  # # Main text
-  # main = get_font(65).render(str(num1) + " + " + str(num2) + " = ?", True, white)
-  # screen.blit(main, [240, 180])
+  q = str(num1) + " + " + str(num2) + " = ?"
+  return [q, ans]
 
+# Generates the options for the question
 def options(correctAns):
-  choice1 = int(correctAns) + random.randint(1, 9)
-  choice2 = int(correctAns) - random.randint(1, int(correctAns))
-  choice3 = int(float(correctAns) * (10+random.randint(1, 9))//10)
-  if choice3 == choice2 or choice3 == choice1:
-    choice3 += 1
+  opt1 = correctAns + random.randint(1, 5) # altered by adding a random number
+  opt2 = correctAns - random.randint(1, correctAns-1) # altered by subtracting a random number below the answer
+  opt3 = int(float(correctAns) * (10+random.randint(1, 5))//10) # altered by multiplying by a percentage of the answer
 
-  choices = [str(choice1), str(choice2), str(choice3), correctAns]
-  choiceA = random.choice(choices)
-  choices.remove(choiceA)
-  choiceB = random.choice(choices)
-  choices.remove(choiceB)
-  choiceC = random.choice(choices)
-  choices.remove(choiceC)
-  choiceD = random.choice(choices)
-  choices.remove(choiceD)
+  if opt3 == opt2 or opt3 == opt1 or opt3 == correctAns: # changing opt3 if it rounds to a repeat number
+    opt3 += 1
 
-  a = get_font(25).render(choiceA, True, black)
-  b = get_font(25).render(choiceB, True, black)
-  c = get_font(25).render(choiceC, True, black)
-  d = get_font(25).render(choiceD, True, black)
+  optList = [str(opt1), str(opt2), str(opt3), str(correctAns)] # list of options
+
+  # Picks out and assigns a random option from the list
+  optA = random.choice(optList)
+  optList.remove(optA)
+  optB = random.choice(optList)
+  optList.remove(optB)
+  optC = random.choice(optList)
+  optList.remove(optC)
+  optD = random.choice(optList)
+
+  # Turn each option into text
+  a = get_font(25).render(optA, True, black)
+  b = get_font(25).render(optB, True, black)
+  c = get_font(25).render(optC, True, black)
+  d = get_font(25).render(optD, True, black)
 
   return [a, b, c, d]
 
+# Create list of coordinates for the food
+def foodCoordinates(x1, y1):
+  # Randomize position of fruits
+  foodCoord = [[x1, y1]]
+  i = 0
+  while i < 4:
+    num1 = round(random.randrange(0, SCREEN_WIDTH -(snake_block + 40)) / 10.0) * 10.0
+    num2 = round(random.randrange(0, SCREEN_HEIGHT - (snake_block + 40)) / 10.0) * 10.0
+    while foodCoord.__contains__((num1, num2)):
+      num1 = round(random.randrange(0, SCREEN_WIDTH - (snake_block + 40)) / 10.0) * 10.0
+      num2 = round(random.randrange(0, SCREEN_HEIGHT - (snake_block + 40)) / 10.0) * 10.0
+    foodCoord.append([num1, num2])
+    i += 1
+  return foodCoord
 
-  
+# Check if food's been eaten
+# def foodEaten()
 
 # Main game function
-def game(level):
+def game(user):
   run = True 
   pause = True
   correct = False
-  currQ = question(level)
-  spliceIndex = currQ.index("?") + 1
-  correctAns = currQ[spliceIndex:]
-  currQ = currQ[:spliceIndex]
+  level = user.get_add()
+  currQNA = question(level)
+  currQ = currQNA[0]
+  correctAns = currQNA[1]
   optionList = options(correctAns)
 
-  # choice1 = int(correctAns) + random.randint(1, 9)
-  # choice2 = int(correctAns) - random.randint(1, 9)
-  # choice3 = int(float(correctAns) * (1+random.randint(1, 9)))
-
-  # choices = [str(choice1), str(choice2), str(choice3), correctAns]
-  # choiceA = random.choice(choices)
-  # choices.remove(choiceA)
-  # choiceB = random.choice(choices)
-  # choices.remove(choiceB)
-  # choiceC = random.choice(choices)
-  # choices.remove(choiceC)
-  # choiceD = random.choice(choices)
-  # choices.remove(choiceD)
-
-  # Snake starting coordinates
-  x1 = SCREEN_WIDTH / 2
-  y1 = SCREEN_HEIGHT / 2
+  # # Snake starting coordinates
+  # x1 = SCREEN_WIDTH / 2
+  # y1 = SCREEN_HEIGHT / 2
 
   # Initialize change in coordinates
   x1_change = 0
@@ -182,25 +167,56 @@ def game(level):
   snake_list = []
   snake_len = 1
 
-  # # Load fruit image
-  # FRUIT_A = pygame.image.load("images/orangea.png").convert_alpha()
-  # # Scale the fruit image to the new size
-  # FRUIT_A = pygame.transform.scale(FRUIT_A, fruit_size)
+  # foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
+  # foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+  # # Randomize position of fruits
+  # foodCoord = [(x1, y1)]
+  # i = 0
+  # while i < 4:
+  #   num1 = round(random.randrange(0, SCREEN_WIDTH -(snake_block + 40)) / 10.0) * 10.0
+  #   num2 = round(random.randrange(0, SCREEN_HEIGHT - (snake_block + 40)) / 10.0) * 10.0
+  #   while foodCoord.__contains__((num1, num2)):
+  #     num1 = round(random.randrange(0, SCREEN_WIDTH - (snake_block + 40)) / 10.0) * 10.0
+  #     num2 = round(random.randrange(0, SCREEN_HEIGHT - (snake_block + 40)) / 10.0) * 10.0
+  #   foodCoord.append((num1, num2))
+  #   i += 1
 
-  # Randomize position of fruit
-  foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-  foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+  # foodxa = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
+  # foodya = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+  
+  # foodxb = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
+  # foodyb = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+  
+  # foodxc = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
+  # foodyc = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+  
+  # foodxd = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
+  # foodyd = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
 
+  # Randomize coordinates for each orange
+  foodCoord = foodCoordinates(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+  foodxa = foodCoord[1][0]
+  foodya = foodCoord[1][1]
+  
+  foodxb = foodCoord[2][0]
+  foodyb = foodCoord[2][1]
+  
+  foodxc = foodCoord[3][0]
+  foodyc = foodCoord[3][1]
+  
+  foodxd = foodCoord[4][0]
+  foodyd = foodCoord[4][1]
+
+  # Delay the question screen
   elements_delay_counter = 20
-  # change countdown to a minute later
-  if level < 5:
+
+  # Adjust counter according to level, 10 seconds for < 5 and 30 seconds otherwise
+  if level < 5: 
     countdown = 600
     timerDown = 10
   else: 
     countdown = 1800
     timerDown = 30
-
-  # time.sleep(2)
 
   while run:
     # Event handling
@@ -225,12 +241,12 @@ def game(level):
         x1_change = 0
 
     # Update snake position
-    x1 += x1_change
-    y1 += y1_change
+    foodCoord[0][0] += x1_change
+    foodCoord[0][1] += y1_change
       # print("x1: " + str(x1))
       # print("y1: " + str(y1))
 
-    snake_list.append([x1, y1])
+    snake_list.append([foodCoord[0][0], foodCoord[0][1]])
 
     # If snake length exceeds current length, remove the tail
     if len(snake_list) > snake_len:
@@ -238,14 +254,16 @@ def game(level):
 
     # Draw elements on screen
     screen.blit(BACKGROUND, (0, 0))
-    snake(snake_block, snake_list)
-    # screen.blit(FRUIT_A, (foodx, foody))
-    current_score(snake_len - 1)
+    # snake(snake_block, snake_list)
+    # # screen.blit(FRUIT_A, (foodx, foody))
+    # current_score(snake_len - 1)
     # Blit overlay on top of everything
     if elements_delay_counter > 0:
       elements_delay_counter -= 1
+      print(elements_delay_counter)
     else:
-      if countdown > 0:
+      if countdown > 0 and pause == True and timerDown > 0:
+
         countdown -= 1
         screen.blit(overlay, (0, 0))
         screen.blit(QBOX, (141, 115))
@@ -275,15 +293,38 @@ def game(level):
         if countdown % 10 == 0 and timerDown > 0:
           timerDown -= 1
 
+      else:
+        pause = False
+
       # print("foodx: " + str(foodx))
       # print("foody: " + str(foody))
-
+      if pause == False: 
       # Check if snake has eaten the fruit
       # if x1 == foodx and y1 == foody:
-    if x1 >= (foodx-20) and x1 <= (foodx+30) and y1 >= (foody-20) and y1 <= (foody+40):
-      foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-      foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+        snake(snake_block, snake_list)
+    # screen.blit(FRUIT_A, (foodx, foody))
+        current_score(snake_len - 1)
+        screen.blit(FRUIT_A, (foodCoord[1][0], foodCoord[1][1]))
+        screen.blit(FRUIT_B, (foodxb, foodyb))
+        pause == True
+        
+
+    if foodCoord[0][0] >= (foodCoord[1][0]-20) and foodCoord[0][0] <= (foodCoord[1][0]+30) and foodCoord[0][1] >= (foodCoord[1][1]-20) and foodCoord[0][1] <= (foodCoord[1][1]+40):
+      # foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
+      # foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+      foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
       snake_len += 1
+      pause == True
+      elements_delay_counter = 20
+      # change countdown to a minute later
+      if level < 5:
+        countdown = 600
+        timerDown = 10
+      else: 
+        countdown = 1800
+        timerDown = 30
+      print(countdown)
+      print(timerDown)
     pygame.display.flip()
 
     clock.tick(snake_speed)
@@ -291,4 +332,5 @@ def game(level):
   pygame.quit()
 
 # Run the game
-game(3)
+person = Player("jocelyn", 12345678, 0, 0, 0, 0, 0, 0)
+game(person)
