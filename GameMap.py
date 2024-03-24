@@ -23,6 +23,7 @@ RESIZED_MULTTEMP = pygame.transform.scale(MULTTEMP, (110, 110))
 RESIZED_TOPTEMP = pygame.transform.scale(TOPTEMP, (103, 103))
 RESIZED_BOTTOMTEMP = pygame.transform.scale(BOTTOMTEMP, (120, 120))
 RESIZED_MIDDLETEMP = pygame.transform.scale(MIDDLETEMP, (150, 150))
+RESIZED_BACK = pygame.image.load("images/resized_back.png")
 
 
 # Main Colours
@@ -44,14 +45,16 @@ def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 def load_map():
-  while True:
+  run = True
+  while run:
 
     MULTTEMP = Button(pygame.image.load("images/templeright.png"), pos = (600, 131), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    Back_Button = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
 
     for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+      if event.type == pygame.QUIT:
+          pygame.quit()
+          sys.exit()
     
     # Draw the background image onto the screen
     screen.blit(BACKGROUND, (0, 0))
@@ -60,6 +63,12 @@ def load_map():
     mouse_x, mouse_y = pygame.mouse.get_pos()
     MOUSE_POS = pygame.mouse.get_pos()
 
+    # go back
+    if (40<mouse_x<75 and 40<mouse_y<70):
+        screen.blit(RESIZED_BACK, (-90,-96))
+        if event.type == pygame.MOUSEBUTTONDOWN:
+          if Back_Button.checkInput(MOUSE_POS):
+            return
     # cooking game
     if (133<mouse_x<180 and 139<mouse_y<202):
       screen.blit(RESIZED_LEFTTEMP, (110, 92))
@@ -96,13 +105,15 @@ def load_map():
     mouse_pos = pygame.mouse.get_pos()
     mouse_x, mouse_y = mouse_pos
 
-    # Display mouse position on the screen
-    font = pygame.font.Font(None, 36)
-    text = font.render(f"Mouse Position: ({mouse_x}, {mouse_y})", True, (0, 0, 0))
-    screen.blit(text, (10, 10))
-    # Update the display
+    # # Display mouse position on the screen
+    # font = pygame.font.Font(None, 36)
+    # text = font.render(f"Mouse Position: ({mouse_x}, {mouse_y})", True, (0, 0, 0))
+    # screen.blit(text, (10, 10))
+    # # Update the display
+    Back_Button.update(screen)
+
     pygame.display.flip()
 
-  pygame.quit()
+  # pygame.quit()
 
-#load_map()
+# load_map()
