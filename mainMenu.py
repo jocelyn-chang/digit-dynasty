@@ -12,6 +12,7 @@ pygame.init()
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('DIGIT DYNASTY')
 BACKGROUND = pygame.image.load("images/background.png")
+WELCOME_SCREEN = pygame.image.load("images/Welcome Screen.png")
 LOGIN = pygame.image.load("images/login_screen.png")
 SIGNUP = pygame.image.load("images/sign_up_screen.png")
 HIGH_SCORE = pygame.image.load("images/leaderboard_screen.png")
@@ -122,7 +123,7 @@ def start_game():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BACK.checkInput(GAME_MOUSE_POS):
-                    main_menu()
+                    return
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
                     existing_player = False
                     invalid_password = False
@@ -142,6 +143,7 @@ def start_game():
                     else:
                         append_to_csv(username, password)
                         load_map()
+                        return
                 elif username_rect.collidepoint(event.pos):
                     username_active = not username_active
                     password_active = False
@@ -231,7 +233,7 @@ def load_game():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if LOAD_BACK.checkInput(GAME_MOUSE_POS):
-                    main_menu()
+                    return
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
                     player_not_found = False
                     input_username = username
@@ -241,6 +243,7 @@ def load_game():
 
                     if player_info:
                         load_map()
+                        return
                     else:
                         player_not_found = True
 
@@ -349,7 +352,7 @@ def high_score():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if SCORE_BACK.checkInput(GAME_MOUSE_POS):
-                    main_menu()
+                    return
 
         pygame.display.update()
 
@@ -373,12 +376,50 @@ def instructions():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    main_menu()
+                    return
 
         pygame.display.update()
 
+def instructor_dashboard():
+    while True:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(INSTRUCTIONS, (0, 0))
+        
+        INSTRUCTIONS_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_BACK.update(SCREEN)
+
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            SCREEN.blit(RESIZED_BACK, (-90,-96))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    return
+
+        pygame.display.update()
+
+def welcome_screen():
+    run = True
+    while run:
+        SCREEN.blit(WELCOME_SCREEN, (0, 0))
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                run = False
+        pygame.display.update()
+
+
 # Main Menu screen
 def main_menu():
+    welcome_screen()
 
     while True:
         SCREEN.blit(BACKGROUND, (0, 0))
@@ -392,9 +433,7 @@ def main_menu():
         INSTRUCTIONS_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 417), text_input = "INSTRUCTIONS", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
         EXIT_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "EXIT", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
         TEACHER_BUTTON = Button(image = APPLE, pos = (40, 40), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
-        
-        TEACHER_BUTTON.update(SCREEN)
-        
+                
         for button in [START_BUTTON, LOAD_BUTTON, HIGH_SCORE_BUTTON, INSTRUCTIONS_BUTTON, EXIT_BUTTON, TEACHER_BUTTON]:
             button.changeColour(MENU_MOUSE_POS)
             button.update(SCREEN)
@@ -415,6 +454,8 @@ def main_menu():
                     high_score()
                 if INSTRUCTIONS_BUTTON.checkInput(MENU_MOUSE_POS):
                     instructions()
+                # if TEACHER_BUTTON.checkInput(TEACHER_BUTTON):
+                #     instructor_dashboard()
                 if EXIT_BUTTON.checkInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()

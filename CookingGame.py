@@ -1,5 +1,6 @@
-import pygame
+import pygame, sys
 import random
+from Button import Button
 from question import Question
 from Player import Player
 
@@ -18,6 +19,7 @@ PHOTO_SPACING = 150
 
 # Colors
 WHITE = (255, 255, 255)
+GREEN = (88, 133, 120)
 
 # Load images
 BACKGROUND = pygame.image.load("images/cooking_game.png")
@@ -27,11 +29,12 @@ ORDER = pygame.image.load("images/order.png")
 ORDER = pygame.transform.scale(ORDER, PHOTO_SIZE)
 
 #changing screens
-TUTORIAL = pygame.image.load("images/Subtraction.png")
-INSTRUCTION = pygame.image.load("images/Instructions for cooking game.png")
+INSTRUCTION = pygame.image.load("images/Subtraction.png")
+TUTORIAL = pygame.image.load("images/Instructions for cooking game.png")
 BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
 RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
+start_screen = pygame.image.load("images/Cooking Game Start Screen.png")
 
 # Initialize the game screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -40,11 +43,76 @@ pygame.display.set_caption('COOKING GAME')
 # Clock for controlling game speed
 clock = pygame.time.Clock()
 
-font = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 20)
+#font = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 20)
 
 number_of_dumplings = 0
 
-def handle_events(dumpling_positions, central_area):
+def get_font(size):
+    return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
+
+def instruction():
+    run = True
+    while run:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        screen.blit(INSTRUCTION, (0, 0))
+        
+        INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            screen.blit(RESIZED_BACK, (-90,-96))
+        if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
+            screen.blit(RESIZED_NEXT, (540, 324))
+
+        INSTRUCTIONS_BACK.update(screen)
+        INSTRUCTIONS_NEXT.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    run = False
+                if INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
+                    tutorial()
+                    run = False
+
+        pygame.display.update()
+
+def tutorial():
+    run = True
+    while run:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        screen.blit(TUTORIAL, (0, 0))
+        
+        INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            screen.blit(RESIZED_BACK, (-90,-96))
+        if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
+            screen.blit(RESIZED_NEXT, (540, 324))
+
+        INSTRUCTIONS_BACK.update(screen)
+        INSTRUCTIONS_NEXT.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS) or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
+                    run = False
+
+        pygame.display.update()
+
+
+def handle_events(dumpling_positions, central_area, questions):
     global number_of_dumplings
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -56,7 +124,16 @@ def handle_events(dumpling_positions, central_area):
             elif event.key == pygame.K_LEFT and dumpling_positions:
                 dumpling_positions.pop()
                 number_of_dumplings -= 1
-    return True
+            elif event.key == pygame.K_SPACE and questions:  # Check answer when space bar is pressed
+                # Assume the question is directly asking for the number of dumplings
+                if number_of_dumplings == questions[0][1]:  # Assuming the question is simply the expected number
+                    print("Correct")
+                    return True
+                else:
+                    print("Incorrect")
+                    return False
+    return None 
+    #return True
 
 def add_dumpling(dumpling_positions, central_area):
     new_x = random.randint(central_area.left, central_area.right - DUMPLING_SIZE)
@@ -64,16 +141,29 @@ def add_dumpling(dumpling_positions, central_area):
     dumpling_positions.append((new_x, new_y))
 
 
-def update_photos(photo_positions, last_photo_time, current_time):
+def update_photos(photo_positions, last_photo_time, current_time, total_questions_generated):
     photo_added = False  # Track if a new photo is added
-    if current_time - last_photo_time > PHOTO_INTERVAL_MS:
-        last_photo_x, last_photo_y = photo_positions[-1]
-        new_photo_x = last_photo_x + PHOTO_SPACING
+    if current_time - last_photo_time > PHOTO_INTERVAL_MS and total_questions_generated < 5:
+        # Check if it's time to add a new photo and we haven't exceeded 5 questions
+        last_photo_x, last_photo_y = photo_positions[-1] if photo_positions else (0, 0)
+        new_photo_x = last_photo_x + PHOTO_SPACING if photo_positions else 0  # Adjust for the first photo
         if new_photo_x + PHOTO_SIZE[0] <= SCREEN_WIDTH:
             photo_positions.append((new_photo_x, 0))
             last_photo_time = current_time
             photo_added = True  # A new photo was added
     return last_photo_time, photo_added
+
+def score(score_correct):
+    sub_score = 0
+    if score_correct == True:
+        sub_score = sub_score + 1
+    return sub_score
+    
+def level(sub_level, sub_score):
+    if sub_score == 5:
+        sub_level = sub_level + 1    
+    print("level")
+    return sub_level
 
 def draw_screen(dumpling_positions, photo_positions, questions):
     screen.fill(WHITE)
@@ -85,7 +175,7 @@ def draw_screen(dumpling_positions, photo_positions, questions):
         if i < len(questions):
             question_text = questions[i]
             # Adjust text_surface creation to consider the size of the photo
-            text_surface = font.render(question_text, True, (0, 0, 0))  # Black text
+            text_surface = get_font(20).render(question_text[0], True, (0, 0, 0))  # Black text
             # Calculate text position to center it on the photo
             text_x_adjustment = 30  # Adjust as needed for leftward movement
             text_y_adjustment = 50  # Adjust as needed for upward movement
@@ -93,15 +183,20 @@ def draw_screen(dumpling_positions, photo_positions, questions):
             text_x = pos[0] + (PHOTO_SIZE[0] - text_surface.get_width()) // 2 - text_x_adjustment
             text_y = pos[1] + (PHOTO_SIZE[1] - text_surface.get_height()) // 2 - text_y_adjustment
             screen.blit(text_surface, (text_x, text_y))
+            
+    num_dumplings_text = get_font(20).render(f"Dumplings: {len(dumpling_positions)}", True, (0, 0, 0))
+    screen.blit(num_dumplings_text, (26, SCREEN_HEIGHT - 40))
+    
 
     pygame.display.flip()
 
-def CookingGame():
+
+def playGame():
     done = False
     dumpling_positions = []
-    photo_positions = [(0, 0)]  # Start with one photo at the top left
-    questions = []  # Initialize an empty list to store questions
-    last_photo_time = pygame.time.get_ticks() #- PHOTO_INTERVAL_MS  # Adjust to trigger immediate photo
+    photo_positions = []
+    questions = []
+    last_photo_time = pygame.time.get_ticks()
     
     central_area = pygame.Rect(
         (SCREEN_WIDTH - SCREEN_WIDTH // 3) // 2, 
@@ -110,29 +205,134 @@ def CookingGame():
         SCREEN_HEIGHT // 3
     )
     
-    player = Player(name="John", password="CookingForLife", best_game="Cooking Game", best_score=20, add_score=1, mul_score=1, div_score=1, sub_score=20)
+    total_questions_generated = 0  # Keep track of the total number of questions generated
+    
+    player = Player(name="John", password="CookingForLife", best_game="Cooking Game", best_score=20, add_score=1, mul_score=1, div_score=1, sub_score=1)
     
     current_question = Question(player.name, player.password, player.best_game, player.best_score, player.add_score, player.mul_score, player.div_score, player.sub_score)
     
-    # Immediately generate a question for the initial photo
-    question_text = current_question.generate_question('-')
-    questions.append(question_text[0])
-    #print(question_text[0])
-    #print(question_text[1])
-
     while not done:
         current_time = pygame.time.get_ticks()
-        done = not handle_events(dumpling_positions, central_area)
-        last_photo_time, photo_added = update_photos(photo_positions, last_photo_time, current_time)
-        if photo_added:
-            # Generate a new question for each new photo and append it to the questions list
+        ans = handle_events(dumpling_positions, central_area, questions)
+        if ans == False:
+            done = True
+            break
+        
+        elif ans == True and questions:
+            questions.pop(0)  # Remove the answered question
+            photo_positions.pop(0)  # Remove the corresponding photo
+        
+        last_photo_time, photo_added = update_photos(photo_positions, last_photo_time, current_time, total_questions_generated)
+        if photo_added and total_questions_generated < 5:
             question_text = current_question.generate_question('-')
-            questions.append(question_text[0])
-            #print(question_text[0])
-            #print(question_text[1])
-        draw_screen(dumpling_positions, photo_positions, questions)
-        clock.tick(60)  # Limit to 60 frames per second
+            questions.append(question_text)
+            total_questions_generated += 1
 
+        if total_questions_generated >= 5 and not questions:
+            # End the game when all 5 questions have been generated and answered
+            done = True
+            
+        draw_screen(dumpling_positions, photo_positions, questions)
+        pygame.time.Clock().tick(60)
+        pygame.display.flip()
+    
     pygame.quit()
 
-CookingGame()
+
+'''
+
+def playGame():
+    done = False
+    dumpling_positions = []
+    photo_positions = [(0, 0)]  # Initial position for the first photo
+    questions = []
+    last_photo_time = pygame.time.get_ticks()
+    
+    central_area = pygame.Rect(
+        (SCREEN_WIDTH - SCREEN_WIDTH // 3) // 2, 
+        (SCREEN_HEIGHT - SCREEN_HEIGHT // 3) // 2, 
+        SCREEN_WIDTH // 3, 
+        SCREEN_HEIGHT // 3
+    )
+    
+    total_questions_generated = 0  # Keep track of the total number of questions generated
+    
+    player = Player(name="John", password="CookingForLife", best_game="Cooking Game", best_score=20, add_score=1, mul_score=1, div_score=1, sub_score=1)
+    
+    current_question = Question(player.name, player.password, player.best_game, player.best_score, player.add_score, player.mul_score, player.div_score, player.sub_score)
+    
+    # Generate the first question
+    if total_questions_generated < 5:
+        question_text = current_question.generate_question('-')
+        questions.append(question_text)
+        total_questions_generated += 1  # Increment the total number of questions generated
+    
+    while not done:
+        current_time = pygame.time.get_ticks()
+        ans = handle_events(dumpling_positions, central_area, questions)
+        if ans == False:
+            done = True  # Exit the game loop
+            break
+        
+        elif ans == True:
+            questions.pop(0)  # Remove the answered question
+            photo_positions.pop(0)  # Remove the corresponding photo
+        
+        elif ans == None:
+            pass
+            
+        last_photo_time, photo_added = update_photos(photo_positions, last_photo_time, current_time)
+        if photo_added and total_questions_generated < 5:
+            # Only add new questions if less than 5 questions have been generated in total
+            question_text = current_question.generate_question('-')
+            questions.append(question_text)
+            total_questions_generated += 1  # Increment the total number of questions generated
+            
+        if not questions and total_questions_generated >= 5:
+            # If there are no more questions and 5 questions have been generated, end the game
+            done = True
+            draw_screen(dumpling_positions, photo_positions, questions)
+        
+        pygame.time.Clock().tick(60)
+        pygame.display.flip()
+    
+    return
+
+'''
+
+
+def cookingGame():
+    run = True
+    while run:
+        # display start screen
+        screen.blit(start_screen, (0,0))
+        MOUSE_POS = pygame.mouse.get_pos()
+
+        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 250), text_input = "START GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 380), text_input = "INSTRUCTIONS", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 510), text_input = "BACK TO MENU", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        
+        for button in [START_BUTTON, INSTRUCTION_BUTTON, RETURN_BUTTON]:
+            button.changeColour(MOUSE_POS)
+            button.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                    if START_BUTTON.checkInput(MOUSE_POS):
+                        playGame()
+                    if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
+                        print("working")
+                        instruction()
+                    if RETURN_BUTTON.checkInput(MOUSE_POS):
+                        run = False
+                        break
+        # Update the display
+        pygame.display.update()
+
+    # Quit back to the game map
+    return
+    
+    
+cookingGame()
