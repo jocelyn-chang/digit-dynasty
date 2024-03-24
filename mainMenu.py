@@ -123,7 +123,7 @@ def start_game():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BACK.checkInput(GAME_MOUSE_POS):
-                    main_menu()
+                    return
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
                     existing_player = False
                     invalid_password = False
@@ -143,6 +143,7 @@ def start_game():
                     else:
                         append_to_csv(username, password)
                         load_map()
+                        return
                 elif username_rect.collidepoint(event.pos):
                     username_active = not username_active
                     password_active = False
@@ -232,7 +233,7 @@ def load_game():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if LOAD_BACK.checkInput(GAME_MOUSE_POS):
-                    main_menu()
+                    return
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
                     player_not_found = False
                     input_username = username
@@ -242,6 +243,7 @@ def load_game():
 
                     if player_info:
                         load_map()
+                        return
                     else:
                         player_not_found = True
 
@@ -350,7 +352,7 @@ def high_score():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if SCORE_BACK.checkInput(GAME_MOUSE_POS):
-                    main_menu()
+                    return
 
         pygame.display.update()
 
@@ -374,7 +376,7 @@ def instructions():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    main_menu()
+                    return
 
         pygame.display.update()
 
@@ -397,7 +399,7 @@ def instructor_dashboard():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    main_menu()
+                    return
 
         pygame.display.update()
 
@@ -452,8 +454,8 @@ def main_menu():
                     high_score()
                 if INSTRUCTIONS_BUTTON.checkInput(MENU_MOUSE_POS):
                     instructions()
-                if TEACHER_BUTTON.checkInput(TEACHER_BUTTON):
-                    instructor_dashboard()
+                # if TEACHER_BUTTON.checkInput(TEACHER_BUTTON):
+                #     instructor_dashboard()
                 if EXIT_BUTTON.checkInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
