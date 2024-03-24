@@ -9,9 +9,9 @@ pygame.init()
 # Initializing screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-# Setting caption for game
+# Creating screen
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('SNAKE GAME')
 
 # Create dark overlay for question screen
@@ -195,17 +195,17 @@ def game(user):
 
   # Randomize coordinates for each orange
   foodCoord = foodCoordinates(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
-  foodxa = foodCoord[1][0]
-  foodya = foodCoord[1][1]
+  # foodxa = foodCoord[1][0]
+  # foodya = foodCoord[1][1]
   
-  foodxb = foodCoord[2][0]
-  foodyb = foodCoord[2][1]
+  # foodxb = foodCoord[2][0]
+  # foodyb = foodCoord[2][1]
   
-  foodxc = foodCoord[3][0]
-  foodyc = foodCoord[3][1]
+  # foodxc = foodCoord[3][0]
+  # foodyc = foodCoord[3][1]
   
-  foodxd = foodCoord[4][0]
-  foodyd = foodCoord[4][1]
+  # foodxd = foodCoord[4][0]
+  # foodyd = foodCoord[4][1]
 
   # Delay the question screen
   elements_delay_counter = 20
@@ -240,30 +240,33 @@ def game(user):
         y1_change = snake_block
         x1_change = 0
 
-    # Update snake position
-    foodCoord[0][0] += x1_change
-    foodCoord[0][1] += y1_change
+      # Update snake position
+      foodCoord[0][0] += x1_change
+      foodCoord[0][1] += y1_change
       # print("x1: " + str(x1))
       # print("y1: " + str(y1))
 
-    snake_list.append([foodCoord[0][0], foodCoord[0][1]])
+      snake_list.append([foodCoord[0][0], foodCoord[0][1]])
 
-    # If snake length exceeds current length, remove the tail
-    if len(snake_list) > snake_len:
-      del snake_list[0]
+      # If snake length exceeds current length, remove the tail
+      if len(snake_list) > snake_len:
+        del snake_list[0]
 
     # Draw elements on screen
     screen.blit(BACKGROUND, (0, 0))
-    # snake(snake_block, snake_list)
-    # # screen.blit(FRUIT_A, (foodx, foody))
-    # current_score(snake_len - 1)
+    
     # Blit overlay on top of everything
     if elements_delay_counter > 0:
       elements_delay_counter -= 1
-      print(elements_delay_counter)
+      pause = True
     else:
       if countdown > 0 and pause == True and timerDown > 0:
-
+        if countdown == 600:
+          currQNA = question(level)
+          currQ = currQNA[0]
+          correctAns = currQNA[1]
+          optionList = options(correctAns)
+        print("hello")
         countdown -= 1
         screen.blit(overlay, (0, 0))
         screen.blit(QBOX, (141, 115))
@@ -278,10 +281,7 @@ def game(user):
         else:
           screen.blit(shadow, [202, 182])
           screen.blit(main, [200, 180])
-        # a = get_font(25).render(optionList[0], True, black)
-        # b = get_font(25).render(optionList[1], True, black)
-        # c = get_font(25).render(optionList[2], True, black)
-        # d = get_font(25).render(optionList[3], True, black)
+
         screen.blit(optionList[0], [315, 290])
         screen.blit(optionList[1], [315, 395])
         screen.blit(optionList[2], [505, 290])
@@ -296,22 +296,20 @@ def game(user):
       else:
         pause = False
 
-      # print("foodx: " + str(foodx))
-      # print("foody: " + str(foody))
       if pause == False: 
-      # Check if snake has eaten the fruit
-      # if x1 == foodx and y1 == foody:
         snake(snake_block, snake_list)
-    # screen.blit(FRUIT_A, (foodx, foody))
         current_score(snake_len - 1)
         screen.blit(FRUIT_A, (foodCoord[1][0], foodCoord[1][1]))
-        screen.blit(FRUIT_B, (foodxb, foodyb))
+        screen.blit(FRUIT_B, (foodCoord[2][0], foodCoord[2][1]))
+        screen.blit(FRUIT_C, (foodCoord[3][0], foodCoord[3][1]))
+        screen.blit(FRUIT_D, (foodCoord[4][0], foodCoord[4][1]))
         pause == True
         
 
     if foodCoord[0][0] >= (foodCoord[1][0]-20) and foodCoord[0][0] <= (foodCoord[1][0]+30) and foodCoord[0][1] >= (foodCoord[1][1]-20) and foodCoord[0][1] <= (foodCoord[1][1]+40):
       # foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
       # foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+      print("p")
       foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
       snake_len += 1
       pause == True
@@ -323,8 +321,7 @@ def game(user):
       else: 
         countdown = 1800
         timerDown = 30
-      print(countdown)
-      print(timerDown)
+  
     pygame.display.flip()
 
     clock.tick(snake_speed)
