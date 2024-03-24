@@ -270,7 +270,61 @@ def foodEaten(foodCoord, correctAns):
       else:
         return 2
     i += 1
+  if snakex == 0 or snakex == 800 or snakey == 0 or snakey == 600:
+     return 1
   return 0
+
+def end_game_screen(gates, x_pos):
+    run = True
+    NEXT_BUTTON = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (650, 400), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+
+    screen.blit(dead_panda, (x_pos-5, 385))
+    pygame.display.update()
+
+    pygame.time.delay(2000)
+    while run:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+        # Display question screen
+        screen.blit(question_scroll, (25, 100))
+
+        if gates >= 5:
+            levels = math.floor(gates / 5)
+            title_lines = ["Congratulations you imroved", f"{levels} levels"]
+        else:
+            title_lines = ["Keep practicing!"]
+        
+        line_height = get_font(25).get_height()
+
+        for i, line in enumerate(title_lines):
+            title_text = get_font(25).render(line, True, white)
+            inputRect = title_text.get_rect()
+            inputRect.center = (SCREEN_WIDTH // 2, 225 + i * line_height)  # Adjust position for each line
+            screen.blit(title_text, inputRect)
+        
+        screen.blit(happypanda, (250, 330))
+
+        # Display user's input text
+        # input_text = get_font(20).render(title, True, white)
+        # inputRect = input_text.get_rect()
+        # inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
+        # screen.blit(input_text, inputRect)
+
+        if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
+            screen.blit(RESIZED_NEXT, (510, 249))
+        
+        NEXT_BUTTON.update(screen)
+
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if NEXT_BUTTON.checkInput(GAME_MOUSE_POS):
+                    run = False
+        # Update the display
+        pygame.display.update()
 
 # Main game function
 def game(user):
@@ -300,7 +354,7 @@ def game(user):
   foodCoord = foodCoordinates(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 
   # Delay the question screen
-  elements_delay_counter = 10
+  elements_delay_counter = 5
 
   # Adjust counter according to level, 10 seconds for < 5 and 30 seconds otherwise
   if level < 5: 
@@ -420,12 +474,13 @@ def game(user):
       screen.blit(shadow, [182, 200])
       screen.blit(main, [180, 198])
       elements_delay_counter = 1
+      pause = True
   
     pygame.display.flip()
 
     clock.tick(snake_speed)
 
-  # pygame.quit()
+  pygame.quit()
 
 def snakeSums(person):
     # Main game loop
@@ -461,8 +516,8 @@ def snakeSums(person):
     # Quit back to the game map
     return
 
-pygame.quit()
+# pygame.quit()
 
 # Run the game
 person = Player("jocelyn", 12345678, 0, 0, 0, 0, 0, 0)
-game(person)
+snakeSums(person)
