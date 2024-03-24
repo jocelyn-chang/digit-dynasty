@@ -1,4 +1,4 @@
-import pygame, sys, random
+import pygame, sys, random, math
 from Button import Button
 from question import Question
 from Player import Player
@@ -240,6 +240,16 @@ def end_game_screen(levels):
         # Update the display
         pygame.display.update()
 
+# Function to bob the character
+def bob_character(image, rect, time, amplitude, frequency):
+    """Bob the character up and down."""
+    # Calculate the offset using the sine function
+    offset_y = amplitude * math.sin(frequency * time)
+    # Update the rect position
+    rect.y = SCREEN_HEIGHT // 2 + offset_y
+    # Draw the character at the new position
+    screen.blit(image, rect)
+
 def start_game():
     # Scrolling variables
     scroll = 0
@@ -342,8 +352,18 @@ def start_game():
         screen.blit(gate, (200, scroll - 125))
 
         # Draw the panda and arrow
-        screen.blit(panda, (x, 395))
-        screen.blit(arrow, (x, scroll - 450))
+        amplitude = 10
+        frequency = 10
+        time = pygame.time.get_ticks() / 1000
+        offset_y = amplitude * math.sin(frequency * time)
+        # Update the rect position of panda
+        panda_rect.y = 395 + offset_y
+        panda_rect.x = x
+        arrow_rect.y = scroll - 450
+        arrow_rect.x = x
+
+        screen.blit(panda, panda_rect)
+        screen.blit(arrow, (arrow_rect))
 
         # Display number of arrows and pandas
         arrow_text = get_font(20).render(str(num_arrows), True, white)
