@@ -168,6 +168,7 @@ def foodEaten(foodCoord, correctAns):
         return 1
       else:
         return 2
+    i += 1
   return 0
 
 # Main game function
@@ -233,8 +234,6 @@ def game(user):
       # Update snake position
       foodCoord[0][0] += x1_change
       foodCoord[0][1] += y1_change
-      # print("x1: " + str(x1))
-      # print("y1: " + str(y1))
 
       snake_list.append([foodCoord[0][0], foodCoord[0][1]])
 
@@ -256,7 +255,6 @@ def game(user):
           currQ = currQNA[0]
           correctAns = currQNA[1]
           optionList = options(correctAns)
-        print("hello")
         countdown -= 1
         screen.blit(overlay, (0, 0))
         screen.blit(QBOX, (141, 115))
@@ -282,6 +280,9 @@ def game(user):
         screen.blit(FRUIT_D, [438, 385])
         if countdown % 10 == 0 and timerDown > 0:
           timerDown -= 1
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+          pause = False
 
       else:
         pause = False
@@ -293,17 +294,15 @@ def game(user):
         screen.blit(FRUIT_B, (foodCoord[2][0], foodCoord[2][1]))
         screen.blit(FRUIT_C, (foodCoord[3][0], foodCoord[3][1]))
         screen.blit(FRUIT_D, (foodCoord[4][0], foodCoord[4][1]))
-        pause == True
-        
-    if foodEaten(foodCoord, correctAns) == 2:
+    
+    doneYet = foodEaten(foodCoord, optionList[4])
+    if doneYet == 2:
     # if foodCoord[0][0] >= (foodCoord[1][0]-20) and foodCoord[0][0] <= (foodCoord[1][0]+30) and foodCoord[0][1] >= (foodCoord[1][1]-20) and foodCoord[0][1] <= (foodCoord[1][1]+40):
       # foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
       # foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
-      print("p")
       foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
       snake_len += 1
-      pause == True
-      elements_delay_counter = 20
+      elements_delay_counter = 1
       # change countdown to a minute later
       if level < 5:
         countdown = 600
@@ -311,6 +310,12 @@ def game(user):
       else: 
         countdown = 1800
         timerDown = 30
+    if doneYet == 1:
+      screen.blit(overlay, (0, 0))
+      elements_delay_counter = 1
+      
+      
+      
   
     pygame.display.flip()
 
