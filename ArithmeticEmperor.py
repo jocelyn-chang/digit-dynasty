@@ -1,5 +1,6 @@
 import pygame
 import glob
+import random
 from Button import Button
 
 pygame.init()
@@ -19,11 +20,21 @@ EMPERORDRAGON = pygame.image.load("images/emperor_dragon.png")
 QUESTIONSCROLL = pygame.image.load("images/bigScroll.png")
 
 #Load Attack Animation Frames
-divFramePaths = sorted(glob.glob('images/AE_div_attack/*.png'))  
-divAttackFrames = [pygame.transform.scale(pygame.image.load(path), (589, 375)) for path in divFramePaths]
+emperorFramePaths = sorted(glob.glob('images/AE_emperor_attack/*.png')) 
+emperorAttackFrames = [pygame.transform.scale(pygame.image.load(path), (550, 325)) for path in emperorFramePaths]
+
+addFramePaths = sorted(glob.glob('images/AE_add_attack/*.png')) 
+addAttackFrames = [pygame.transform.scale(pygame.image.load(path), (500, 290)) for path in addFramePaths]
 
 subFramePaths = sorted(glob.glob('images/AE_sub_attack/*.png')) 
 subAttackFrames = [pygame.transform.scale(pygame.image.load(path), (589, 375)) for path in subFramePaths]
+
+mulFramePaths = sorted(glob.glob('images/AE_mul_attack/*.png'))  
+mulAttackFrames = [pygame.transform.scale(pygame.image.load(path), (589, 375)) for path in mulFramePaths]
+
+divFramePaths = sorted(glob.glob('images/AE_div_attack/*.png'))  
+divAttackFrames = [pygame.transform.scale(pygame.image.load(path), (589, 375)) for path in divFramePaths]
+
 
 # Animation settings
 frame_rate = 10
@@ -31,18 +42,22 @@ frame_index = 0
 
 #Set up Variables
 emperorLevel = 0
+emperorAttackPower = 10
 pandaHealth = 100
 emperorHealth = 100 #multiply these by emperor level once determined
 addAttackPower = 10 #multiply these by strength once determined
-emperorHealthDisplayFactor = 188/emperorHealth
-pandaHealthDisplayFactor = 188/pandaHealth
 subAttackPower = 10
 mulAttackPower = 10
 divAttackPower = 10
 
+emperorHealthDisplayFactor = 188/emperorHealth
+pandaHealthDisplayFactor = 188/pandaHealth
+
 emperorNames = ["Emperor AddWukong", "Emperor SubPyrros", "Emperor MulSmaug", "Emperor DivPorkus"]
 emperorTypes = ["Addition", "Subtraction", "Multiplication", "Division"]
 emperorRotation = 0
+
+operandSymbols = ['+', '-', '*', '/']
 
 # define colours
 white = (255, 255, 255)
@@ -54,8 +69,12 @@ def get_font(font, size):
         return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 def attack_emperor(attackType):
-  global emperorHealth, emperorHealthDisplay
+  global emperorHealth
   emperorHealth = emperorHealth - attackType
+
+def attack_player():
+  global pandaHealth
+  pandaHealth = pandaHealth - emperorAttackPower
 
 def check_answer(answer, correct_answer):
 
@@ -88,9 +107,52 @@ def check_answer(answer, correct_answer):
     
     return correct
 
+def generate_question_answer():
+  # while True:
+  #       num_operands = random.randint(2, 4)  # Random number of operands
+  #       operands = random.choices(operandSymbols, k=num_operands)  # Randomly select operands
+  #       numbers = [random.randint(1, 10) for _ in range(num_operands + 1)]  # Generate random numbers
+
+  #       # Compute the result of the expression
+  #       result = numbers[0]
+  #       for op, num in zip(operands, numbers[1:]):
+  #           if op == '/':
+  #               if num != 0 and result % num == 0:  # Ensure division is whole number
+  #                   result //= num
+  #               else:
+  #                   break
+  #           elif op == '*':
+  #               result *= num
+  #           elif op == '+':
+  #               result += num
+  #           elif op == '-':
+  #               result -= num
+  #       else:  # If all operations produce a whole number result
+  #           question = ' '.join([f'{num} {op}' for num, op in zip(numbers[:-1], operands)]) + f' {numbers[-1]}'  # Construct the question string
+  #           return [question, result]  # Return the question and its result as a list
+   while True:
+        num_operands = random.randint(2, 4)  # Random number of operands
+        operands = random.choices(operandSymbols, k=num_operands)  # Randomly select operands
+        numbers = [random.randint(1, 10) for _ in range(num_operands + 1)]  # Generate random numbers
+
+        # Construct the expression string
+        expression = ' '.join([f'{num} {op}' for num, op in zip(numbers[:-1], operands)]) + f' {numbers[-1]}'
+
+        try:
+            # Evaluate the expression
+            result = eval(expression)
+
+            # Check if the result is a whole number
+            if isinstance(result, int) and result == round(result):
+                return [expression, result]  # Return the expression and its result as a list
+        except Exception:
+            pass  # Ignore any errors during evaluation and continue generating a new question
+        
 def question():
     answer = ""
-    correct_answer = 6
+    questionAndAnswer = generate_question_answer()
+    question_text = questionAndAnswer[0]
+    correct_answer = questionAndAnswer[1]
     run = True
 
     while run:
@@ -102,7 +164,7 @@ def question():
         titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
         SCREEN.blit(title, titleRect)
 
-        title = get_font("Shojumaru", 40).render(f"3 X 2", True, white)
+        title = get_font("Shojumaru", 40).render(question_text, True, white)
         titleRect = title.get_rect()
         titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         SCREEN.blit(title, titleRect)
@@ -133,7 +195,7 @@ def question():
         # Update the display
         pygame.display.update()
 
-def animate_attack(attackFrames):
+def animate_attack(attackFrames, posx, posy):
   global frame_index
    
   clock = pygame.time.Clock()
@@ -151,9 +213,9 @@ def animate_attack(attackFrames):
     playerNameText = get_font("Sawarabi", 20).render("Player name", True, (0, 0, 0)) 
     SCREEN.blit(emperorNameText, (50, 62))
     SCREEN.blit(playerNameText, (750 - playerNameText.get_width(), 385)) #position references top right corner of text box
-    
+
     # Blit current frame onto the screen
-    SCREEN.blit(attackFrames[frame_index], (290, 25))  # Adjust the position as needed
+    SCREEN.blit(attackFrames[frame_index], (posx, posy))  # Adjust the position as needed
 
     # Increment frame index and loop back to the beginning if necessary
     frame_index = (frame_index + 1) % len(attackFrames)
@@ -202,20 +264,35 @@ def start_game():
       if event.type == pygame.MOUSEBUTTONDOWN:
         if ADD_BUTTON.checkInput(MOUSE_POS):
             if question():
-              animate_attack(divAttackFrames)
+              animate_attack(addAttackFrames, 365, 25)
               attack_emperor(addAttackPower)
-        if DIV_BUTTON.checkInput(MOUSE_POS):
-            if question():
-              animate_attack(divAttackFrames)
-              attack_emperor(divAttackPower)
+            else:
+              animate_attack(emperorAttackFrames, -45, 170) 
+              attack_player()
+
         if SUB_BUTTON.checkInput(MOUSE_POS):
             if question():
-              animate_attack(subAttackFrames)
+              animate_attack(subAttackFrames, 320, -30)
               attack_emperor(subAttackPower)
+            else:
+              animate_attack(emperorAttackFrames, -45, 170) 
+              attack_player()
+
+        if DIV_BUTTON.checkInput(MOUSE_POS):
+            if question():
+              animate_attack(divAttackFrames, 290, 25)
+              attack_emperor(divAttackPower)
+            else:
+              animate_attack(emperorAttackFrames, -45, 170) 
+              attack_player()
+
         if MUL_BUTTON.checkInput(MOUSE_POS):
             if question():
-              animate_attack(subAttackFrames)
+              animate_attack(mulAttackFrames, 295, -80)
               attack_emperor(mulAttackPower)
+            else:
+              animate_attack(emperorAttackFrames, -45, 170) 
+              attack_player()
 
     mouse_x, mouse_y = MOUSE_POS
     font = pygame.font.Font(None, 36)
