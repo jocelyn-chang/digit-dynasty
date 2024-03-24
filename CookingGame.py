@@ -36,6 +36,10 @@ RESIZED_BACK = pygame.image.load("images/resized_back.png")
 RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
 start_screen = pygame.image.load("images/Cooking Game Start Screen.png")
 
+#game over or congrats screens
+question_scroll = pygame.image.load("images/bigScroll.png")
+happypanda = pygame.image.load("images/thumbsuppanda.png")
+
 # Initialize the game screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('COOKING GAME')
@@ -46,6 +50,7 @@ clock = pygame.time.Clock()
 #font = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 20)
 
 number_of_dumplings = 0
+correct_answer = 0
 
 def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
@@ -152,18 +157,63 @@ def update_photos(photo_positions, last_photo_time, current_time, total_question
             last_photo_time = current_time
             photo_added = True  # A new photo was added
     return last_photo_time, photo_added
-
-def score(score_correct):
-    sub_score = 0
-    if score_correct == True:
-        sub_score = sub_score + 1
-    return sub_score
     
 def level(sub_level, sub_score):
     if sub_score == 5:
         sub_level = sub_level + 1    
     print("level")
     return sub_level
+
+def end_game_screen(correct_order):
+    run = True
+    NEXT_BUTTON = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (650, 400), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+
+    #screen.blit(dead_panda, (x_pos-5, 385))
+    pygame.display.update()
+
+    pygame.time.delay(1000)
+    while run:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+        # Display question screen
+        screen.blit(question_scroll, (25, 100))
+
+        if correct_order == 5:
+            title_lines = ["Congratulations you moved up one level!"]
+        else:
+            title_lines = ["You need to get 5 correct orders in a row to increase your level, keep practicing!"]
+        
+        line_height = get_font(25).get_height()
+
+        for i, line in enumerate(title_lines):
+            title_text = get_font(20).render(line, True, WHITE)
+            inputRect = title_text.get_rect()
+            inputRect.center = (SCREEN_WIDTH // 2, 225 + i * line_height)  # Adjust position for each line
+            screen.blit(title_text, inputRect)
+        
+        screen.blit(happypanda, (250, 330))
+
+        # Display user's input text
+        # input_text = get_font(20).render(title, True, white)
+        # inputRect = input_text.get_rect()
+        # inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
+        # screen.blit(input_text, inputRect)
+
+        if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
+            screen.blit(RESIZED_NEXT, (510, 249))
+        
+        NEXT_BUTTON.update(screen)
+
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if NEXT_BUTTON.checkInput(GAME_MOUSE_POS):
+                    run = False
+        # Update the display
+        pygame.display.update()
 
 def draw_screen(dumpling_positions, photo_positions, questions):
     screen.fill(WHITE)
@@ -186,6 +236,9 @@ def draw_screen(dumpling_positions, photo_positions, questions):
             
     num_dumplings_text = get_font(20).render(f"Dumplings: {len(dumpling_positions)}", True, (0, 0, 0))
     screen.blit(num_dumplings_text, (26, SCREEN_HEIGHT - 40))
+    
+    score_text = get_font(20).render(f"Score: {correct_answer}", True, (0, 0, 0))
+    screen.blit(score_text, (26, SCREEN_HEIGHT - 80))
     
 
     pygame.display.flip()
@@ -211,14 +264,18 @@ def playGame():
     
     current_question = Question(player.name, player.password, player.best_game, player.best_score, player.add_score, player.mul_score, player.div_score, player.sub_score)
     
+    global correct_answer
+    
     while not done:
         current_time = pygame.time.get_ticks()
         ans = handle_events(dumpling_positions, central_area, questions)
         if ans == False:
+            end_game_screen(correct_answer)
             done = True
             break
         
         elif ans == True and questions:
+            correct_answer = correct_answer + 1
             questions.pop(0)  # Remove the answered question
             photo_positions.pop(0)  # Remove the corresponding photo
         
@@ -230,6 +287,7 @@ def playGame():
 
         if total_questions_generated >= 5 and not questions:
             # End the game when all 5 questions have been generated and answered
+            end_game_screen(correct_answer)
             done = True
             
         draw_screen(dumpling_positions, photo_positions, questions)
