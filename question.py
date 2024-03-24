@@ -38,13 +38,13 @@ class Question (Player):
 
         elif operation == '*':
             if level <= 5:
-                digits = (2, 5)  # Single-digit numbers    
+                digits = (2, 4)  # Single-digit numbers    
             elif 5 < level <= 10:
-                digits = (2, 8)  # Single and double-digit numbers
+                digits = (2, 7)  # Single and double-digit numbers
             elif 10 < level <= 15:
-                digits = (2, 11)  # Single, harder double-digit numbers
+                digits = (2, 10)  # Single, harder double-digit numbers
             elif 15 < level <= 20:
-                digits = (2, 14)  # Single, and all double-digit numbers
+                digits = (2, 15)  # Single, and all double-digit numbers
             elif 20 < level <= 25:
                 digits = (2, 20)  # Single, double, and easier triple-digit numbers
             elif 25 < level <= 30:

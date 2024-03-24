@@ -2,6 +2,8 @@ import pygame, sys, random
 from Button import Button
 from question import Question
 from Player import Player
+from sympy import symbols, Eq, solve
+
 
 
 pygame.init()
@@ -286,31 +288,36 @@ def start_game():
             else:
                 num_pandas -= num_arrows
             
-            randomizer = random.randint(1, 100)
-            if incorrect_counter == 0:
-                if num_pandas > 5:
-                    num_arrows = 2
-                elif num_pandas > 8:
-                    num_arrows = 3
-                elif num_pandas > 12:
-                    num_arrows = 4
-                else:
-                    num_arrows = round(num_pandas/2)
-            elif incorrect_counter == 1:
-                if randomizer < 25:
-                    num_arrows = num_pandas + random.randint(1,20)
-            elif incorrect_counter == 2:
-                if randomizer < 50:
-                    num_arrows = num_pandas + random.randint(1,20)
+        randomizer = random.randint(1, 100)
+        if incorrect_counter == 0:
+            if num_pandas < 5:
+                num_arrows = 2
+            elif num_pandas < 7:
+                num_arrows = 3
+            elif num_pandas < 10:
+                num_arrows = 4
             else:
+                variable = symbols('x')
+                equation = Eq(num_pandas - variable, 10)
+                reducer = solve(equation, variable)[0]
+                num_arrows = random.randint(reducer, reducer +5) 
+        elif incorrect_counter == 1:
+            if randomizer < 50:
                 num_arrows = num_pandas + random.randint(1,20)
+            else:
+                num_arrows = round(num_pandas/2)
+        elif incorrect_counter == 2:
+            if randomizer < 85:
+                num_arrows = num_pandas + random.randint(1,20)
+            else:
+                num_arrows = round(num_pandas/2)
+        else:
+            num_arrows = num_pandas + random.randint(1,20)
 
 
         #checks what gate the panda enters
         if scroll == 400:
             if x > SCREEN_WIDTH // 2:
-                print(num_pandas)
-                print(num2)
 
                 if question(num_pandas, question_text[1]):
                     num_pandas *= question_text[1]
@@ -392,7 +399,6 @@ def running_army():
                     if START_BUTTON.checkInput(MOUSE_POS):
                         start_game()
                     if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
-                        print("working")
                         instruction1()
                     if RETURN_BUTTON.checkInput(MOUSE_POS):
                         run = False
@@ -404,4 +410,4 @@ def running_army():
     # Quit back to the game map
     return
 
-#running_army()
+running_army()
