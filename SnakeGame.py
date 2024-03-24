@@ -465,4 +465,4 @@ pygame.quit()
 
 # Run the game
 person = Player("jocelyn", 12345678, 0, 0, 0, 0, 0, 0)
-snakeSums(person)
+game(person)
