@@ -106,10 +106,10 @@ def start_game():
         SCREEN.blit(SIGNUP, (0, 0))
         
         START_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",22), base_colour = "White", hovering_colour = "#b51f09")
+        START_BACK.update(SCREEN)
+
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             SCREEN.blit(RESIZED_BACK, (-90,-96))
-        
-        START_BACK.update(SCREEN)
 
         input_box(SCREEN, username_rect, username, input_font, active = username_active)
         input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
@@ -218,10 +218,10 @@ def load_game():
         SCREEN.blit(LOGIN, (0, 0))
         
         LOAD_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",22), base_colour = "White", hovering_colour = "#b51f09")
+        LOAD_BACK.update(SCREEN)
+
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             SCREEN.blit(RESIZED_BACK, (-90,-96))
-        
-        LOAD_BACK.update(SCREEN)
 
         PLAY_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "PLAY", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
 
@@ -338,10 +338,10 @@ def high_score():
             SCREEN.blit(mul_div_text, (SKILLS_X + 24, row_y + 18))
 
         SCORE_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
+        SCORE_BACK.update(SCREEN)
+
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             SCREEN.blit(RESIZED_BACK, (-90,-96))
-        
-        SCORE_BACK.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -362,10 +362,10 @@ def instructions():
         SCREEN.blit(INSTRUCTIONS, (0, 0))
         
         INSTRUCTIONS_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_BACK.update(SCREEN)
+
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             SCREEN.blit(RESIZED_BACK, (-90,-96))
-        
-        INSTRUCTIONS_BACK.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -384,10 +384,7 @@ def main_menu():
         SCREEN.blit(BACKGROUND, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
-
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
-        if (20<MOUSE_X<80 and 20<MOUSE_Y<80):
-            SCREEN.blit(RESIZED_APPLE, (0,0))
 
         START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 75), text_input = "NEW GAME", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
         LOAD_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 189), text_input = "LOAD GAME", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
@@ -402,7 +399,8 @@ def main_menu():
             button.changeColour(MENU_MOUSE_POS)
             button.update(SCREEN)
 
-
+        if (20<MOUSE_X<80 and 20<MOUSE_Y<80):
+            SCREEN.blit(RESIZED_APPLE, (0,0))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
