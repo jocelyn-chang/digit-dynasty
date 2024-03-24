@@ -107,24 +107,32 @@ def options(correctAns):
   if opt3 == opt2 or opt3 == opt1 or opt3 == correctAns: # changing opt3 if it rounds to a repeat number
     opt3 += 1
 
-  optList = [str(opt1), str(opt2), str(opt3), str(correctAns)] # list of options
+  optList = [opt1, opt2, opt3, correctAns] # list of options
 
   # Picks out and assigns a random option from the list
   optA = random.choice(optList)
   optList.remove(optA)
+  if optA == correctAns:
+    rightChoice = "optA"
   optB = random.choice(optList)
   optList.remove(optB)
+  if optB == correctAns:
+    rightChoice = "optB"
   optC = random.choice(optList)
   optList.remove(optC)
+  if optC == correctAns:
+    rightChoice = "optC"
   optD = random.choice(optList)
+  if optD == correctAns:
+    rightChoice = "optD"
 
   # Turn each option into text
-  a = get_font(25).render(optA, True, black)
-  b = get_font(25).render(optB, True, black)
-  c = get_font(25).render(optC, True, black)
-  d = get_font(25).render(optD, True, black)
+  a = get_font(25).render(str(optA), True, black)
+  b = get_font(25).render(str(optB), True, black)
+  c = get_font(25).render(str(optC), True, black)
+  d = get_font(25).render(str(optD), True, black)
 
-  return [a, b, c, d]
+  return [a, b, c, d, rightChoice]
 
 # Create list of coordinates for the food
 def foodCoordinates(x1, y1):
@@ -142,7 +150,25 @@ def foodCoordinates(x1, y1):
   return foodCoord
 
 # Check if food's been eaten
-# def foodEaten()
+def foodEaten(foodCoord, correctAns):
+  snakex = foodCoord[0][0]
+  snakey = foodCoord[0][1]
+  if correctAns == "optA":
+    answer = 1
+  if correctAns == "optB":
+    answer = 2
+  if correctAns == "optC":
+    answer = 3
+  if correctAns == "optD":
+    answer = 4
+  i = 1
+  while i < 5:
+    if snakex >= (foodCoord[i][0]-20) and snakex <= (foodCoord[i][0]+30) and snakey >= (foodCoord[i][1]-20) and snakey <= (foodCoord[i][1]+40):
+      if i != answer:
+        return 1
+      else:
+        return 2
+  return 0
 
 # Main game function
 def game(user):
@@ -167,45 +193,9 @@ def game(user):
   snake_list = []
   snake_len = 1
 
-  # foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-  # foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
-  # # Randomize position of fruits
-  # foodCoord = [(x1, y1)]
-  # i = 0
-  # while i < 4:
-  #   num1 = round(random.randrange(0, SCREEN_WIDTH -(snake_block + 40)) / 10.0) * 10.0
-  #   num2 = round(random.randrange(0, SCREEN_HEIGHT - (snake_block + 40)) / 10.0) * 10.0
-  #   while foodCoord.__contains__((num1, num2)):
-  #     num1 = round(random.randrange(0, SCREEN_WIDTH - (snake_block + 40)) / 10.0) * 10.0
-  #     num2 = round(random.randrange(0, SCREEN_HEIGHT - (snake_block + 40)) / 10.0) * 10.0
-  #   foodCoord.append((num1, num2))
-  #   i += 1
-
-  # foodxa = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-  # foodya = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
-  
-  # foodxb = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-  # foodyb = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
-  
-  # foodxc = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-  # foodyc = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
-  
-  # foodxd = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-  # foodyd = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
 
   # Randomize coordinates for each orange
   foodCoord = foodCoordinates(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
-  # foodxa = foodCoord[1][0]
-  # foodya = foodCoord[1][1]
-  
-  # foodxb = foodCoord[2][0]
-  # foodyb = foodCoord[2][1]
-  
-  # foodxc = foodCoord[3][0]
-  # foodyc = foodCoord[3][1]
-  
-  # foodxd = foodCoord[4][0]
-  # foodyd = foodCoord[4][1]
 
   # Delay the question screen
   elements_delay_counter = 20
@@ -305,8 +295,8 @@ def game(user):
         screen.blit(FRUIT_D, (foodCoord[4][0], foodCoord[4][1]))
         pause == True
         
-
-    if foodCoord[0][0] >= (foodCoord[1][0]-20) and foodCoord[0][0] <= (foodCoord[1][0]+30) and foodCoord[0][1] >= (foodCoord[1][1]-20) and foodCoord[0][1] <= (foodCoord[1][1]+40):
+    if foodEaten(foodCoord, correctAns) == 2:
+    # if foodCoord[0][0] >= (foodCoord[1][0]-20) and foodCoord[0][0] <= (foodCoord[1][0]+30) and foodCoord[0][1] >= (foodCoord[1][1]-20) and foodCoord[0][1] <= (foodCoord[1][1]+40):
       # foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
       # foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
       print("p")
