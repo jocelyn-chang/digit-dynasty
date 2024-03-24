@@ -1,7 +1,8 @@
-import pygame
+import pygame, sys
 import time
 import random
 from Player import Player
+from Button import Button
 
 # Initialize Pygame
 pygame.init()
@@ -22,6 +23,12 @@ overlay.fill((0, 0, 0))  # Fill with black
 # Load images
 BACKGROUND = pygame.image.load("images/snakegamebg.png")
 QBOX = pygame.image.load("images/snakegameqbox.png")
+INSTRUCTION1 = pygame.image.load("images/Multiplication_instruction.png")
+INSTRUCTION2 = pygame.image.load("images/Instructions for running army.png")
+BACK = pygame.image.load("images/back_button.png")
+RESIZED_BACK = pygame.image.load("images/resized_back.png")
+RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
+start_screen = pygame.image.load("images/snakesumsstart.png")
 
 # Load fruit images and scale to the right size
 fruit_size = (50, 50)
@@ -68,6 +75,16 @@ def current_score(score):
   # Main text
   main = get_font(25).render("Score: " + str(score), True, white)
   screen.blit(main, [650, 10]) # Displays text
+
+# Function to display current score
+def current_level(level):
+  # Shadow text
+  shadow = get_font(25).render("Level: " + str(level), True, green4)
+  screen.blit(shadow, [502, 12]) # Displays text
+    
+  # Main text
+  main = get_font(25).render("Level: " + str(level), True, white)
+  screen.blit(main, [500, 10]) # Displays text
 
 # Function to draw the snake
 def snake(snake_block, snake_list):
@@ -134,17 +151,101 @@ def options(correctAns):
 
   return [a, b, c, d, rightChoice]
 
-# Create list of coordinates for the food
+# # Create list of coordinates for the food
+# def foodCoordinates(x1, y1):
+#   # Randomize position of fruits
+#   foodCoord = [[x1, y1]]
+#   i = 0
+#   while i < 4:
+#     num1 = round(random.randrange(50, SCREEN_WIDTH -(snake_block + 50)) / 10.0) * 10.0
+#     num2 = round(random.randrange(50, SCREEN_HEIGHT - (snake_block + 50)) / 10.0) * 10.0
+#     while foodCoord.__contains__((num1, num2)):
+#       num1 = round(random.randrange(50, SCREEN_WIDTH - (snake_block + 50)) / 10.0) * 10.0
+#       num2 = round(random.randrange(50, SCREEN_HEIGHT - (snake_block + 50)) / 10.0) * 10.0
+#     foodCoord.append([num1, num2])
+#     i += 1
+#   return foodCoord
+
+# Intructions screen
+def instruction1():
+    run = True
+    while run:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        screen.blit(INSTRUCTION1, (0, 0))
+        
+        INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            screen.blit(RESIZED_BACK, (-90,-96))
+        if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
+            screen.blit(RESIZED_NEXT, (540, 324))
+
+        INSTRUCTIONS_BACK.update(screen)
+        INSTRUCTIONS_NEXT.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    run = False
+                if INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
+                    instruction2()
+                    run = False
+
+        pygame.display.update()
+
+def instruction2():
+    run = True
+    while run:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        screen.blit(INSTRUCTION2, (0, 0))
+        
+        INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            screen.blit(RESIZED_BACK, (-90,-96))
+        if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
+            screen.blit(RESIZED_NEXT, (540, 324))
+
+        INSTRUCTIONS_BACK.update(screen)
+        INSTRUCTIONS_NEXT.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS) or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
+                    run = False
+
+        pygame.display.update()
+
 def foodCoordinates(x1, y1):
   # Randomize position of fruits
   foodCoord = [[x1, y1]]
   i = 0
+  min_distance = 50
   while i < 4:
-    num1 = round(random.randrange(0, SCREEN_WIDTH -(snake_block + 40)) / 10.0) * 10.0
-    num2 = round(random.randrange(0, SCREEN_HEIGHT - (snake_block + 40)) / 10.0) * 10.0
-    while foodCoord.__contains__((num1, num2)):
-      num1 = round(random.randrange(0, SCREEN_WIDTH - (snake_block + 40)) / 10.0) * 10.0
-      num2 = round(random.randrange(0, SCREEN_HEIGHT - (snake_block + 40)) / 10.0) * 10.0
+    while True:
+      num1 = round(random.randrange(50, SCREEN_WIDTH - (snake_block + 50)) / 10.0) * 10.0
+      num2 = round(random.randrange(50, SCREEN_HEIGHT - (snake_block + 50)) / 10.0) * 10.0
+      # Check distance from existing coordinates
+      too_close = False
+      for coord in foodCoord:
+        distance = ((num1 - coord[0]) ** 2 + (num2 - coord[1]) ** 2) ** 0.5
+        if distance < min_distance:
+          too_close = True
+          break
+      if not too_close:
+        break
     foodCoord.append([num1, num2])
     i += 1
   return foodCoord
@@ -199,7 +300,7 @@ def game(user):
   foodCoord = foodCoordinates(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 
   # Delay the question screen
-  elements_delay_counter = 20
+  elements_delay_counter = 10
 
   # Adjust counter according to level, 10 seconds for < 5 and 30 seconds otherwise
   if level < 5: 
@@ -290,6 +391,7 @@ def game(user):
       if pause == False: 
         snake(snake_block, snake_list)
         current_score(snake_len - 1)
+        current_level((snake_len - 1)//5)
         screen.blit(FRUIT_A, (foodCoord[1][0], foodCoord[1][1]))
         screen.blit(FRUIT_B, (foodCoord[2][0], foodCoord[2][1]))
         screen.blit(FRUIT_C, (foodCoord[3][0], foodCoord[3][1]))
@@ -312,17 +414,55 @@ def game(user):
         timerDown = 30
     if doneYet == 1:
       screen.blit(overlay, (0, 0))
+      shadow = get_font(65).render("Game Over", True, black)
+      main = get_font(65).render("Game Over", True, white)
+
+      screen.blit(shadow, [182, 200])
+      screen.blit(main, [180, 198])
       elements_delay_counter = 1
-      
-      
-      
   
     pygame.display.flip()
 
     clock.tick(snake_speed)
 
-  pygame.quit()
+  # pygame.quit()
+
+def snakeSums(person):
+    # Main game loop
+    run = True
+    while run:
+        # display start screen
+        screen.blit(start_screen, (0,0))
+        MOUSE_POS = pygame.mouse.get_pos()
+
+        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 250), text_input = "START GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 380), text_input = "INSTRUCTIONS", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 510), text_input = "BACK TO MENU", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+
+        for button in [START_BUTTON, INSTRUCTION_BUTTON, RETURN_BUTTON] :
+            button.changeColour(MOUSE_POS)
+            button.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                    if START_BUTTON.checkInput(MOUSE_POS):
+                        game(person)
+                    if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
+                        instruction1()
+                    if RETURN_BUTTON.checkInput(MOUSE_POS):
+                        run = False
+                        break
+
+        # Update the display
+        pygame.display.update()
+
+    # Quit back to the game map
+    return
+
+pygame.quit()
 
 # Run the game
 person = Player("jocelyn", 12345678, 0, 0, 0, 0, 0, 0)
-game(person)
+snakeSums(person)

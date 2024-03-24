@@ -416,13 +416,13 @@ def running_army():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                    if START_BUTTON.checkInput(MOUSE_POS):
-                        start_game()
-                    if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
-                        instruction1()
-                    if RETURN_BUTTON.checkInput(MOUSE_POS):
-                        run = False
-                        break
+                if START_BUTTON.checkInput(MOUSE_POS):
+                    start_game()
+                if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
+                    instruction1()
+                if RETURN_BUTTON.checkInput(MOUSE_POS):
+                    run = False
+                    break
 
         # Update the display
         pygame.display.update()
