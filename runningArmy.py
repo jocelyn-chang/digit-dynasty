@@ -23,10 +23,12 @@ RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.pn
 start_screen = pygame.image.load("images/Running Army Start Screen.png")
 image = pygame.image.load("images/running_army_bg.png")
 panda = pygame.transform.scale(pygame.image.load("images/panda1.png"), (50, 50))
+dead_panda = pygame.transform.scale(pygame.image.load("images/panda4.png"), (60, 60))
 gate = pygame.transform.scale(pygame.image.load("images/gates.png"), (400, 125))
 qbox = pygame.transform.scale(pygame.image.load("images/questionscreen.png"), (400, 125))
 arrow = pygame.transform.scale(pygame.image.load("images/parrow.png"), (50, 50))
 question_scroll = pygame.image.load("images/bigScroll.png")
+happypanda = pygame.image.load("images/thumbsuppanda.png")
 
 image_height = image.get_height()
 image_width = image.get_width()
@@ -139,11 +141,14 @@ def check_answer(answer, correct_answer):
         correct = True
 
     else:
-        # Display user's input text
-        incorrect = get_font(20).render(f"Incorrect, Correct answer = {correct_answer}  your answer = {answer}", True, white)
-        inputRect = incorrect.get_rect()
-        inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
-        screen.blit(incorrect, inputRect)
+        incorrect_lines = ["Incorrect", f"Correct Answer = {correct_answer}", f"Your Answer = {answer}"]
+        line_height = get_font(20).get_height()
+        for i, line in enumerate(incorrect_lines):
+            incorrect_text = get_font(20).render(line, True, white)
+            inputRect = incorrect_text.get_rect()
+            inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + i * line_height)  # Adjust position for each line
+            screen.blit(incorrect_text, inputRect)
+
 
     # Update the display
     pygame.display.update()
@@ -199,24 +204,35 @@ def question(numpandas, multiplier):
         # Update the display
         pygame.display.update()
 
-def end_game_screen(levels):
+def end_game_screen(gates, x_pos):
     run = True
     NEXT_BUTTON = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (650, 400), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
 
+    screen.blit(dead_panda, (x_pos-5, 385))
+    pygame.display.update()
 
+    pygame.time.delay(2000)
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
         # Display question screen
         screen.blit(question_scroll, (25, 100))
 
-        if levels > 0:
-            title = get_font(25).render("Congratulations you imroved " + " levels", True, white)
+        if gates >= 5:
+            levels = math.floor(gates / 5)
+            title_lines = ["Congratulations you imroved", f"{levels} levels"]
         else:
-            title = get_font(25).render("Keep practicing!", True, white)
-        titleRect = title.get_rect()
-        titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
-        screen.blit(title, titleRect)
+            title_lines = ["Keep practicing!"]
+        
+        line_height = get_font(25).get_height()
+
+        for i, line in enumerate(title_lines):
+            title_text = get_font(25).render(line, True, white)
+            inputRect = title_text.get_rect()
+            inputRect.center = (SCREEN_WIDTH // 2, 225 + i * line_height)  # Adjust position for each line
+            screen.blit(title_text, inputRect)
+        
+        screen.blit(happypanda, (250, 330))
 
         # Display user's input text
         # input_text = get_font(20).render(title, True, white)
@@ -240,15 +256,36 @@ def end_game_screen(levels):
         # Update the display
         pygame.display.update()
 
-# Function to bob the character
-def bob_character(image, rect, time, amplitude, frequency):
-    """Bob the character up and down."""
-    # Calculate the offset using the sine function
-    offset_y = amplitude * math.sin(frequency * time)
-    # Update the rect position
-    rect.y = SCREEN_HEIGHT // 2 + offset_y
-    # Draw the character at the new position
-    screen.blit(image, rect)
+def generate_arrows(incorrect_counter, num_pandas):
+    randomizer = random.randint(1, 100)
+    if incorrect_counter == 0:
+        if num_pandas < 3:
+            num_arrows = 1
+        elif num_pandas < 5:
+            num_arrows = 2
+        elif num_pandas < 7:
+            num_arrows = 3
+        elif num_pandas < 10:
+            num_arrows = 4
+        else:
+            variable = symbols('x')
+            equation = Eq(num_pandas - variable, 10)
+            reducer = solve(equation, variable)[0]
+            num_arrows = random.randint(reducer, reducer +5) 
+    elif incorrect_counter == 1:
+        if randomizer < 50:
+            num_arrows = num_pandas + random.randint(1,20)
+        else:
+            num_arrows = round(num_pandas/2)
+    elif incorrect_counter == 2:
+        if randomizer < 85:
+            num_arrows = num_pandas + random.randint(1,20)
+        else:
+            num_arrows = round(num_pandas/2)
+    else:
+        num_arrows = num_pandas + random.randint(1,20)
+    
+    return num_arrows
 
 def start_game():
     # Scrolling variables
@@ -259,6 +296,7 @@ def start_game():
     num_arrows = 1
     num_pandas = 1
     incorrect_counter = 0
+    gates = 0
 
     # temporary player
     player = Player(name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1)
@@ -292,37 +330,13 @@ def start_game():
         # Check if arrow hits the panda
         if scroll == 0:
             if num_arrows >= num_pandas:
-                end_game_screen(0)  # Adjust the parameter as needed
+                end_game_screen(gates, x)  # Adjust the parameter as needed
                 run = False  # Exit the function if game ends
 
             else:
                 num_pandas -= num_arrows
             
-        randomizer = random.randint(1, 100)
-        if incorrect_counter == 0:
-            if num_pandas < 5:
-                num_arrows = 2
-            elif num_pandas < 7:
-                num_arrows = 3
-            elif num_pandas < 10:
-                num_arrows = 4
-            else:
-                variable = symbols('x')
-                equation = Eq(num_pandas - variable, 10)
-                reducer = solve(equation, variable)[0]
-                num_arrows = random.randint(reducer, reducer +5) 
-        elif incorrect_counter == 1:
-            if randomizer < 50:
-                num_arrows = num_pandas + random.randint(1,20)
-            else:
-                num_arrows = round(num_pandas/2)
-        elif incorrect_counter == 2:
-            if randomizer < 85:
-                num_arrows = num_pandas + random.randint(1,20)
-            else:
-                num_arrows = round(num_pandas/2)
-        else:
-            num_arrows = num_pandas + random.randint(1,20)
+        num_arrows = generate_arrows(incorrect_counter, num_pandas)
 
 
         #checks what gate the panda enters
@@ -334,13 +348,16 @@ def start_game():
                     incorrect_counter = 0
                 else:
                     incorrect_counter +=1
+                    gates -= 1
             else:
                 if question(num_pandas, question_text[0]):
                     num_pandas *= question_text[0]
                     incorrect_counter = 0
                 else:
                     incorrect_counter += 1
+                    gates -= 1
             question_text = current_question.generate_question('*')
+            gates += 1
 
 
         # Clear the screen
