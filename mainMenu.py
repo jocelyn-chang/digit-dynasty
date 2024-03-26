@@ -201,6 +201,11 @@ def load_player(input_username, input_password):
                 return player_info
     return None
 
+def play_music(file):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play()
+
 # Go to load screen 
 def load_game():
     username = ''
@@ -422,6 +427,7 @@ def main_menu():
     welcome_screen()
 
     while True:
+        play_music("sound/EDM.mp3")
         SCREEN.blit(BACKGROUND, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
@@ -443,6 +449,7 @@ def main_menu():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.mixer.music.stop()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -457,6 +464,7 @@ def main_menu():
                 # if TEACHER_BUTTON.checkInput(TEACHER_BUTTON):
                 #     instructor_dashboard()
                 if EXIT_BUTTON.checkInput(MENU_MOUSE_POS):
+                    pygame.mixer.music.stop()
                     pygame.quit()
                     sys.exit()
         pygame.display.update()

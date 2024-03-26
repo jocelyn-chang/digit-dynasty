@@ -307,6 +307,8 @@ def end_screen(result):
 
 # Main game function
 def game(user):
+  result = False
+  fruit_delay = 4
   run = True 
   pause = True
   snake_pause = True
@@ -414,7 +416,7 @@ def game(user):
       elements_delay_counter -= 1
       pause = True
     else:
-      if countdown > 0 and pause == True and timerDown > 0:
+      if countdown > 0 and pause == True and timerDown > 0 and result is False:
         snake_pause = True
         if countdown == 600:
           currQNA = question(level)
@@ -435,6 +437,13 @@ def game(user):
         else:
           screen.blit(shadow, [202, 182])
           screen.blit(main, [200, 180])
+        # Shadow text
+        shadow = get_font(25).render("Press Space To Continue", True, green4)
+        # Main text
+        main = get_font(25).render("Press Space To Continue", True, white)
+        
+        screen.blit(shadow, [199, 525])
+        screen.blit(main, [197, 523])
 
         screen.blit(optionList[0], [315, 290])
         screen.blit(optionList[1], [315, 395])
@@ -450,18 +459,37 @@ def game(user):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
           pause = False
-
+      elif result is True:
+        screen.blit(overlay, (0, 0))
+        screen.blit(QBOX, (141, 115))
+        # Shadow text
+        shadow = get_font(25).render("Press Space To Continue", True, green4)
+        # Main text
+        main = get_font(25).render("Press Space To Continue", True, white)
+        
+        screen.blit(shadow, [199, 525])
+        screen.blit(main, [197, 523])
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+          result = False
+          fruit_delay = 4
+          countdown = 600
       else:
         pause = False
+      
+      
 
       if pause == False: 
-        snake(snake_block, snake_list)
-        current_score(snake_len - 1)
-        current_level((snake_len - 1)//5)
-        screen.blit(FRUIT_A, (foodCoord[1][0], foodCoord[1][1]))
-        screen.blit(FRUIT_B, (foodCoord[2][0], foodCoord[2][1]))
-        screen.blit(FRUIT_C, (foodCoord[3][0], foodCoord[3][1]))
-        screen.blit(FRUIT_D, (foodCoord[4][0], foodCoord[4][1]))
+        if fruit_delay > 0:
+           fruit_delay -= 1
+        else:
+          snake(snake_block, snake_list)
+          current_score(snake_len - 1)
+          current_level((snake_len - 1)//5)
+          screen.blit(FRUIT_A, (foodCoord[1][0], foodCoord[1][1]))
+          screen.blit(FRUIT_B, (foodCoord[2][0], foodCoord[2][1]))
+          screen.blit(FRUIT_C, (foodCoord[3][0], foodCoord[3][1]))
+          screen.blit(FRUIT_D, (foodCoord[4][0], foodCoord[4][1]))
     
     doneYet = foodEaten(foodCoord, optionList[4])
     BACK = Button(image = "images/back_button.png", pos = (40, 25), text_input = "", font = get_font(22), base_colour = "White", hovering_colour = "#b51f09")
@@ -473,24 +501,27 @@ def game(user):
       if (snake_len - 1) == 4:
         end_screen(True)
         elements_delay_counter = 1
+        fruit_delay = 4
         pause = True
       elif level < 5:
         foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
         snake_len += 1
         elements_delay_counter = 1
+        fruit_delay = 4
         countdown = 600
         timerDown = 10
+        result = True
       else: 
         foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
         snake_len += 1
         elements_delay_counter = 1
+        fruit_delay = 4
         countdown = 1800
         timerDown = 30
+        result = True
     if doneYet == 1:
       end_screen(False)
       return
-      # elements_delay_counter = 1
-      # pause = True
   
     pygame.display.flip()
 
@@ -511,7 +542,7 @@ def snakeSums(username, password):
         INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 380), text_input = "INSTRUCTIONS", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
         RETURN_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 510), text_input = "BACK TO MENU", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
 
-        for button in [START_BUTTON, INSTRUCTION_BUTTON, RETURN_BUTTON] :
+        for button in [START_BUTTON, INSTRUCTION_BUTTON, RETURN_BUTTON]:
             button.changeColour(MOUSE_POS)
             button.update(screen)
 
