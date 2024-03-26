@@ -49,6 +49,7 @@ def load_map(username, password):
   while run:
 
     MULTTEMP = Button(pygame.image.load("images/templeright.png"), pos = (600, 131), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    TOPTEMP = Button(pygame.image.load("images/templetop.png"), pos = (372, 32), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     Back_Button = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     DIV = Button(RESIZED_MIDDLETEMP, pos = (340, 352), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
 
@@ -115,6 +116,6 @@ def load_map(username, password):
 
     pygame.display.flip()
 
-  # pygame.quit()
+#   pygame.quit()
 
 # load_map()

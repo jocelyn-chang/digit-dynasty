@@ -538,7 +538,8 @@ def game(user):
 
   pygame.quit()
 
-def snakeSums(person):
+def snakeSums(username, password):
+    user = Player(name=username, password=password)
     # Main game loop
     run = True
     while run:
@@ -559,7 +560,7 @@ def snakeSums(person):
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                     if START_BUTTON.checkInput(MOUSE_POS):
-                        game(person)
+                        game(user)
                     if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
                         instruction1()
                     if RETURN_BUTTON.checkInput(MOUSE_POS):
@@ -575,5 +576,6 @@ def snakeSums(person):
 # pygame.quit()
 
 # Run the game
-person = Player("jocelyn", 12345678)
-snakeSums(person)
+username = "jocelyn"
+password = 12345678
+snakeSums(username, password)
