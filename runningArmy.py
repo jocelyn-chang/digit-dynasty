@@ -238,7 +238,7 @@ def lose_screen(x_pos):
         pygame.display.update()
     return 
 
-def win_screen(x_pos):
+def win_screen():
     run = True
     while run:
             MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
@@ -256,10 +256,8 @@ def win_screen(x_pos):
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if PLAY_AGAIN.checkInput(GAME_MOUSE_POS):
-                        return True
-                    elif RETURN.checkInput(GAME_MOUSE_POS):
-                        return False
+                    if RETURN.checkInput(GAME_MOUSE_POS):
+                        return
 
             if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
                 screen.blit(RESIZED_NEXT, (510, 249))
@@ -369,7 +367,8 @@ def start_game(username, password):
             gates += 1
             if gates == 5:
                 player.update_mul(str(int(player.get_mul()) + 1))
-                win_screen(x)
+                win_screen()
+                break
 
         # Clear the screen
         screen.fill((0, 0, 0))
