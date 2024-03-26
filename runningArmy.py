@@ -2,8 +2,6 @@ import pygame, sys, random, math
 from Button import Button
 from question import Question
 from Player import Player
-from sympy import symbols, Eq, solve
-
 
 
 pygame.init()
@@ -278,9 +276,7 @@ def generate_arrows(incorrect_counter, num_pandas):
         elif num_pandas < 10:
             num_arrows = 4
         else:
-            variable = symbols('x')
-            equation = Eq(num_pandas - variable, 10)
-            reducer = solve(equation, variable)[0]
+            reducer = num_pandas-10
             num_arrows = random.randint(reducer, reducer +5) 
     elif incorrect_counter == 1:
         if randomizer < 100:
