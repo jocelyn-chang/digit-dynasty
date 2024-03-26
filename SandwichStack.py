@@ -169,4 +169,4 @@ def start_game():
 
         pygame.display.update()
 
-#sandwich_stack()
+sandwich_stack()
