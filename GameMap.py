@@ -44,7 +44,7 @@ green5 = (117, 132, 133)
 def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
-def load_map():
+def load_map(username, password):
   run = True
   while run:
 
@@ -95,7 +95,7 @@ def load_map():
       screen.blit(RESIZED_BOTTOMTEMP, (340, 352))
       if event.type == pygame.MOUSEBUTTONDOWN:
          if RESIZED_BOTTOMTEMP.checkInput(MOUSE_POS):
-            sandwich_stack()
+            sandwich_stack(username, password)
     
     # boss battle (arithmetic emperor)
     if (350<mouse_x<450 and 220<mouse_y<380):

@@ -1,7 +1,7 @@
 # Import appropriate libraries
 import pygame, sys, random
 from Button import Button
-from Player import load_player
+from Player import Player
 from question import Question
 
 pygame.init()
@@ -37,14 +37,19 @@ def get_font(font, size):
     elif font == "Shojumaru":
         return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
-def spawn_food():
+def spawn_food(answer_bank):
     food = random.choice(food_items)
+    answer = str(random.choice(answer_bank))
     x_pos = random.randrange(0, SCREEN_WIDTH - food.get_width())
     y_pos = -food.get_height()
     food_rect = food.get_rect(topleft = (x_pos, y_pos))
-    return food, food_rect
 
-current_food, current_food_rect = spawn_food()
+    font = get_font('Shojumaru', 9)
+    text_surface = font.render(answer, True, "black")
+    text_rect = text_surface.get_rect(center = (food_rect.centerx, food_rect.top - 10))
+    return food, food_rect, answer
+
+current_food, current_food_rect, current_answer = spawn_food([random.randint(1, 144), random.randint(1, 144)])
 
 # Intructions screen
 def instruction1():
@@ -129,8 +134,11 @@ def sandwich_stack():
         pygame.display.update()
 
 def start_game():
+    lives = 3
+    score = 0
+    
     while True:
-        global current_food, current_food_rect
+        global current_food, current_food_rect, current_answer
         MOUSE_POS = pygame.mouse.get_pos()
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
 
@@ -155,29 +163,38 @@ def start_game():
                 if BACK.checkInput(MOUSE_POS):
                     sandwich_stack()
 
-        player = load_player()
-        cur_question = Question(player)
-        question = cur_question.generate_question("/")
+        while lives > 0:
+            new_player = Player()
+            player = new_player.load_player()
+            cur_question = Question(player)
+            question = cur_question.generate_question("/")
 
-        font = get_font('Shojumaru', 13)
-        text_surface = font.render('What is the answer to:', True, "White")
-        question_surface = font.render(question[0], True, "white")
-        SCREEN.blit(text_surface, (50, 80))
-        SCREEN.blit(question_surface, (50, 100))
+            answer_bank = [random.randint(1, 144), question[1]]
+            current_food, current_food_rect, current_answer = spawn_food(answer_bank)
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and panda_rect.left > 0:
-            panda_rect.x -= PANDA_SPEED
-        if keys[pygame.K_RIGHT] and panda_rect.right < SCREEN_WIDTH:
-            panda_rect.x += PANDA_SPEED
+            font = get_font('Shojumaru', 13)
+            text_surface = font.render('What is the answer to:', True, "White")
+            question_surface = font.render(question[0], True, "white")
+            SCREEN.blit(text_surface, (50, 80))
+            SCREEN.blit(question_surface, (50, 100))
 
-        current_food_rect.y += 2
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_LEFT] and panda_rect.left > 0:
+                panda_rect.x -= PANDA_SPEED
+            if keys[pygame.K_RIGHT] and panda_rect.right < SCREEN_WIDTH:
+                panda_rect.x += PANDA_SPEED
 
-        if panda_rect.colliderect(current_food_rect):
-            current_food, current_food_rect = spawn_food()
+            current_food_rect.y += 2
 
-        if current_food_rect.top > SCREEN_HEIGHT:
-            current_food, current_food_rect = spawn_food()
+            if panda_rect.colliderect(current_food_rect):
+                if current_answer == question[1]:
+                    score += 1
+                else:
+                    lives -= 1
+                #current_food, current_food_rect, current_answer = spawn_food()
+
+            if current_food_rect.top > SCREEN_HEIGHT:
+                current_food, current_food_rect, current_answer = spawn_food(answer_bank)
 
         pygame.display.update()
 
