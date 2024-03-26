@@ -241,8 +241,7 @@ def draw_screen(dumpling_positions, photo_positions, questions, level):
 
 def playGame():
     player = Player("Robert", "Robert123")
-    
-    current_question = Question(player)
+    player.load_player()
     
     done = False
     dumpling_positions = []
@@ -259,8 +258,14 @@ def playGame():
     
     total_questions_generated = 0  # Keep track of the total number of questions generated
     
-    level = player.get_sub()
+    #player_level = player.get_sub()
+    #level = int(player_level[0])
+    level = int(player.get_sub())
     print(level)
+    
+    
+    current_question = Question(player)
+    
     
     global correct_answer
     
@@ -290,7 +295,8 @@ def playGame():
             # End the game when all 5 questions have been generated and answered
             if correct_answer == 5:
                 level = level + 1
-                player.update_sub(level)
+                print(level)
+                player.update_sub(str(level))
             end_game_screen(correct_answer, questions[0])
             done = True
         
