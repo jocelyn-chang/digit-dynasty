@@ -139,13 +139,16 @@ def sandwich_stack(username, password):
         # Update the display
         pygame.display.update()
 
-def win_screen():
+def win_screen(score):
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(WIN_SCREEN, (0, 0))
+        score_font = get_font("Shojumaru", 20)
+        score_surface = score_font.render(f"Your Division Level is Now: {score}", True, "White")
+        SCREEN.blit(score_surface, (215, 420))
             
-        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (540, 500), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (SCREEN_WIDTH / 2, 520), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
         RETURN.changeColour(MOUSE_POS)
         RETURN.update(SCREEN)
 
@@ -159,13 +162,22 @@ def win_screen():
 
         pygame.display.update()
 
-def lose_screen():
+def lose_screen(username, password, score):
+    player = Player(username, password)
+    player.load_player()
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(LOSE_SCREEN, (0, 0))
+        level_font = get_font("Shojumaru", 20)
+        level_surface = level_font.render(f"Current level: {player.get_div()}", True, "White")
+        SCREEN.blit(level_surface, (130, 340))
 
-        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (540, 420), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
+        score_font = get_font("Shojumaru", 20)
+        score_surface = score_font.render(f"Score: {score} / 5", True, "White")
+        SCREEN.blit(score_surface, (520, 340))
+
+        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (SCREEN_WIDTH / 2, 440), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
         RETURN.changeColour(MOUSE_POS)
         RETURN.update(SCREEN)
 
@@ -185,6 +197,12 @@ def start_game(username, password):
     lives = 3
     score = 0
 
+    message_active = True
+    display_correct_message = False
+    display_incorrect_message = False
+    message_duration = 2000
+    message_start_time = 0
+
     player = Player(username, password)
     player.load_player()
 
@@ -192,6 +210,8 @@ def start_game(username, password):
     current_question = Question(player)
     correct_answer, question = current_question.generate_question("/")
     answer_bank[0] = correct_answer  # Ensure one of the answers is correct
+    answers = [correct_answer, correct_answer]
+    previous_answer = answers[0]
 
     # Re-use the global variables to keep the current state
     global current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect
@@ -243,53 +263,73 @@ def start_game(username, password):
             SCREEN.blit(RESIZED_BACK, (-120,-126))
 
         if lives == 3:
-            SCREEN.blit(HEART_FULL, (420, 90))
-            SCREEN.blit(HEART_FULL, (470, 90))
-            SCREEN.blit(HEART_FULL, (520, 90))
+            SCREEN.blit(HEART_FULL, (400, 90))
+            SCREEN.blit(HEART_FULL, (450, 90))
+            SCREEN.blit(HEART_FULL, (500, 90))
         elif lives == 2:
-            SCREEN.blit(HEART_FULL, (420, 90))
-            SCREEN.blit(HEART_FULL, (470, 90))
-            SCREEN.blit(HEART_EMPTY, (520, 90))
+            SCREEN.blit(HEART_FULL, (400, 90))
+            SCREEN.blit(HEART_FULL, (450, 90))
+            SCREEN.blit(HEART_EMPTY, (500, 90))
         elif lives == 1:
-            SCREEN.blit(HEART_FULL, (420, 90))
-            SCREEN.blit(HEART_EMPTY, (470, 90))
-            SCREEN.blit(HEART_EMPTY, (520, 90))
+            SCREEN.blit(HEART_FULL, (400, 90))
+            SCREEN.blit(HEART_EMPTY, (450, 90))
+            SCREEN.blit(HEART_EMPTY, (500, 90))
 
-        score_surface = font.render('Score:', True, "White")
-        current_score_surface = font.render(str(score), True, "White")
+        score_surface = font.render(f'Score: {score} / 5', True, "White")
         lives_surface = font.render('Lives:', True, "White")
-        SCREEN.blit(score_surface, (650, 75))
-        SCREEN.blit(current_score_surface, (680, 100))
-        SCREEN.blit(lives_surface, (460, 65))
+        SCREEN.blit(score_surface, (600, 80))
+        SCREEN.blit(lives_surface, (440, 65))
 
         if panda_rect.colliderect(current_food_rect):
+            message_start_time = pygame.time.get_ticks()
+            message_active = True
+
             if current_answer == correct_answer:
+                display_correct_message = True
+                display_incorrect_message = False
                 score += 1
             else:
+                display_incorrect_message = True
+                display_correct_message = False
                 lives -= 1
 
-            if score == 1:
+            if score == 5:
                 new_score = int(player.get_div()) + 1
                 player.update_div(str(new_score))
-                win_screen()
+                win_screen(new_score)
                 return
             elif lives > 0:
                 # Generate a new question and answer set
                 answer_bank = [random.randint(1, 144) for _ in range(4)]
                 correct_answer, question = current_question.generate_question("/")
                 answer_bank[0] = correct_answer  # Update the answer bank with the new correct answer
+                answers = [answers[1], correct_answer]
+                previous_answer = answers[0]
                 current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food(answer_bank)
             else:
                 game_active = False  # End game loop if no lives left
-                lose_screen()
+                lose_screen(username, password, score)
                 return
 
         if current_food_rect.top > SCREEN_HEIGHT:
             current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food(answer_bank)
 
+        if message_active:
+            elapsed_time = pygame.time.get_ticks() - message_start_time
+            if elapsed_time < message_duration:
+                if display_correct_message:
+                    message_font = get_font("Shojumaru", 19)
+                    message_surface = message_font.render("Correct!", True, "White")
+                    SCREEN.blit(message_surface, (360, 160))
+                if display_incorrect_message:
+                    message_font = get_font('Shojumaru', 19)
+                    message_surface = message_font.render(f"Incorrect. The answer is: {previous_answer}", True, "White")
+                    SCREEN.blit(message_surface, (220, 160))
+            else:
+                message_active = False
+                display_correct_message = False
+                display_incorrect_message = False
+
         pygame.display.update()
         clock.tick(60)  # Keep the game running at 60 FPS
 
-# username = "Robert"
-# password = "Robert123"
-# sandwich_stack(username, password)
