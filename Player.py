@@ -11,7 +11,7 @@ class Player:
         self.division = 0
         self.bosses = 0
     
-        # Function to load a previous player's information
+    # Function to load a previous player's information
     def load_player(self):
         with open("data.csv", newline = '') as csvfile:
             reader = csv.reader(csvfile)
@@ -35,15 +35,15 @@ class Player:
 
     # update Player's add high score
     def update_add (self, new_add_score):
-        self.add_score = new_add_score
+        self.addition = new_add_score
 
     # update Player's mul high score
     def update_mul (self, new_mul_score):
-        self.mul_score = new_mul_score
+        self.multiplication = new_mul_score
 
     # update Player's div high score
     def update_div (self, new_div_score):
-        self.div_score = new_div_score
+        self.division = new_div_score
 
     # update Player's sub high score
     def update_sub (self, new_sub_score):
@@ -63,20 +63,16 @@ class Player:
     
     # get Player's addition score
     def get_add (self):
-        return self.add_score
+        return self.addition
     
     # get Player's multiply score
     def get_mul (self):
-        return self.mul_score
+        return self.multiplication
     
     # get Player's division score
     def get_div (self):
-        return self.div_score
+        return self.division
     
     # get Player's subtraction score
     def get_sub (self):
         return self.sub_score
-    
-
-    
-    
