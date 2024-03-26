@@ -116,6 +116,8 @@ def load_map(username, password):
 
     pygame.display.flip()
 
-#   pygame.quit()
+  pygame.quit()
 
-# load_map()
+# username = "jocelyn"
+# password = 12345678
+# load_map(username, password)
