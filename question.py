@@ -29,7 +29,7 @@ class Question:
                 digits = (1, 8)  # Dividing numbers from 64 and below
             elif 20 < level <= 25:
                 digits = (1, 10)  # Dividing numbers from 100 and below
-            elif 25 < level <= 30:
+            elif 25 < level:
                 digits = (1, 12)  # Dividing numbers from 144 and below
 
             num1 = random.randint(*digits)

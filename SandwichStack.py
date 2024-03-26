@@ -59,7 +59,7 @@ def spawn_food(answer_bank):
 current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food([random.randint(1, 144), random.randint(1, 144)])
 
 # Intructions screen
-def instruction1(username, password):
+def instruction1():
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -82,13 +82,13 @@ def instruction1(username, password):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    sandwich_stack(username, password)
+                    return
                 if INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
                     instruction2()
 
         pygame.display.update()
 
-def instruction2(username, password):
+def instruction2():
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -107,10 +107,9 @@ def instruction2(username, password):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    instruction1(username, password)
+                    return
 
         pygame.display.update()
-
 
 def sandwich_stack(username, password):
     while True:
@@ -133,60 +132,50 @@ def sandwich_stack(username, password):
                 if START_BUTTON.checkInput(MOUSE_POS):
                       start_game(username, password)
                 if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
-                     instruction1(username, password)
+                     instruction1()
                 if RETURN_BUTTON.checkInput(MOUSE_POS):
                      return
 
         # Update the display
         pygame.display.update()
 
-def win_screen(username, password):
+def win_screen():
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(WIN_SCREEN, (0, 0))
             
-        PLAY_AGAIN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (250, 500), text_input = "PLAY AGAIN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
         RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (540, 500), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
-        
-        for button in [PLAY_AGAIN, RETURN] :
-            button.changeColour(MOUSE_POS)
-            button.update(SCREEN)
+        RETURN.changeColour(MOUSE_POS)
+        RETURN.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_AGAIN.checkInput(MOUSE_POS):
-                    start_game(username, password)
-                elif RETURN.checkInput(MOUSE_POS):
-                    sandwich_stack(username, password)
+                if RETURN.checkInput(MOUSE_POS):
+                    return
 
         pygame.display.update()
 
-def lose_screen(username, password):
+def lose_screen():
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(LOSE_SCREEN, (0, 0))
-            
-        PLAY_AGAIN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (250, 420), text_input = "PLAY AGAIN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
+
         RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (540, 420), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
-        
-        for button in [PLAY_AGAIN, RETURN] :
-            button.changeColour(MOUSE_POS)
-            button.update(SCREEN)
+        RETURN.changeColour(MOUSE_POS)
+        RETURN.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_AGAIN.checkInput(MOUSE_POS):
-                    start_game(username, password)
-                elif RETURN.checkInput(MOUSE_POS):
-                    sandwich_stack(username, password)
+                if RETURN.checkInput(MOUSE_POS):
+                    return
 
         pygame.display.update()
 
@@ -220,7 +209,7 @@ def start_game(username, password):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if BACK.checkInput(MOUSE_POS):
-                    sandwich_stack(username, password)
+                    return
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and panda_rect.left > 0:
@@ -279,7 +268,7 @@ def start_game(username, password):
             else:
                 lives -= 1
 
-            if score == 5:
+            if score == 1:
                 new_score = int(player.get_div()) + 1
                 player.update_div(str(new_score))
                 win_screen(username, password)
@@ -298,3 +287,7 @@ def start_game(username, password):
 
         pygame.display.update()
         clock.tick(60)  # Keep the game running at 60 FPS
+
+username = "Robert"
+password = "Robert123"
+sandwich_stack(username, password)
