@@ -89,7 +89,7 @@ def load_map(username, password):
       screen.blit(RESIZED_MULTTEMP, (582, 90))
       if event.type == pygame.MOUSEBUTTONDOWN:
         if MULTTEMP.checkInput(MOUSE_POS):
-            running_army()
+            running_army(username, password)
     
     # sandwich stack game
     if (363<mouse_x<410 and 383<mouse_y<446):
