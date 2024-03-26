@@ -418,27 +418,8 @@ def game(user):
           y1_change = snake_block
           x1_change = 0
 
-    # # Control snake movement
-    # # if not pause and not snake_pause: 
-    # if not pause: 
-    #   print("stawp")
-    #   keys = pygame.key.get_pressed()
-    #   if keys[pygame.K_LEFT]: 
-    #     x1_change = -snake_block
-    #     y1_change = 0
-    #   elif keys[pygame.K_RIGHT]:
-    #     x1_change = snake_block
-    #     y1_change = 0
-    #   elif keys[pygame.K_UP]:
-    #     y1_change = -snake_block
-    #     x1_change = 0
-    #   elif keys[pygame.K_DOWN]:
-    #     y1_change = snake_block
-    #     x1_change = 0
-
       # Update snake position
       if not snake_pause:
-        print("butt")
         foodCoord[0][0] += x1_change
         foodCoord[0][1] += y1_change
 
@@ -491,7 +472,6 @@ def game(user):
         snake_pause = True
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
-          print("hello")
           pause = False
 
       else:
