@@ -81,8 +81,9 @@ class Question(Player):
 
             dividend = num1 * num2
             quotient = dividend / num1
+            question = f"{dividend} / {num1}?"
 
-            return [quotient, dividend, num1]
+            return [quotient, question]
 
     
         # wrtie the question based on the operation given

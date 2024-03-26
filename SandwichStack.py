@@ -1,6 +1,8 @@
 # Import appropriate libraries
-import pygame, sys, random, csv
+import pygame, sys, random
 from Button import Button
+from Player import load_player
+from question import Question
 
 pygame.init()
 
@@ -152,7 +154,17 @@ def start_game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if BACK.checkInput(MOUSE_POS):
                     sandwich_stack()
-        
+
+        player = load_player()
+        cur_question = Question(player)
+        question = cur_question.generate_question("/")
+
+        font = get_font('Shojumaru', 13)
+        text_surface = font.render('What is the answer to:', True, "White")
+        question_surface = font.render(question[0], True, "white")
+        SCREEN.blit(text_surface, (50, 80))
+        SCREEN.blit(question_surface, (50, 100))
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and panda_rect.left > 0:
             panda_rect.x -= PANDA_SPEED
