@@ -298,5 +298,3 @@ def start_game(username, password):
 
         pygame.display.update()
         clock.tick(60)  # Keep the game running at 60 FPS
-
-#sandwich_stack(username, password)
