@@ -2,7 +2,7 @@ import pygame, sys
 from Button import Button
 from runningArmy import running_army
 from SnakeGame import snakeSums
-#from CookingGame import CookingGame
+from CookingGame import cooking_game
 from SandwichStack import sandwich_stack
 
 pygame.init()
@@ -52,6 +52,7 @@ def load_map(username, password):
     TOPTEMP = Button(pygame.image.load("images/templetop.png"), pos = (372, 32), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     Back_Button = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     DIV = Button(RESIZED_MIDDLETEMP, pos = (340, 352), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    LEFTTEMP = Button(pygame.image.load("images/templeleft.png"), pos = (160, 160), text_input="", font=get_font(15), base_colour="White", hovering_colour="#b51f09")
 
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -64,19 +65,20 @@ def load_map(username, password):
     # Get the current mouse position
     mouse_x, mouse_y = pygame.mouse.get_pos()
     MOUSE_POS = pygame.mouse.get_pos()
-
+    
     # go back
     if (40<mouse_x<75 and 40<mouse_y<70):
         screen.blit(RESIZED_BACK, (-90,-96))
         if event.type == pygame.MOUSEBUTTONDOWN:
           if Back_Button.checkInput(MOUSE_POS):
             return
+          
     # cooking game
     if (133<mouse_x<180 and 139<mouse_y<202):
       screen.blit(RESIZED_LEFTTEMP, (110, 92))
-      #if event.type == pygame.MOUSEBUTTONDOWN:
-         #if LEFTTEMP.checkInput(MOUSE_POS):
-            #CookingGame()
+      if event.type == pygame.MOUSEBUTTONDOWN:
+         if LEFTTEMP.checkInput(MOUSE_POS):
+            cooking_game(username, password)
 
     # snake game
     if (372<mouse_x<419 and 32<mouse_y<95):
@@ -113,7 +115,7 @@ def load_map(username, password):
     # screen.blit(text, (10, 10))
     # # Update the display
     Back_Button.update(screen)
-
+    
     pygame.display.flip()
 
   pygame.quit()
