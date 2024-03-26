@@ -271,7 +271,8 @@ def start_game(username, password):
             if score == 1:
                 new_score = int(player.get_div()) + 1
                 player.update_div(str(new_score))
-                win_screen(username, password)
+                win_screen()
+                return
             elif lives > 0:
                 # Generate a new question and answer set
                 answer_bank = [random.randint(1, 144) for _ in range(4)]
@@ -280,7 +281,8 @@ def start_game(username, password):
                 current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food(answer_bank)
             else:
                 game_active = False  # End game loop if no lives left
-                lose_screen(username, password)
+                lose_screen()
+                return
 
         if current_food_rect.top > SCREEN_HEIGHT:
             current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food(answer_bank)
@@ -290,4 +292,4 @@ def start_game(username, password):
 
 username = "Robert"
 password = "Robert123"
-sandwich_stack(username, password)
+# sandwich_stack(username, password)
