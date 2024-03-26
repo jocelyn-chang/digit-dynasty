@@ -1,7 +1,7 @@
 import pygame, sys
 from Button import Button
 from runningArmy import running_army
-#from SnakeGame import game
+from SnakeGame import snakeSums
 #from CookingGame import CookingGame
 from SandwichStack import sandwich_stack
 
@@ -80,9 +80,9 @@ def load_map(username, password):
     # snake game
     if (372<mouse_x<419 and 32<mouse_y<95):
       screen.blit(RESIZED_TOPTEMP, (348, -2))
-      #if event.type == pygame.MOUSEBUTTONDOWN:
-         #if TOPTEMP.checkInput(MOUSE_POS):
-            #game()
+      if event.type == pygame.MOUSEBUTTONDOWN:
+         if TOPTEMP.checkInput(MOUSE_POS):
+            snakeSums(username, password)
     
     # running army
     if (600<mouse_x<647 and 131<mouse_y<194):
