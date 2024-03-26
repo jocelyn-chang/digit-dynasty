@@ -133,6 +133,7 @@ def handle_events(dumpling_positions, central_area, questions):
                 # Assume the question is directly asking for the number of dumplings
                 if number_of_dumplings == questions[0][1]:  # Assuming the question is simply the expected number
                     print("Correct")
+                    # Clears the number of dumplings on the screen when the question is answered correctly
                     dumpling_positions.clear()
                     number_of_dumplings = 0
                     return True
