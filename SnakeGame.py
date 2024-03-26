@@ -501,8 +501,19 @@ def game(user):
         countdown = 600
         timerDown = 10
       else: 
-        countdown = 1800
-        timerDown = 30
+        # countdown = 1800
+        # timerDown = 30
+        # print("boo")
+        screen.blit(WIN_SCREEN, (0,0))
+      # screen.blit(overlay, (0, 0))
+      # end_game_screen(snake_len - 1)
+      # shadow = get_font(65).render("Game Over", True, black)
+      # main = get_font(65).render("Game Over", True, white)
+
+      # screen.blit(shadow, [182, 200])
+      # screen.blit(main, [180, 198])
+        elements_delay_counter = 1
+        pause = True
     if doneYet == 1:
       screen.blit(LOST_SCREEN, (0,0))
       # screen.blit(overlay, (0, 0))
