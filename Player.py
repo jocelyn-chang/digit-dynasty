@@ -25,41 +25,52 @@ class Player:
                     self.division = row[5]
                     self.bosses = row[6]
 
-    # add game to list of Player's game
-    def add_game (self, game):
-        self.games.append(game)
+    # Modify player's data
+    def save_info(self):
+        player = []
 
-    # set Player's password
-    def set_password (self, password):
-        self.password = password
+        # Read current info and match with current player
+        with open("data.csv", "r", newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                if row[0] == self.name and row[1] == self.password:
+                    # Update this player's data
+                    row[2] = self.addition
+                    row[3] = self.subtraction
+                    row[4] = self.multiplication
+                    row[5] = self.division
+                    row[6] = self.bosses
+                    found = True
+                player.append(row)
+        
+        # Write the updated/all data back to the CSV
+        with open("data.csv", "w", newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerows(player)
 
     # update Player's add high score
     def update_add (self, new_add_score):
         self.addition = new_add_score
+        self.save_info()
 
     # update Player's mul high score
     def update_mul (self, new_mul_score):
         self.multiplication = new_mul_score
+        self.save_info()
 
     # update Player's div high score
     def update_div (self, new_div_score):
         self.division = new_div_score
+        self.save_info
 
     # update Player's sub high score
     def update_sub (self, new_sub_score):
         self.sub_score = new_sub_score
+        self.save_info
 
     # get Player's name
     def get_name (self):
         return self.name
-    
-    # # get Player's games
-    # def get_games(self):
-    #     return self.games
-    
-    # # get Player's best game
-    # def get_best_game (self):
-    #     return self.best_game
     
     # get Player's addition score
     def get_add (self):
