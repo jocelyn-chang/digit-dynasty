@@ -255,6 +255,7 @@ def end_game_screen(gates, x_pos):
                     run = False
         # Update the display
         pygame.display.update()
+    return
 
 def generate_arrows(incorrect_counter, num_pandas):
     randomizer = random.randint(1, 100)
@@ -299,11 +300,10 @@ def start_game():
     gates = 0
 
     # temporary player
-    player = Player(name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1)
+    # player = Player(name="Bob", password="secret", addition=1, subtraction=1, multiplication=1, division=1, bosses = 1)
+    player = Player(name="Bob", password="secret")
     
-    current_question = Question(player.name, player.password, player.best_game,
-                                player.best_score, player.add_score, player.mul_score,
-                                player.div_score, player.sub_score)
+    current_question = Question(player)
     question_text = current_question.generate_question('*')
     
     run = True
@@ -331,6 +331,11 @@ def start_game():
         if scroll == 0:
             if num_arrows >= num_pandas:
                 end_game_screen(gates, x)  # Adjust the parameter as needed
+                bob = 5
+                print("testertester")
+                player.update_mul(bob)
+                print(bob)
+
                 run = False  # Exit the function if game ends
 
             else:
@@ -447,4 +452,4 @@ def running_army():
     # Quit back to the game map
     return
 
-# running_army()
+running_army()
