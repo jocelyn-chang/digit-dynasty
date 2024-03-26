@@ -2,7 +2,7 @@ import pygame, sys, random, math
 from Button import Button
 from question import Question
 from Player import Player
-from sympy import symbols, Eq, solve
+#from sympy import symbols, Eq, solve
 
 
 
