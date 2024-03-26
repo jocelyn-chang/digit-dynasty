@@ -40,7 +40,6 @@ class Player:
                     row[4] = self.multiplication
                     row[5] = self.division
                     row[6] = self.bosses
-                    found = True
                 player.append(row)
         
         # Write the updated/all data back to the CSV
@@ -61,12 +60,12 @@ class Player:
     # update Player's div high score
     def update_div (self, new_div_score):
         self.division = new_div_score
-        self.save_info
+        self.save_info()
 
     # update Player's sub high score
     def update_sub (self, new_sub_score):
         self.sub_score = new_sub_score
-        self.save_info
+        self.save_info()
 
     # get Player's name
     def get_name (self):

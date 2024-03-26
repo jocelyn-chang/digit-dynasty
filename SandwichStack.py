@@ -277,13 +277,12 @@ def start_game(username, password):
         if panda_rect.colliderect(current_food_rect):
             if current_answer == correct_answer:
                 score += 1
-                print(score)
             else:
                 lives -= 1
-                print(lives)
 
-            if score == 5:
+            if score == 1:
                 new_score = int(player.get_div()) + 1
+                print(new_score)
                 player.update_div(str(new_score))
                 win_screen(username, password)
             elif lives > 0:
