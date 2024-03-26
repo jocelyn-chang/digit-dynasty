@@ -227,13 +227,13 @@ def draw_screen(dumpling_positions, photo_positions, questions, level):
             screen.blit(text_surface, (text_x, text_y))
             
     num_dumplings_text = get_font(20).render(f"Dumplings: {len(dumpling_positions)}", True, (0, 0, 0))
-    screen.blit(num_dumplings_text, (26, SCREEN_HEIGHT - 40))
+    screen.blit(num_dumplings_text, (26, SCREEN_HEIGHT - 55))
     
     score_text = get_font(20).render(f"Score: {correct_answer}", True, (0, 0, 0))
-    screen.blit(score_text, (26, SCREEN_HEIGHT - 80))
+    screen.blit(score_text, (26, SCREEN_HEIGHT - 95))
         
-    level_text = get_font(20).render(f"Score: {level}", True, (0, 0, 0))
-    screen.blit(level_text, (26, SCREEN_HEIGHT - 120))
+    level_text = get_font(20).render(f"Level: {level}", True, (0, 0, 0))
+    screen.blit(level_text, (26, SCREEN_HEIGHT - 135))
     
 
     pygame.display.flip()
@@ -260,6 +260,7 @@ def playGame():
     total_questions_generated = 0  # Keep track of the total number of questions generated
     
     level = player.get_sub()
+    print(level)
     
     global correct_answer
     
@@ -322,7 +323,6 @@ def cookingGame():
                     if START_BUTTON.checkInput(MOUSE_POS):
                         playGame()
                     if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
-                        print("working")
                         instruction()
                     if RETURN_BUTTON.checkInput(MOUSE_POS):
                         run = False
@@ -331,7 +331,6 @@ def cookingGame():
         pygame.display.update()
 
     # Quit back to the game map
-    return
-    
+    return 
     
 cookingGame()
