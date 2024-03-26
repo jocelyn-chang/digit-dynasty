@@ -216,7 +216,7 @@ def lose_screen(x_pos):
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
         # Load buttons
-        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (266, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
         
         screen.blit(LOSE_SCREEN, (0, 0))
 
@@ -244,7 +244,7 @@ def win_screen():
             MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
             GAME_MOUSE_POS = pygame.mouse.get_pos()
             # Load buttons
-            RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (266, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
+            RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
             
             screen.blit(WIN_SCREEN, (0, 0))
 

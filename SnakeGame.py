@@ -561,4 +561,4 @@ def snakeSums(username, password):
 # Run the game
 username = "jocelyn"
 password = 12345678
-snakeSums(username, password)
+# snakeSums(username, password)
