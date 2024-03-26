@@ -425,7 +425,7 @@ def instructor_dashboard():
     # Scrolling variables
     scroll_y = 0
     row_height = 30
-    scroll_area = pygame.Rect(90, 245, 615, 355)  # x, y, width, height
+    scroll_area = pygame.Rect(90, 295, 615, 305)  # x, y, width, height
 
     # Main loop for the instructor dashboard
     running = True
@@ -435,16 +435,17 @@ def instructor_dashboard():
 
         SCREEN.blit(INSTRUCTOR_DASHBOARD, (0, 0))
 
-        INSTRUCTIONS_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_BACK = Button(image="images/back_button.png", pos=(70, 55), text_input="", font=get_font("Shojumaru", 15), base_colour="White", hovering_colour="#b51f09")
         INSTRUCTIONS_BACK.update(SCREEN)
 
-        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
-            SCREEN.blit(RESIZED_BACK, (-90,-96))
+        if (40 < MOUSE_X < 75 and 40 < MOUSE_Y < 70):
+            SCREEN.blit(RESIZED_BACK, (-90, -96))
 
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4:  # Scroll up
                     scroll_y = max(scroll_y - row_height, 0)
@@ -454,20 +455,30 @@ def instructor_dashboard():
                 elif INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
                     running = False
 
-                # Check if a name was clicked
-                if scroll_area.collidepoint(event.pos):
+                # Check if a name was clicked (left mouse button)
+                elif event.button == 1 and scroll_area.collidepoint(event.pos):
                     for i, row in enumerate(data):
-                        name_rect = pygame.Rect(scroll_area.left, i * row_height + scroll_area.top - scroll_y, 200, row_height)
+                        text_surface = get_font("Shojumaru", 25).render(f'{row[0]}', True, pygame.Color('black'))
+                        text_width = text_surface.get_width()
+                        x_centered = SCREEN_WIDTH // 2 - text_width // 2
+                        name_rect = pygame.Rect(x_centered, i * row_height + scroll_area.top - scroll_y, text_width, row_height)
                         if name_rect.collidepoint(event.pos):
                             student_details(row)  # Pass the student's name to the student_details function
                             break
+        
+        # Show title on the screen
+        title = get_font("Shojumaru", 30).render("Names: ", True, pygame.Color('black'))
+        title_centered = SCREEN_WIDTH // 2 - title.get_width() // 2
+        SCREEN.blit(title, (title_centered, 250))
 
         # Render the visible portion of the list (only the first two columns)
         for i, row in enumerate(data):
             y = i * row_height + scroll_area.top - scroll_y
             if scroll_area.top <= y <= scroll_area.bottom:
-                text_surface = get_font("Sawarabi", 20).render(f'{row[0]} | {row[1]}', True, pygame.Color('black'))
-                SCREEN.blit(text_surface, (scroll_area.left, y))
+                text_surface = get_font("Shojumaru", 25).render(f'{row[0]}', True, pygame.Color('black'))
+                text_width = text_surface.get_width()
+                x_centered = SCREEN_WIDTH // 2 - text_width // 2
+                SCREEN.blit(text_surface, (x_centered, y))
 
         # Update the screen
         pygame.display.update()
@@ -475,12 +486,14 @@ def instructor_dashboard():
     # Quit Pygame
     return
 
+
+
 def student_details(student):
 
     # Set the starting position for the text
     x = 100  # Horizontal position
     y = 100  # Vertical position
-    line_height = 30  # Space between lines
+    line_height = 50  # Space between lines
 
 
 
@@ -498,9 +511,9 @@ def student_details(student):
 
         # Render and blit each title to the screen
         for i, line in enumerate(titles):
-            incorrect_text = get_font("Sawarabi",20).render(line, True, black)
+            incorrect_text = get_font("Shojumaru",30).render(line, True, black)
             inputRect = incorrect_text.get_rect()
-            inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + i * line_height)  # Adjust position for each line
+            inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4 + i * line_height)  # Adjust position for each line
             SCREEN.blit(incorrect_text, inputRect)
 
         
@@ -575,7 +588,7 @@ def instructor_dashboard_login():
         
         if player_not_found:
             font = get_font('Shojumaru', 15)
-            text_surface = font.render('Player not found. Try again.', True, 'white')
+            text_surface = font.render('Invalid instructor code. Try again.', True, 'white')
             SCREEN.blit(text_surface, (255, 455))
 
         PLAY_BUTTON.update(SCREEN)
