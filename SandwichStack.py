@@ -293,7 +293,7 @@ def start_game(username, password):
                 display_correct_message = False
                 lives -= 1
 
-            if score == 2:
+            if score == 5:
                 new_score = int(player.get_div()) + 1
                 player.update_div(str(new_score))
                 win_screen(new_score)
