@@ -85,4 +85,4 @@ class Player:
     
     # get Player's subtraction score
     def get_sub (self):
-        return self.sub_score
+        return self.subtraction
