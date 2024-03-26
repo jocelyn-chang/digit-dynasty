@@ -382,12 +382,12 @@ def instructions():
 
         pygame.display.update()
 
-def instructor_dashboard():
+def student_details():
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.blit(INSTRUCTOR_DASHBOARD, (0, 0))
+        SCREEN.blit(INSTRUCTIONS, (0, 0))
         
         INSTRUCTIONS_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
         INSTRUCTIONS_BACK.update(SCREEN)
@@ -404,6 +404,74 @@ def instructor_dashboard():
                     return
 
         pygame.display.update()
+
+# instructor screen with all students
+def instructor_dashboard():
+    # Load data from CSV
+    data = []
+    with open("data.csv", newline='') as csvfile:
+        csvreader = csv.reader(csvfile)
+        for row in csvreader:
+            data.append(row)
+
+    # Scrolling variables
+    scroll_y = 0
+    row_height = 30
+    scroll_area = pygame.Rect(90, 245, 615, 355)  # x, y, width, height
+
+    # Main loop for the instructor dashboard
+    running = True
+    while running:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(INSTRUCTOR_DASHBOARD, (0, 0))
+
+        INSTRUCTIONS_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_BACK.update(SCREEN)
+
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            SCREEN.blit(RESIZED_BACK, (-90,-96))
+
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 4:  # Scroll up
+                    scroll_y = max(scroll_y - row_height, 0)
+                elif event.button == 5:  # Scroll down
+                    max_scroll = len(data) * row_height - scroll_area.height
+                    scroll_y = min(scroll_y + row_height, max_scroll)
+                elif INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    running = False
+
+                # Check if a name was clicked
+                if scroll_area.collidepoint(event.pos):
+                    for i, row in enumerate(data):
+                        name_rect = pygame.Rect(scroll_area.left, i * row_height + scroll_area.top - scroll_y, 200, row_height)
+                        if name_rect.collidepoint(event.pos):
+                            student_details(row[0])  # Pass the student's name to the student_details function
+                            break
+
+        # Render the visible portion of the list (only the first two columns)
+        for i, row in enumerate(data):
+            y = i * row_height + scroll_area.top - scroll_y
+            if scroll_area.top <= y <= scroll_area.bottom:
+                text_surface = get_font("Sawarabi", 20).render(f'{row[0]} | {row[1]}', True, pygame.Color('black'))
+                SCREEN.blit(text_surface, (scroll_area.left, y))
+
+        # Update the screen
+        pygame.display.update()
+
+    # Quit Pygame
+    return
+
+def student_details(name):
+    # Placeholder function for student_details
+    print(f"Details for student: {name}")
+
+
 
 
 def instructor_dashboard_login():
@@ -441,6 +509,7 @@ def instructor_dashboard_login():
 
                     if input_password == "ddinstructor123":
                         instructor_dashboard()
+                        return
                     else:
                         player_not_found = True
 
