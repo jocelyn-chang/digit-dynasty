@@ -2,24 +2,44 @@ import random
 from Player import Player
 
 #inherits stuff from player class
-class Question (Player):
-    
-    def __init__(self, name, password, best_game, best_score, add_score, mul_score, div_score, sub_score):
-        super().__init__(name, password, best_game, best_score, add_score, mul_score, div_score, sub_score)
-        
+class Question:
+
+    def __init__(self, player):
+        self.player = player
+
     def generate_question(self, operation):
-        
         if operation == '+':
-            level = self.get_add()
+            level = self.player.get_add()
             
         elif operation == '-':
-            level = self.get_sub()
+            level = self.player.get_sub()
             
         elif operation == '*':
-            level = self.get_mul()
+            level = self.player.get_mul()
             
         elif operation == "/":
-            level = self.get_div()
+            level = int(self.player.get_div())
+            if level <= 5:
+                digits = (1, 2)  # Dividing numbers from 4 and below
+            elif 5 < level <= 10:
+                digits = (1, 4)  # Dividing numbers from 16 and below
+            elif 10 < level <= 15:
+                digits = (1, 6)  # Dividing numbers from 36 and below
+            elif 15 < level <= 20:
+                digits = (1, 8)  # Dividing numbers from 64 and below
+            elif 20 < level <= 25:
+                digits = (1, 10)  # Dividing numbers from 100 and below
+            elif 25 < level <= 30:
+                digits = (1, 12)  # Dividing numbers from 144 and below
+
+            num1 = random.randint(*digits)
+            num2 = random.randint(*digits)
+
+            dividend = num1 * num2
+            quotient = dividend / num1
+            question = f"{dividend} / {num1}?"
+
+            return [int(quotient), question]
             
         if operation == '-':
             if level <= 5:
@@ -61,7 +81,7 @@ class Question (Player):
                 else:
                     num2-=1
             return [num1, num2]
-    
+
         # wrtie the question based on the operation given
         question = f"{num1} {operation} {num2}?"
     
