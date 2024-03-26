@@ -142,7 +142,7 @@ def start_game():
                         invalid_password = True
                     else:
                         append_to_csv(username, password)
-                        load_map()
+                        load_map(username, password)
                         return
                 elif username_rect.collidepoint(event.pos):
                     username_active = not username_active
@@ -242,7 +242,7 @@ def load_game():
                     player_info = load_player(input_username, input_password)
 
                     if player_info:
-                        load_map()
+                        load_map(input_username, input_password)
                         return
                     else:
                         player_not_found = True
