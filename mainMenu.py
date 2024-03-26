@@ -206,7 +206,7 @@ def load_player(input_username, input_password):
 def play_music(file):
     pygame.mixer.init()
     pygame.mixer.music.load(file)
-    pygame.mixer.music.play()
+    pygame.mixer.music.play(-1)
 
 # Go to load screen 
 def load_game():
@@ -486,10 +486,10 @@ def welcome_screen():
 
 # Main Menu screen
 def main_menu():
+    play_music("sound/EDM.mp3")
     welcome_screen()
 
     while True:
-        play_music("sound/EDM.mp3")
         SCREEN.blit(BACKGROUND, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
