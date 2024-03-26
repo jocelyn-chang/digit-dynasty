@@ -16,11 +16,17 @@ BACKGROUND = pygame.image.load("images/sandwich_stack_bg.png")
 START_SCREEN = pygame.image.load("images/sandwich_stack_start.png")
 DIVISION_INSTRUCTIONS = pygame.image.load("images/division_instruction.png")
 SS_INSTRUCTIONS = pygame.image.load("images/ss_instructions.png")
+WIN_SCREEN = pygame.image.load("images/ss_win_screen.png")
+LOSE_SCREEN = pygame.image.load("images/ss_lose_screen.png")
 RECTANGLE = pygame.image.load("images/rectangle.png")
 LINE = pygame.image.load("images/line.png")
 BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
 RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
+HEART_F = pygame.image.load("images/heart_full.png")
+HEART_E = pygame.image.load("images/heart_empty.png")
+HEART_FULL = pygame.transform.scale(HEART_F, (50, 50))
+HEART_EMPTY = pygame.transform.scale(HEART_E, (50, 50))
 
 PANDA = pygame.transform.scale(pygame.image.load("images/panda_tray.png"), (190, 126))
 CARROT = pygame.transform.scale(pygame.image.load("images/carrot.png"), (75, 79))
@@ -134,6 +140,56 @@ def sandwich_stack(username, password):
         # Update the display
         pygame.display.update()
 
+def win_screen(username, password):
+    while True:
+        MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(WIN_SCREEN, (0, 0))
+            
+        PLAY_AGAIN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (250, 500), text_input = "PLAY AGAIN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (540, 500), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
+        
+        for button in [PLAY_AGAIN, RETURN] :
+            button.changeColour(MOUSE_POS)
+            button.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_AGAIN.checkInput(MOUSE_POS):
+                    start_game(username, password)
+                elif RETURN.checkInput(MOUSE_POS):
+                    sandwich_stack(username, password)
+
+        pygame.display.update()
+
+def lose_screen(username, password):
+    while True:
+        MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(LOSE_SCREEN, (0, 0))
+            
+        PLAY_AGAIN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (250, 420), text_input = "PLAY AGAIN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (540, 420), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
+        
+        for button in [PLAY_AGAIN, RETURN] :
+            button.changeColour(MOUSE_POS)
+            button.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_AGAIN.checkInput(MOUSE_POS):
+                    start_game(username, password)
+                elif RETURN.checkInput(MOUSE_POS):
+                    sandwich_stack(username, password)
+
+        pygame.display.update()
+
 def start_game(username, password):
     MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
     MOUSE_POS = pygame.mouse.get_pos()
@@ -143,9 +199,10 @@ def start_game(username, password):
     player = Player(username, password)
     player.load_player()
 
-    answer_bank = [random.randint(1, 144) for _ in range(2)]  # Create an initial answer bank
+    answer_bank = [random.randint(1, 144) for _ in range(4)]  # Create an initial answer bank
     current_question = Question(player)
     correct_answer, question = current_question.generate_question("/")
+    print(correct_answer)
     answer_bank[0] = correct_answer  # Ensure one of the answers is correct
 
     # Re-use the global variables to keep the current state
@@ -156,6 +213,14 @@ def start_game(username, password):
 
     game_active = True
     while game_active:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if BACK.checkInput(MOUSE_POS):
+                    sandwich_stack(username, password)
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and panda_rect.left > 0:
             panda_rect.x -= PANDA_SPEED
@@ -175,49 +240,66 @@ def start_game(username, password):
         SCREEN.blit(LINE, (0, 47))
         SCREEN.blit(LINE, (0, 149))
 
-        font = get_font('Shojumaru', 13)
+        font = get_font('Shojumaru', 20)
         text_surface = font.render('What is the answer to:', True, "White")
-        question_surface = font.render(question, True, "white")
-        SCREEN.blit(text_surface, (50, 80))
-        SCREEN.blit(question_surface, (50, 100))
+        question_surface = font.render(question, True, "White")
+        SCREEN.blit(text_surface, (50, 75))
+        SCREEN.blit(question_surface, (158, 100))
 
-        BACK = Button(image = "images/back_button.png", pos = (40, 25), text_input = "", font = get_font("Shojumaru",22), base_colour = "White", hovering_colour = "#b51f09")
+        BACK = Button(image = "images/back_button.png", pos = (40, 25), text_input = "", font = get_font("Shojumaru", 22), base_colour = "White", hovering_colour = "#b51f09")
         BACK.update(SCREEN)
 
         if (10<MOUSE_X<45 and 10<MOUSE_Y<40):
             SCREEN.blit(RESIZED_BACK, (-120,-126))
-        
-        # Your drawing code for the UI (score, lives, question, etc.) goes here
+
+        if lives == 3:
+            SCREEN.blit(HEART_FULL, (420, 90))
+            SCREEN.blit(HEART_FULL, (470, 90))
+            SCREEN.blit(HEART_FULL, (520, 90))
+        elif lives == 2:
+            SCREEN.blit(HEART_FULL, (420, 90))
+            SCREEN.blit(HEART_FULL, (470, 90))
+            SCREEN.blit(HEART_EMPTY, (520, 90))
+        elif lives == 1:
+            SCREEN.blit(HEART_FULL, (420, 90))
+            SCREEN.blit(HEART_EMPTY, (470, 90))
+            SCREEN.blit(HEART_EMPTY, (520, 90))
+
+        score_surface = font.render('Score:', True, "White")
+        current_score_surface = font.render(str(score), True, "White")
+        lives_surface = font.render('Lives:', True, "White")
+        SCREEN.blit(score_surface, (650, 75))
+        SCREEN.blit(current_score_surface, (680, 100))
+        SCREEN.blit(lives_surface, (460, 65))
 
         if panda_rect.colliderect(current_food_rect):
-            if current_answer == str(correct_answer):
+            if current_answer == correct_answer:
                 score += 1
+                print(score)
             else:
                 lives -= 1
+                print(lives)
 
             if lives > 0:
                 # Generate a new question and answer set
                 correct_answer, question = current_question.generate_question("/")
                 answer_bank[0] = correct_answer  # Update the answer bank with the new correct answer
                 current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food(answer_bank)
+            elif score == 5:
+                new_score = player.get_div() + 1
+                player.update_div(new_score)
+                win_screen(username, password)
             else:
                 game_active = False  # End game loop if no lives left
+                lose_screen(username, password)
 
         if current_food_rect.top > SCREEN_HEIGHT:
             current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food(answer_bank)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if BACK.checkInput(MOUSE_POS):
-                    sandwich_stack(username, password)
-                    pass
 
         pygame.display.update()
         clock.tick(60)  # Keep the game running at 60 FPS
 
 username = "Audrey"
 password = "AudreyLi192004"
-sandwich_stack(username, password)
+#sandwich_stack(username, password)
+lose_screen(username, password)
