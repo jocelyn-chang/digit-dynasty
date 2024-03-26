@@ -14,7 +14,7 @@ SCREEN_HEIGHT = 600
 # Dumpling and Photo Settings
 DUMPLING_SIZE = 100
 PHOTO_SIZE = (200, 250)
-PHOTO_INTERVAL_MS = 4000
+PHOTO_INTERVAL_MS = 100
 PHOTO_SPACING = 150
 
 # Colors
@@ -169,7 +169,7 @@ def end_game_screen(correct_order, question):
     #screen.blit(dead_panda, (x_pos-5, 385))
     pygame.display.update()
 
-    pygame.time.delay(500)
+    pygame.time.delay(100)
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -240,6 +240,10 @@ def draw_screen(dumpling_positions, photo_positions, questions, level):
 
 
 def playGame():
+    player = Player("Robert", "Robert123")
+    
+    current_question = Question(player)
+    
     done = False
     dumpling_positions = []
     photo_positions = []
@@ -255,11 +259,7 @@ def playGame():
     
     total_questions_generated = 0  # Keep track of the total number of questions generated
     
-    player = Player(name="John", password="CookingForLife", best_game="Cooking Game", best_score=20, add_score=1, mul_score=1, div_score=1, sub_score=1)
-    
-    current_question = Question(player.name, player.password, player.best_game, player.best_score, player.add_score, player.mul_score, player.div_score, player.sub_score)
-    
-    level = player.sub_score
+    level = player.get_sub()
     
     global correct_answer
     
@@ -289,6 +289,7 @@ def playGame():
             # End the game when all 5 questions have been generated and answered
             if correct_answer == 5:
                 level = level + 1
+                player.update_sub(level)
             end_game_screen(correct_answer, questions[0])
             done = True
         
@@ -297,6 +298,7 @@ def playGame():
         pygame.display.flip()
     
     pygame.quit()
+
 
 def cookingGame():
     run = True
