@@ -50,6 +50,7 @@ def load_map(username, password):
 
     MULTTEMP = Button(pygame.image.load("images/templeright.png"), pos = (600, 131), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     Back_Button = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    DIV = Button(RESIZED_MIDDLETEMP, pos = (340, 352), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
 
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -94,7 +95,7 @@ def load_map(username, password):
     if (363<mouse_x<410 and 383<mouse_y<446):
       screen.blit(RESIZED_BOTTOMTEMP, (340, 352))
       if event.type == pygame.MOUSEBUTTONDOWN:
-         if RESIZED_BOTTOMTEMP.checkInput(MOUSE_POS):
+         if DIV.checkInput(MOUSE_POS):
             sandwich_stack(username, password)
     
     # boss battle (arithmetic emperor)

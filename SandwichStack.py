@@ -59,7 +59,7 @@ def spawn_food(answer_bank):
 current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food([random.randint(1, 144), random.randint(1, 144)])
 
 # Intructions screen
-def instruction1():
+def instruction1(username, password):
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -88,7 +88,7 @@ def instruction1():
 
         pygame.display.update()
 
-def instruction2():
+def instruction2(username, password):
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -107,7 +107,7 @@ def instruction2():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    instruction1()
+                    instruction1(username, password)
 
         pygame.display.update()
 
@@ -133,7 +133,7 @@ def sandwich_stack(username, password):
                 if START_BUTTON.checkInput(MOUSE_POS):
                       start_game(username, password)
                 if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
-                     instruction1()
+                     instruction1(username, password)
                 if RETURN_BUTTON.checkInput(MOUSE_POS):
                      return
 
@@ -202,7 +202,6 @@ def start_game(username, password):
     answer_bank = [random.randint(1, 144) for _ in range(4)]  # Create an initial answer bank
     current_question = Question(player)
     correct_answer, question = current_question.generate_question("/")
-    print(correct_answer)
     answer_bank[0] = correct_answer  # Ensure one of the answers is correct
 
     # Re-use the global variables to keep the current state
@@ -280,9 +279,8 @@ def start_game(username, password):
             else:
                 lives -= 1
 
-            if score == 1:
+            if score == 5:
                 new_score = int(player.get_div()) + 1
-                print(new_score)
                 player.update_div(str(new_score))
                 win_screen(username, password)
             elif lives > 0:
