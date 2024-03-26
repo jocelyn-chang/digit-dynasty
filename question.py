@@ -57,6 +57,7 @@ class Question:
             ans = num1 - num2
 
         elif operation == '*':
+            level = int(self.player.get_mul())
             if level <= 5:
                 digits = (2, 4)  # Single-digit numbers    
             elif 5 < level <= 10:

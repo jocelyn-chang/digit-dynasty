@@ -2,7 +2,7 @@ import pygame, sys, random, math
 from Button import Button
 from question import Question
 from Player import Player
-#from sympy import symbols, Eq, solve
+from sympy import symbols, Eq, solve
 
 
 
@@ -20,6 +20,8 @@ INSTRUCTION2 = pygame.image.load("images/Instructions for running army.png")
 BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
 RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
+WIN_SCREEN = pygame.image.load("images/win_screen_mult.png")
+LOSE_SCREEN = pygame.image.load("images/lose_screen_mult.png")
 start_screen = pygame.image.load("images/Running Army Start Screen.png")
 image = pygame.image.load("images/running_army_bg.png")
 panda = pygame.transform.scale(pygame.image.load("images/panda1.png"), (50, 50))
@@ -204,67 +206,76 @@ def question(numpandas, multiplier):
         # Update the display
         pygame.display.update()
 
-def end_game_screen(gates, x_pos):
-    run = True
-    NEXT_BUTTON = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (650, 400), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-
+def lose_screen(x_pos):
+    run = True    
     screen.blit(dead_panda, (x_pos-5, 385))
     pygame.display.update()
-
     pygame.time.delay(2000)
+
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
-        # Display question screen
-        screen.blit(question_scroll, (25, 100))
-
-        if gates >= 5:
-            levels = math.floor(gates / 5)
-            title_lines = ["Congratulations you imroved", f"{levels} levels"]
-        else:
-            title_lines = ["Keep practicing!"]
+        # Load buttons
+        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (266, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
         
-        line_height = get_font(25).get_height()
+        screen.blit(LOSE_SCREEN, (0, 0))
 
-        for i, line in enumerate(title_lines):
-            title_text = get_font(25).render(line, True, white)
-            inputRect = title_text.get_rect()
-            inputRect.center = (SCREEN_WIDTH // 2, 225 + i * line_height)  # Adjust position for each line
-            screen.blit(title_text, inputRect)
-        
-        screen.blit(happypanda, (250, 330))
+        RETURN.changeColour(GAME_MOUSE_POS)
+        RETURN.update(screen)
 
-        # Display user's input text
-        # input_text = get_font(20).render(title, True, white)
-        # inputRect = input_text.get_rect()
-        # inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
-        # screen.blit(input_text, inputRect)
-
-        if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
-            screen.blit(RESIZED_NEXT, (510, 249))
-        
-        NEXT_BUTTON.update(screen)
-
-        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if NEXT_BUTTON.checkInput(GAME_MOUSE_POS):
+                if RETURN.checkInput(GAME_MOUSE_POS):
                     run = False
+
+        if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
+            screen.blit(RESIZED_NEXT, (510, 249))
+        
         # Update the display
         pygame.display.update()
-    return levels
+    return 
+
+def win_screen(x_pos):
+    run = True
+    while run:
+            MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+            GAME_MOUSE_POS = pygame.mouse.get_pos()
+            # Load buttons
+            RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (266, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
+            
+            screen.blit(WIN_SCREEN, (0, 0))
+
+            RETURN.changeColour(GAME_MOUSE_POS)
+            RETURN.update(screen)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if PLAY_AGAIN.checkInput(GAME_MOUSE_POS):
+                        return True
+                    elif RETURN.checkInput(GAME_MOUSE_POS):
+                        return False
+
+            if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
+                screen.blit(RESIZED_NEXT, (510, 249))
+            
+            # Update the display
+            pygame.display.update()
+    return 
 
 def generate_arrows(incorrect_counter, num_pandas):
     randomizer = random.randint(1, 100)
     if incorrect_counter == 0:
-        if num_pandas < 3:
+        if num_pandas < 4:
             num_arrows = 1
-        elif num_pandas < 5:
+        elif num_pandas < 6:
             num_arrows = 2
-        elif num_pandas < 7:
+        elif num_pandas < 8:
             num_arrows = 3
         elif num_pandas < 10:
             num_arrows = 4
@@ -301,7 +312,7 @@ def start_game(username, password):
 
     # initialize player
     player = Player(name=username, password=password)
-    
+    player.load_player()
     current_question = Question(player)
     question_text = current_question.generate_question('*')
     
@@ -329,10 +340,8 @@ def start_game(username, password):
         # Check if arrow hits the panda
         if scroll == 0:
             if num_arrows >= num_pandas:
-                # current_mult_score = int(player.get_mul())
-                player.update_mul(str(int(player.get_mul()) + end_game_screen(gates, x)))
+                lose_screen(x)
                 run = False  # Exit the function if game ends
-
             else:
                 num_pandas -= num_arrows
             
@@ -358,7 +367,9 @@ def start_game(username, password):
                     gates -= 1
             question_text = current_question.generate_question('*')
             gates += 1
-
+            if gates == 5:
+                player.update_mul(str(int(player.get_mul()) + 1))
+                win_screen(x)
 
         # Clear the screen
         screen.fill((0, 0, 0))
