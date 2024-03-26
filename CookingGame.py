@@ -14,7 +14,7 @@ SCREEN_HEIGHT = 600
 # Dumpling and Photo Settings
 DUMPLING_SIZE = 100
 PHOTO_SIZE = (200, 250)
-PHOTO_INTERVAL_MS = 4000
+PHOTO_INTERVAL_MS = 100
 PHOTO_SPACING = 150
 
 # Colors
@@ -36,6 +36,10 @@ RESIZED_BACK = pygame.image.load("images/resized_back.png")
 RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
 start_screen = pygame.image.load("images/Cooking Game Start Screen.png")
 
+#game over or congrats screens
+question_scroll = pygame.image.load("images/bigScroll.png")
+happypanda = pygame.image.load("images/thumbsuppanda.png")
+
 # Initialize the game screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('COOKING GAME')
@@ -46,6 +50,7 @@ clock = pygame.time.Clock()
 #font = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 20)
 
 number_of_dumplings = 0
+correct_answer = 0
 
 def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
@@ -128,6 +133,9 @@ def handle_events(dumpling_positions, central_area, questions):
                 # Assume the question is directly asking for the number of dumplings
                 if number_of_dumplings == questions[0][1]:  # Assuming the question is simply the expected number
                     print("Correct")
+                    # Clears the number of dumplings on the screen when the question is answered correctly
+                    dumpling_positions.clear()
+                    number_of_dumplings = 0
                     return True
                 else:
                     print("Incorrect")
@@ -152,20 +160,54 @@ def update_photos(photo_positions, last_photo_time, current_time, total_question
             last_photo_time = current_time
             photo_added = True  # A new photo was added
     return last_photo_time, photo_added
-
-def score(score_correct):
-    sub_score = 0
-    if score_correct == True:
-        sub_score = sub_score + 1
-    return sub_score
     
-def level(sub_level, sub_score):
-    if sub_score == 5:
-        sub_level = sub_level + 1    
-    print("level")
-    return sub_level
 
-def draw_screen(dumpling_positions, photo_positions, questions):
+def end_game_screen(correct_order, question):
+    run = True
+    NEXT_BUTTON = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (650, 400), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+
+    #screen.blit(dead_panda, (x_pos-5, 385))
+    pygame.display.update()
+
+    pygame.time.delay(100)
+    while run:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+        # Display question screen
+        screen.blit(question_scroll, (25, 100))
+
+        if correct_order == 5:
+            title_lines = ["Congratulations you moved up one level!"]
+        else:
+            title_lines = ["Keep practicing!, Incorrect", f"Correct Answer = {question[1]}", f"Your Answer = {number_of_dumplings}"]
+        
+        line_height = get_font(25).get_height()
+
+        for i, line in enumerate(title_lines):
+            title_text = get_font(20).render(line, True, WHITE)
+            inputRect = title_text.get_rect()
+            inputRect.center = (SCREEN_WIDTH // 2, 225 + i * line_height)  # Adjust position for each line
+            screen.blit(title_text, inputRect)
+        
+        screen.blit(happypanda, (250, 330))
+
+        if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
+            screen.blit(RESIZED_NEXT, (510, 249))
+        
+        NEXT_BUTTON.update(screen)
+
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if NEXT_BUTTON.checkInput(GAME_MOUSE_POS):
+                    run = False
+        # Update the display
+        pygame.display.update()
+
+def draw_screen(dumpling_positions, photo_positions, questions, level):
     screen.fill(WHITE)
     screen.blit(BACKGROUND, (0, 0))
     for pos in dumpling_positions:
@@ -185,13 +227,22 @@ def draw_screen(dumpling_positions, photo_positions, questions):
             screen.blit(text_surface, (text_x, text_y))
             
     num_dumplings_text = get_font(20).render(f"Dumplings: {len(dumpling_positions)}", True, (0, 0, 0))
-    screen.blit(num_dumplings_text, (26, SCREEN_HEIGHT - 40))
+    screen.blit(num_dumplings_text, (26, SCREEN_HEIGHT - 55))
+    
+    score_text = get_font(20).render(f"Score: {correct_answer}", True, (0, 0, 0))
+    screen.blit(score_text, (26, SCREEN_HEIGHT - 95))
+        
+    level_text = get_font(20).render(f"Level: {level}", True, (0, 0, 0))
+    screen.blit(level_text, (26, SCREEN_HEIGHT - 135))
     
 
     pygame.display.flip()
 
 
 def playGame():
+    player = Player("Robert", "Robert123")
+    player.load_player()
+    
     done = False
     dumpling_positions = []
     photo_positions = []
@@ -207,18 +258,27 @@ def playGame():
     
     total_questions_generated = 0  # Keep track of the total number of questions generated
     
-    player = Player(name="John", password="CookingForLife", best_game="Cooking Game", best_score=20, add_score=1, mul_score=1, div_score=1, sub_score=1)
+    #player_level = player.get_sub()
+    #level = int(player_level[0])
+    level = int(player.get_sub())
+    print(level)
     
-    current_question = Question(player.name, player.password, player.best_game, player.best_score, player.add_score, player.mul_score, player.div_score, player.sub_score)
+    
+    current_question = Question(player)
+    
+    
+    global correct_answer
     
     while not done:
         current_time = pygame.time.get_ticks()
         ans = handle_events(dumpling_positions, central_area, questions)
         if ans == False:
+            end_game_screen(correct_answer, questions[0])
             done = True
             break
         
         elif ans == True and questions:
+            correct_answer = correct_answer + 1
             questions.pop(0)  # Remove the answered question
             photo_positions.pop(0)  # Remove the corresponding photo
         
@@ -227,78 +287,24 @@ def playGame():
             question_text = current_question.generate_question('-')
             questions.append(question_text)
             total_questions_generated += 1
-
-        if total_questions_generated >= 5 and not questions:
-            # End the game when all 5 questions have been generated and answered
-            done = True
             
-        draw_screen(dumpling_positions, photo_positions, questions)
+        draw_screen(dumpling_positions, photo_positions, questions, level)
+        
+        if total_questions_generated >= 5 and not questions:
+            questions.append('done')
+            # End the game when all 5 questions have been generated and answered
+            if correct_answer == 5:
+                level = level + 1
+                print(level)
+                player.update_sub(str(level))
+            end_game_screen(correct_answer, questions[0])
+            done = True
+        
+        
         pygame.time.Clock().tick(60)
         pygame.display.flip()
     
     pygame.quit()
-
-
-'''
-
-def playGame():
-    done = False
-    dumpling_positions = []
-    photo_positions = [(0, 0)]  # Initial position for the first photo
-    questions = []
-    last_photo_time = pygame.time.get_ticks()
-    
-    central_area = pygame.Rect(
-        (SCREEN_WIDTH - SCREEN_WIDTH // 3) // 2, 
-        (SCREEN_HEIGHT - SCREEN_HEIGHT // 3) // 2, 
-        SCREEN_WIDTH // 3, 
-        SCREEN_HEIGHT // 3
-    )
-    
-    total_questions_generated = 0  # Keep track of the total number of questions generated
-    
-    player = Player(name="John", password="CookingForLife", best_game="Cooking Game", best_score=20, add_score=1, mul_score=1, div_score=1, sub_score=1)
-    
-    current_question = Question(player.name, player.password, player.best_game, player.best_score, player.add_score, player.mul_score, player.div_score, player.sub_score)
-    
-    # Generate the first question
-    if total_questions_generated < 5:
-        question_text = current_question.generate_question('-')
-        questions.append(question_text)
-        total_questions_generated += 1  # Increment the total number of questions generated
-    
-    while not done:
-        current_time = pygame.time.get_ticks()
-        ans = handle_events(dumpling_positions, central_area, questions)
-        if ans == False:
-            done = True  # Exit the game loop
-            break
-        
-        elif ans == True:
-            questions.pop(0)  # Remove the answered question
-            photo_positions.pop(0)  # Remove the corresponding photo
-        
-        elif ans == None:
-            pass
-            
-        last_photo_time, photo_added = update_photos(photo_positions, last_photo_time, current_time)
-        if photo_added and total_questions_generated < 5:
-            # Only add new questions if less than 5 questions have been generated in total
-            question_text = current_question.generate_question('-')
-            questions.append(question_text)
-            total_questions_generated += 1  # Increment the total number of questions generated
-            
-        if not questions and total_questions_generated >= 5:
-            # If there are no more questions and 5 questions have been generated, end the game
-            done = True
-            draw_screen(dumpling_positions, photo_positions, questions)
-        
-        pygame.time.Clock().tick(60)
-        pygame.display.flip()
-    
-    return
-
-'''
 
 
 def cookingGame():
@@ -323,7 +329,6 @@ def cookingGame():
                     if START_BUTTON.checkInput(MOUSE_POS):
                         playGame()
                     if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
-                        print("working")
                         instruction()
                     if RETURN_BUTTON.checkInput(MOUSE_POS):
                         run = False
@@ -332,7 +337,6 @@ def cookingGame():
         pygame.display.update()
 
     # Quit back to the game map
-    return
-    
+    return 
     
 cookingGame()

@@ -21,6 +21,8 @@ BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
 APPLE = pygame.transform.scale(pygame.image.load("images/apple.png"), (60, 60))
 RESIZED_APPLE = pygame.transform.scale(pygame.image.load("images/apple.png"), (80, 80))
+INSTRUCTOR_DASHBOARD_LOGIN = pygame.image.load("images/Instructor dashboard login.png")
+INSTRUCTOR_DASHBOARD = pygame.image.load("images/Instructor dashboard.png")
 
 def get_font(font, size):
     if font == "Sawarabi":
@@ -142,7 +144,7 @@ def start_game():
                         invalid_password = True
                     else:
                         append_to_csv(username, password)
-                        load_map()
+                        load_map(username, password)
                         return
                 elif username_rect.collidepoint(event.pos):
                     username_active = not username_active
@@ -201,6 +203,11 @@ def load_player(input_username, input_password):
                 return player_info
     return None
 
+def play_music(file):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play()
+
 # Go to load screen 
 def load_game():
     username = ''
@@ -242,7 +249,7 @@ def load_game():
                     player_info = load_player(input_username, input_password)
 
                     if player_info:
-                        load_map()
+                        load_map(input_username, input_password)
                         return
                     else:
                         player_not_found = True
@@ -385,7 +392,7 @@ def instructor_dashboard():
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.blit(INSTRUCTIONS, (0, 0))
+        SCREEN.blit(INSTRUCTOR_DASHBOARD, (0, 0))
         
         INSTRUCTIONS_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
         INSTRUCTIONS_BACK.update(SCREEN)
@@ -402,6 +409,66 @@ def instructor_dashboard():
                     return
 
         pygame.display.update()
+
+
+def instructor_dashboard_login():
+    password = ''
+    password_active = False
+    player_not_found = False
+    input_font = get_font("Sawarabi",35)
+
+    password_rect = pygame.Rect(254, 304, 300, 50)
+
+    while True:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(INSTRUCTOR_DASHBOARD_LOGIN, (0, 0))
+        
+        LOAD_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",22), base_colour = "White", hovering_colour = "#b51f09")
+        LOAD_BACK.update(SCREEN)
+
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            SCREEN.blit(RESIZED_BACK, (-90,-96))
+
+        PLAY_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "PLAY", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if LOAD_BACK.checkInput(GAME_MOUSE_POS):
+                    return
+                elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
+                    player_not_found = False
+                    input_password = password
+
+                    if input_password == "ddinstructor123":
+                        instructor_dashboard()
+                    else:
+                        player_not_found = True
+
+                elif password_rect.collidepoint(event.pos):
+                    password_active = not password_active
+                else:
+                    password_active = False
+            if event.type== pygame.KEYDOWN:
+                if password_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        password = password[:-1]
+                    else:
+                        password += event.unicode
+
+        input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
+        
+        if player_not_found:
+            font = get_font('Shojumaru', 15)
+            text_surface = font.render('Player not found. Try again.', True, 'white')
+            SCREEN.blit(text_surface, (255, 455))
+
+        PLAY_BUTTON.update(SCREEN)
+        pygame.display.flip()
 
 def welcome_screen():
     run = True
@@ -422,6 +489,7 @@ def main_menu():
     welcome_screen()
 
     while True:
+        play_music("sound/EDM.mp3")
         SCREEN.blit(BACKGROUND, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
@@ -443,6 +511,7 @@ def main_menu():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.mixer.music.stop()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -454,9 +523,10 @@ def main_menu():
                     high_score()
                 if INSTRUCTIONS_BUTTON.checkInput(MENU_MOUSE_POS):
                     instructions()
-                # if TEACHER_BUTTON.checkInput(TEACHER_BUTTON):
-                #     instructor_dashboard()
+                if TEACHER_BUTTON.checkInput(MENU_MOUSE_POS):
+                    instructor_dashboard_login()
                 if EXIT_BUTTON.checkInput(MENU_MOUSE_POS):
+                    pygame.mixer.music.stop()
                     pygame.quit()
                     sys.exit()
         pygame.display.update()

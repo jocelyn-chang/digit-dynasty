@@ -1,7 +1,7 @@
 import pygame, sys
 from Button import Button
 from runningArmy import running_army
-#from SnakeGame import game
+from SnakeGame import snakeSums
 #from CookingGame import CookingGame
 from SandwichStack import sandwich_stack
 
@@ -44,12 +44,14 @@ green5 = (117, 132, 133)
 def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
-def load_map():
+def load_map(username, password):
   run = True
   while run:
 
     MULTTEMP = Button(pygame.image.load("images/templeright.png"), pos = (600, 131), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    TOPTEMP = Button(pygame.image.load("images/templetop.png"), pos = (372, 32), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     Back_Button = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    DIV = Button(RESIZED_MIDDLETEMP, pos = (340, 352), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
 
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -79,23 +81,23 @@ def load_map():
     # snake game
     if (372<mouse_x<419 and 32<mouse_y<95):
       screen.blit(RESIZED_TOPTEMP, (348, -2))
-      #if event.type == pygame.MOUSEBUTTONDOWN:
-         #if TOPTEMP.checkInput(MOUSE_POS):
-            #game()
+      if event.type == pygame.MOUSEBUTTONDOWN:
+         if TOPTEMP.checkInput(MOUSE_POS):
+            snakeSums(username, password)
     
     # running army
     if (600<mouse_x<647 and 131<mouse_y<194):
       screen.blit(RESIZED_MULTTEMP, (582, 90))
       if event.type == pygame.MOUSEBUTTONDOWN:
         if MULTTEMP.checkInput(MOUSE_POS):
-            running_army()
+            running_army(username, password)
     
     # sandwich stack game
     if (363<mouse_x<410 and 383<mouse_y<446):
       screen.blit(RESIZED_BOTTOMTEMP, (340, 352))
       if event.type == pygame.MOUSEBUTTONDOWN:
-         if RESIZED_BOTTOMTEMP.checkInput(MOUSE_POS):
-            sandwich_stack()
+         if DIV.checkInput(MOUSE_POS):
+            sandwich_stack(username, password)
     
     # boss battle (arithmetic emperor)
     if (350<mouse_x<450 and 220<mouse_y<380):
@@ -114,6 +116,8 @@ def load_map():
 
     pygame.display.flip()
 
-  # pygame.quit()
+  pygame.quit()
 
-# load_map()
+# username = "jocelyn"
+# password = 12345678
+# load_map(username, password)
