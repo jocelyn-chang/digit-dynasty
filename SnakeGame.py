@@ -34,6 +34,8 @@ happypanda = pygame.image.load("images/thumbsuppanda.png")
 question_scroll = pygame.image.load("images/bigScroll.png")
 LOST_SCREEN = pygame.image.load("images/lostscreensnake.png")
 WIN_SCREEN = pygame.image.load("images/winscreensnake.png")
+BACK = pygame.image.load("images/back_button.png")
+RESIZED_BACK = pygame.image.load("images/resized_back.png")
 
 # Load fruit images and scale to the right size
 fruit_size = (50, 50)
@@ -279,61 +281,29 @@ def foodEaten(foodCoord, correctAns):
      return 1
   return 0
 
-# def end_game_screen(score):
-#   run = True
-#   NEXT_BUTTON = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (650, 400), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
 
-#   pygame.time.delay(200)
-#   while run:
-#     MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
-#     GAME_MOUSE_POS = pygame.mouse.get_pos()
-#     # Display question screen
-#     screen.blit(question_scroll, (25, 100))
+def end_screen(result):
+    while True:
+        MOUSE_POS = pygame.mouse.get_pos()
 
-#     if score >= 5:
-#       levels = math.floor(score / 5)
-#       if levels > 1:
-#         title_lines = ["Congratulations you improved", f"{levels} levels"]
-#       else:
-#         title_lines = ["Congratulations you improved", f"{levels} level"]
-#     else:
-#       title_lines = ["Keep practicing!"]
-        
-#     line_height = get_font(25).get_height()
+        if result == True:
+          screen.blit(WIN_SCREEN, (0, 0))
+        else:
+           screen.blit(LOST_SCREEN, (0, 0))
 
-#     for i, line in enumerate(title_lines):
-#       shadow = get_font(25).render(line, True, gold3)
-#       title_text = get_font(25).render(line, True, white)
-#       inputRect = title_text.get_rect()
-#       inputShad = shadow.get_rect()
-#       inputRect.center = (SCREEN_WIDTH // 2, 225 + i * line_height)  # Adjust position for each line
-#       inputShad.center = ((SCREEN_WIDTH // 2)+2, (225 + i * line_height)+2)
-#       screen.blit(shadow, inputShad)
-#       screen.blit(title_text, inputRect)
-        
-#     screen.blit(happypanda, (250, 330))
+        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "RETURN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN.changeColour(MOUSE_POS)
+        RETURN.update(screen)
 
-#         # Display user's input text
-#         # input_text = get_font(20).render(title, True, white)
-#         # inputRect = input_text.get_rect()
-#         # inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
-#         # screen.blit(input_text, inputRect)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if RETURN.checkInput(MOUSE_POS):
+                    return
 
-#     if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
-#       screen.blit(RESIZED_NEXT, (510, 249))
-        
-#     NEXT_BUTTON.update(screen)
-
-#     # Event handling
-#     for event in pygame.event.get():
-#       if event.type == pygame.QUIT:
-#         pygame.quit()
-#         sys.exit()
-#       if event.type == pygame.MOUSEBUTTONDOWN:
-#         if NEXT_BUTTON.checkInput(GAME_MOUSE_POS):
-#           run = False
-#     # Update the display
-#     pygame.display.update()
+        pygame.display.update()
 
 # Main game function
 def game(user):
@@ -376,10 +346,15 @@ def game(user):
     timerDown = 30
 
   while run:
+    MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+    MOUSE_POS = pygame.mouse.get_pos()
     # Event handling, stop run if quit
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         run = False
+      if event.type == pygame.MOUSEBUTTONDOWN:
+        if BACK.checkInput(MOUSE_POS):
+          return
 
             # Control snake movement when not paused
     if not pause:
@@ -489,9 +464,14 @@ def game(user):
         screen.blit(FRUIT_D, (foodCoord[4][0], foodCoord[4][1]))
     
     doneYet = foodEaten(foodCoord, optionList[4])
+    BACK = Button(image = "images/back_button.png", pos = (40, 25), text_input = "", font = get_font(22), base_colour = "White", hovering_colour = "#b51f09")
+    BACK.update(screen)
+
+    if (10<MOUSE_X<45 and 10<MOUSE_Y<40):
+      screen.blit(RESIZED_BACK, (-120,-126))
     if doneYet == 2:
       if (snake_len - 1) == 4:
-        screen.blit(WIN_SCREEN, (0,0))
+        end_screen(True)
         elements_delay_counter = 1
         pause = True
       elif level < 5:
@@ -507,9 +487,10 @@ def game(user):
         countdown = 1800
         timerDown = 30
     if doneYet == 1:
-      screen.blit(LOST_SCREEN, (0,0))
-      elements_delay_counter = 1
-      pause = True
+      end_screen(False)
+      return
+      # elements_delay_counter = 1
+      # pause = True
   
     pygame.display.flip()
 
