@@ -11,6 +11,7 @@ class Question:
         if operation == '+':
             level = self.player.get_add()
             
+<<<<<<< HEAD
         elif operation == '-':
             level = self.player.get_sub()
             
@@ -40,8 +41,15 @@ class Question:
             question = f"{dividend} / {num1}?"
 
             return [int(quotient), question]
+=======
+>>>>>>> 33323d1276fc586665ba01696130a2f52b99ab1f
             
         if operation == '-':
+            #level_tuple = self.player.get_sub()  # This is a tuple
+            level = int(self.player.get_sub())
+            #level = int(level_tuple[0]) 
+            print(level)
+            
             if level <= 5:
                 digits = (1, 9) # single digits
             else:
@@ -81,6 +89,30 @@ class Question:
                 else:
                     num2-=1
             return [num1, num2]
+        
+        elif operation == "/":
+            level = int(self.player.get_div())
+            if level <= 5:
+                digits = (1, 2)  # Dividing numbers from 4 and below
+            elif 5 < level <= 10:
+                digits = (1, 4)  # Dividing numbers from 16 and below
+            elif 10 < level <= 15:
+                digits = (1, 6)  # Dividing numbers from 36 and below
+            elif 15 < level <= 20:
+                digits = (1, 8)  # Dividing numbers from 64 and below
+            elif 20 < level <= 25:
+                digits = (1, 10)  # Dividing numbers from 100 and below
+            elif 25 < level <= 30:
+                digits = (1, 12)  # Dividing numbers from 144 and below
+
+            num1 = random.randint(*digits)
+            num2 = random.randint(*digits)
+
+            dividend = num1 * num2
+            quotient = dividend / num1
+            question = f"{dividend} / {num1}?"
+
+            return [int(quotient), question]
 
         # wrtie the question based on the operation given
         question = f"{num1} {operation} {num2}?"

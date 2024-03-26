@@ -20,7 +20,7 @@ class Player:
 
                 if username == self.name and password == self.password:
                     self.addition = row[2]
-                    self.subtraction = row[3],
+                    self.subtraction = row[3]
                     self.multiplication = row[4]
                     self.division = row[5]
                     self.bosses = row[6]
@@ -64,7 +64,7 @@ class Player:
 
     # update Player's sub high score
     def update_sub (self, new_sub_score):
-        self.sub_score = new_sub_score
+        self.subtraction = new_sub_score
         self.save_info()
 
     # get Player's name

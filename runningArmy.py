@@ -255,7 +255,7 @@ def end_game_screen(gates, x_pos):
                     run = False
         # Update the display
         pygame.display.update()
-    return
+    return levels
 
 def generate_arrows(incorrect_counter, num_pandas):
     randomizer = random.randint(1, 100)
@@ -274,7 +274,7 @@ def generate_arrows(incorrect_counter, num_pandas):
             reducer = solve(equation, variable)[0]
             num_arrows = random.randint(reducer, reducer +5) 
     elif incorrect_counter == 1:
-        if randomizer < 50:
+        if randomizer < 100:
             num_arrows = num_pandas + random.randint(1,20)
         else:
             num_arrows = round(num_pandas/2)
@@ -288,7 +288,7 @@ def generate_arrows(incorrect_counter, num_pandas):
     
     return num_arrows
 
-def start_game():
+def start_game(username, password):
     # Scrolling variables
     scroll = 0
     scroll_speed = 2
@@ -299,9 +299,8 @@ def start_game():
     incorrect_counter = 0
     gates = 0
 
-    # temporary player
-    # player = Player(name="Bob", password="secret", addition=1, subtraction=1, multiplication=1, division=1, bosses = 1)
-    player = Player(name="Bob", password="secret")
+    # initialize player
+    player = Player(name=username, password=password)
     
     current_question = Question(player)
     question_text = current_question.generate_question('*')
@@ -330,12 +329,8 @@ def start_game():
         # Check if arrow hits the panda
         if scroll == 0:
             if num_arrows >= num_pandas:
-                end_game_screen(gates, x)  # Adjust the parameter as needed
-                bob = 5
-                print("testertester")
-                player.update_mul(bob)
-                print(bob)
-
+                # current_mult_score = int(player.get_mul())
+                player.update_mul(str(int(player.get_mul()) + end_game_screen(gates, x)))
                 run = False  # Exit the function if game ends
 
             else:
@@ -411,14 +406,7 @@ def start_game():
     return
 
 
-def running_army():
-    # # temporary player
-    # player = Player(name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1)
-    
-
-    # #initiate question generator
-    # question_generator = Question(player, name="Bob", password="secret", best_game="Army Run", best_score=200, add_score=1, mul_score=1, div_score=1, sub_score=1);
-
+def running_army(username, password):
     # Main game loop
     run = True
     while run:
@@ -439,7 +427,7 @@ def running_army():
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BUTTON.checkInput(MOUSE_POS):
-                    start_game()
+                    start_game(username, password)
                 if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
                     instruction1()
                 if RETURN_BUTTON.checkInput(MOUSE_POS):
@@ -452,4 +440,4 @@ def running_army():
     # Quit back to the game map
     return
 
-running_army()
+# running_army()
