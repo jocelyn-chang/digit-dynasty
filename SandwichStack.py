@@ -213,6 +213,8 @@ def start_game(username, password):
 
     game_active = True
     while game_active:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        MOUSE_POS = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -227,7 +229,7 @@ def start_game(username, password):
         if keys[pygame.K_RIGHT] and panda_rect.right < SCREEN_WIDTH:
             panda_rect.x += PANDA_SPEED
 
-        current_food_rect.y += 2
+        current_food_rect.y += 3
 
         answer_text_rect.centerx = current_food_rect.centerx
         answer_text_rect.y = current_food_rect.y - 20
@@ -280,15 +282,16 @@ def start_game(username, password):
                 lives -= 1
                 print(lives)
 
-            if lives > 0:
+            if score == 5:
+                new_score = int(player.get_div()) + 1
+                player.update_div(str(new_score))
+                win_screen(username, password)
+            elif lives > 0:
                 # Generate a new question and answer set
+                answer_bank = [random.randint(1, 144) for _ in range(4)]
                 correct_answer, question = current_question.generate_question("/")
                 answer_bank[0] = correct_answer  # Update the answer bank with the new correct answer
                 current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food(answer_bank)
-            elif score == 5:
-                new_score = player.get_div() + 1
-                player.update_div(new_score)
-                win_screen(username, password)
             else:
                 game_active = False  # End game loop if no lives left
                 lose_screen(username, password)
@@ -301,5 +304,4 @@ def start_game(username, password):
 
 username = "Audrey"
 password = "AudreyLi192004"
-#sandwich_stack(username, password)
-lose_screen(username, password)
+sandwich_stack(username, password)
