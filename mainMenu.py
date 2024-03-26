@@ -23,6 +23,9 @@ APPLE = pygame.transform.scale(pygame.image.load("images/apple.png"), (60, 60))
 RESIZED_APPLE = pygame.transform.scale(pygame.image.load("images/apple.png"), (80, 80))
 INSTRUCTOR_DASHBOARD_LOGIN = pygame.image.load("images/Instructor dashboard login.png")
 INSTRUCTOR_DASHBOARD = pygame.image.load("images/Instructor dashboard.png")
+DETAILED_STUDENT = pygame.image.load("images/detailed student.png")
+
+black = (0, 0, 0)
 
 def get_font(font, size):
     if font == "Sawarabi":
@@ -456,7 +459,7 @@ def instructor_dashboard():
                     for i, row in enumerate(data):
                         name_rect = pygame.Rect(scroll_area.left, i * row_height + scroll_area.top - scroll_y, 200, row_height)
                         if name_rect.collidepoint(event.pos):
-                            student_details(row[0])  # Pass the student's name to the student_details function
+                            student_details(row)  # Pass the student's name to the student_details function
                             break
 
         # Render the visible portion of the list (only the first two columns)
@@ -472,11 +475,50 @@ def instructor_dashboard():
     # Quit Pygame
     return
 
-def student_details(name):
-    # Placeholder function for student_details
-    print(f"Details for student: {name}")
+def student_details(student):
+
+    # Set the starting position for the text
+    x = 100  # Horizontal position
+    y = 100  # Vertical position
+    line_height = 30  # Space between lines
 
 
+
+    run = True
+    while run:
+        titles = [f"Name: {student[0]}", f"Password: {student[1]}", f"Addition Score: {student[2]}", f"Subtraction Score: {student[3]}", f"Multiplciation Score: {student[4]}", f"Division Score: {student[5]}", f"Boss Score: {student[6]}"]
+
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(DETAILED_STUDENT, (0, 0))
+        
+        INSTRUCTIONS_BACK = Button(image = "images/back_button.png", pos = (120, 115), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_BACK.update(SCREEN)
+
+        # Render and blit each title to the screen
+        for i, line in enumerate(titles):
+            incorrect_text = get_font("Sawarabi",20).render(line, True, black)
+            inputRect = incorrect_text.get_rect()
+            inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + i * line_height)  # Adjust position for each line
+            SCREEN.blit(incorrect_text, inputRect)
+
+        
+        if (90<MOUSE_X<125 and 100<MOUSE_Y<130):
+            SCREEN.blit(RESIZED_BACK, (-40,-36))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    return
+
+        pygame.display.update()
+
+    # Update the display
+    pygame.display.update()
 
 
 def instructor_dashboard_login():
