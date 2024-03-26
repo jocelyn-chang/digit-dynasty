@@ -1,5 +1,5 @@
 # Import appropriate libraries
-import pygame, sys, random
+import pygame, sys, random, csv
 from Button import Button
 
 pygame.init()
@@ -127,6 +127,11 @@ def sandwich_stack():
         pygame.display.update()
 
 def start_game():
+    with open("data.csv", newline = '') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            name, division = row[0], row[5]
+
     while True:
         global current_food, current_food_rect
         MOUSE_POS = pygame.mouse.get_pos()
