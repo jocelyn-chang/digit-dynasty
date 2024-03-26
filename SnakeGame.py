@@ -490,39 +490,24 @@ def game(user):
     
     doneYet = foodEaten(foodCoord, optionList[4])
     if doneYet == 2:
-    # if foodCoord[0][0] >= (foodCoord[1][0]-20) and foodCoord[0][0] <= (foodCoord[1][0]+30) and foodCoord[0][1] >= (foodCoord[1][1]-20) and foodCoord[0][1] <= (foodCoord[1][1]+40):
-      # foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
-      # foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
-      foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
-      snake_len += 1
-      elements_delay_counter = 1
-      # change countdown to a minute later
-      if level < 5:
+      if (snake_len - 1) == 4:
+        screen.blit(WIN_SCREEN, (0,0))
+        elements_delay_counter = 1
+        pause = True
+      elif level < 5:
+        foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
+        snake_len += 1
+        elements_delay_counter = 1
         countdown = 600
         timerDown = 10
       else: 
-        # countdown = 1800
-        # timerDown = 30
-        # print("boo")
-        screen.blit(WIN_SCREEN, (0,0))
-      # screen.blit(overlay, (0, 0))
-      # end_game_screen(snake_len - 1)
-      # shadow = get_font(65).render("Game Over", True, black)
-      # main = get_font(65).render("Game Over", True, white)
-
-      # screen.blit(shadow, [182, 200])
-      # screen.blit(main, [180, 198])
+        foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
+        snake_len += 1
         elements_delay_counter = 1
-        pause = True
+        countdown = 1800
+        timerDown = 30
     if doneYet == 1:
       screen.blit(LOST_SCREEN, (0,0))
-      # screen.blit(overlay, (0, 0))
-      # end_game_screen(snake_len - 1)
-      # shadow = get_font(65).render("Game Over", True, black)
-      # main = get_font(65).render("Game Over", True, white)
-
-      # screen.blit(shadow, [182, 200])
-      # screen.blit(main, [180, 198])
       elements_delay_counter = 1
       pause = True
   
@@ -570,6 +555,6 @@ def snakeSums(username, password):
 # pygame.quit()
 
 # Run the game
-username = "jocelyn"
-password = 12345678
+# username = "jocelyn"
+# password = 12345678
 # snakeSums(username, password)
