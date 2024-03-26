@@ -1,16 +1,30 @@
+import csv
+
 class Player: 
     # initialize Player object
-    def __init__ (self, name, password, best_game, best_score, add_score, mul_score, div_score, sub_score):
+    def __init__ (self, name, password):
         self.name = name
         self.password = password
-        self.best_game = best_game
-        self.best_score = best_score
-        self.add_score = add_score
-        self.mul_score = mul_score
-        self.div_score = div_score
-        self.sub_score = sub_score
-        # self.games = games
+        self.addition = 0
+        self.subtraction = 0
+        self.multiplication = 0
+        self.division = 0
+        self.bosses = 0
     
+        # Function to load a previous player's information
+    def load_player(self):
+        with open("data.csv", newline = '') as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                username, password = row[0], row[1]
+
+                if username == self.name and password == self.password:
+                    self.addition = row[2]
+                    self.subtraction = row[3],
+                    self.multiplication = row[4]
+                    self.division = row[5]
+                    self.bosses = row[6]
+
     # add game to list of Player's game
     def add_game (self, game):
         self.games.append(game)
