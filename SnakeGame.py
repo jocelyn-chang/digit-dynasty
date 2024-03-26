@@ -290,7 +290,10 @@ def end_game_screen(score):
 
     if score >= 5:
       levels = math.floor(score / 5)
-      title_lines = ["Congratulations you improved", f"{levels} levels"]
+      if levels > 1:
+        title_lines = ["Congratulations you improved", f"{levels} levels"]
+      else:
+        title_lines = ["Congratulations you improved", f"{levels} level"]
     else:
       title_lines = ["Keep practicing!"]
         
@@ -435,6 +438,7 @@ def game(user):
 
       # Update snake position
       if not snake_pause:
+        print("butt")
         foodCoord[0][0] += x1_change
         foodCoord[0][1] += y1_change
 
@@ -487,6 +491,7 @@ def game(user):
         snake_pause = True
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
+          print("hello")
           pause = False
 
       else:
@@ -570,5 +575,5 @@ def snakeSums(person):
 # pygame.quit()
 
 # Run the game
-person = Player("jocelyn", 12345678, 0, 0, 0, 0, 0, 0)
+person = Player("jocelyn", 12345678)
 snakeSums(person)
