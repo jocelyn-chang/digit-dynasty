@@ -2,7 +2,7 @@ import random
 from Player import Player
 
 #inherits stuff from player class
-class Question (Player):
+class Question(Player):
     
     def __init__(self, name, password, best_game, best_score, add_score, mul_score, div_score, sub_score):
         super().__init__(name, password, best_game, best_score, add_score, mul_score, div_score, sub_score)
