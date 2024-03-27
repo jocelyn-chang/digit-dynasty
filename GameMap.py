@@ -107,7 +107,10 @@ def load_map(username, password):
       screen.blit(RESIZED_BOTTOMTEMP, (340, 352))
       if event.type == pygame.MOUSEBUTTONDOWN:
          if DIV.checkInput(MOUSE_POS):
+            pygame.mixer.music.stop()
             sandwich_stack(username, password)
+            pygame.mixer.music.stop()
+            play_music("sound/EDM.mp3")
     
     # boss battle (arithmetic emperor)
     if (350<mouse_x<450 and 220<mouse_y<380):
