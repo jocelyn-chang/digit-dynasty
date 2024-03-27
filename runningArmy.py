@@ -402,9 +402,14 @@ def start_game(username, password):
 
     return
 
+def play_music(file):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play(-1)
 
 def running_army(username, password):
     # Main game loop
+    play_music("sound/RunningArmyMusic.mp3")
     run = True
     while run:
         # display start screen
@@ -435,4 +440,5 @@ def running_army(username, password):
         pygame.display.update()
 
     # Quit back to the game map
+    pygame.mixer.music.stop()
     return
