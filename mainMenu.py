@@ -721,6 +721,8 @@ def debug_mode(username, password):
         input_box(SCREEN, mult_rect, mult_input, input_font, active = mult_active)
         input_box(SCREEN, div_rect, div_input, input_font, active = div_active)
         input_box(SCREEN, boss_rect, boss_input, input_font, active = boss_active)
+        
+        PLAY_BUTTON.update(SCREEN)
 
         pygame.display.update()
 
