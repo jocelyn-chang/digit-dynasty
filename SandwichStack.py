@@ -56,9 +56,9 @@ def get_font(font, size):
     Loads and returns a Pygame font object based on a given font name and size.
 
     Parameters:
-    - font: A string representing the font name. If the font is "Sawarabi" or "Shojumaru",
+    - font (str): A string representing the font name. If the font is "Sawarabi" or "Shojumaru",
             a specific font fle is loaded
-    - size: The size of the font in points
+    - size (int): The size of the font in points
 
     Returns:
     A Pygame font object.
@@ -80,11 +80,11 @@ def spawn_food(answer_bank):
     A tuple containing the food surface, its Rect object, the chosen answer, the rendered answer
     text surface, adn its Rect object.
     """
-    food = random.choice(food_items)
-    answer = random.choice(answer_bank)
-    x_pos = random.randrange(0, SCREEN_WIDTH - food.get_width())
-    y_pos = -food.get_height()
-    food_rect = food.get_rect(topleft = (x_pos, y_pos))
+    food = random.choice(food_items)                                    # Randomly choose a food item from the food item list
+    answer = random.choice(answer_bank)                                 # Randomly choose an answer from the answer bank list
+    x_pos = random.randrange(0, SCREEN_WIDTH - food.get_width())        # Get the x position to randomly spawn the item
+    y_pos = -food.get_height()                                          # Get the y position fo the food item
+    food_rect = food.get_rect(topleft = (x_pos, y_pos))                 # Obtain the rectangle surrounding the food item
 
     font = get_font('Shojumaru', 15)
     text_surface = font.render(str(answer), True, "white")
@@ -178,8 +178,8 @@ def sandwich_stack(username, password):
     music is played upon starting this screen.
 
     Parameters:
-    - username: A string representing the player's username. Used for authentication purposes for later uses (obtaining the player's division level).
-    - password: A string representing the player's password. Used for authentication purposes for later uses (obtaining the player's division level).
+    - username (str): A string representing the player's username. Used for authentication purposes for later uses (obtaining the player's division level).
+    - password (str): A string representing the player's password. Used for authentication purposes for later uses (obtaining the player's division level).
 
     Returns:
     None
@@ -213,6 +213,18 @@ def sandwich_stack(username, password):
         pygame.display.update()
 
 def win_screen(score):
+    """
+    Displays the win screen after a player successfully completes the game (earning a score of 5).
+
+    The screen congratulates the player and shows their updated division level. 
+    It provides a button to return to the title screen.
+
+    Parameters:
+    - score (int): The final score achieved by the player, used to display the division level.
+
+    Returns:
+    None
+    """
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
 
@@ -236,6 +248,21 @@ def win_screen(score):
         pygame.display.update()
 
 def lose_screen(username, password, score):
+    """
+    Displays the lose screen if the player loses all three lives before completing the game.
+
+    The screen shows the player's current division level and the score they achieved. It also 
+    provides a button to return to the title screen. The player's data, such as the division level, 
+    is loaded based on the provided username and password.
+
+    Parameters:
+    - username (str): The username of the player, used to load player data.
+    - password (str): The password of the player, used for authentication purposes when loading player data.
+    - score (int): The score achieved by the player up to the point of losing the game.
+
+    Returns:
+    None
+    """
     player = Player(username, password)
     player.load_player()
     while True:
@@ -265,6 +292,15 @@ def lose_screen(username, password, score):
         pygame.display.update()
 
 def play_music(file):
+    """
+    Initializes the Pygame mixer module and plays the specified music file in a continuous loop.
+
+    Parameters:
+    - file (str): The path to the music file to be played.
+
+    Returns:
+    None
+    """
     pygame.mixer.init()
     pygame.mixer.music.load(file)
     pygame.mixer.music.play(-1)
@@ -276,8 +312,10 @@ def start_game(username, password):
     the wrong item, they lose one life until they lose all three of their lives. This results in a game over and the player is prompted to return back to the title screen.
 
     Parameters:
-    - username: A string representing the player's username. Used for authentication purposes (obtaining the player's division level).
-    - password: A string representing the player's password. Used for authentication purposes (obtaining the player's division level).
+    - username (str): A string representing the player's username. Used for authentication purposes (obtaining the player's division level).
+    - password (str): A string representing the player's password. Used for authentication purposes (obtaining the player's division level).
+    
+    The function uses global variables for game state, such as the food items, panda character, and scores.
     """
     MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
     MOUSE_POS = pygame.mouse.get_pos()
