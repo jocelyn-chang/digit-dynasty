@@ -629,6 +629,8 @@ def debug_mode(username, password):
     while True:
         SCREEN.blit(BACKGROUND, (0, 0))
         
+        PLAY_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "PLAY", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
+
         subtitles = ["Addition Score:", "Subtraction Score:", "Multiplication Score:", "Division Score:", "Boss Battle Score:"]
         y_coordinate = 115
         for i, line in enumerate(subtitles):
@@ -647,6 +649,36 @@ def debug_mode(username, password):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if add_rect.collidepoint(event.pos):
                     add_active = not add_active
+                    sub_active = False
+                    mult_active = False
+                    div_active = False
+                    boss_active = False
+                elif sub_rect.collidepoint(event.pos):
+                    sub_active = not sub_active
+                    add_active = False
+                    mult_active = False
+                    div_active = False
+                    boss_active = False
+                elif mult_rect.collidepoint(event.pos):
+                    mult_active = not mult_active
+                    add_active = False
+                    sub_active = False
+                    div_active = False
+                    boss_active = False
+                elif div_rect.collidepoint(event.pos):
+                    div_active = not div_active
+                    add_active = False
+                    sub_active = False
+                    mult_active = False
+                    boss_active = False
+                elif boss_rect.collidepoint(event.pos):
+                    boss_active = not boss_active
+                    add_active = False
+                    sub_active = False
+                    mult_active = False
+                    div_active = False
+                elif PLAY_BUTTON.checkInput(event.pos):
+                    load_map(username, password)
                 else:
                     add_active = False
                     sub_active = False
@@ -659,8 +691,36 @@ def debug_mode(username, password):
                         add_input = add_input[:-1]
                     else:
                         add_input += event.unicode
-        
+                elif sub_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        sub_input = sub_input[:-1]
+                    else:
+                        sub_input += event.unicode
+                elif mult_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        mult_input = mult_input[:-1]
+                    else:
+                        mult_input += event.unicode
+                elif div_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        div_input = div_input[:-1]
+                    else:
+                        div_input += event.unicode
+                elif boss_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        boss_input = boss_input[:-1]
+                    else:
+                        boss_input += event.unicode
+            player.update_add(add_input)
+            player.update_sub(sub_input)
+            player.update_mul(mult_input)
+            player.update_div(div_input)
+
         input_box(SCREEN, add_rect, add_input, input_font, active = add_active)
+        input_box(SCREEN, sub_rect, sub_input, input_font, active = sub_active)
+        input_box(SCREEN, mult_rect, mult_input, input_font, active = mult_active)
+        input_box(SCREEN, div_rect, div_input, input_font, active = div_active)
+        input_box(SCREEN, boss_rect, boss_input, input_font, active = boss_active)
 
         pygame.display.update()
 
