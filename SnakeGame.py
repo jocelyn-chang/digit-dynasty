@@ -349,6 +349,10 @@ def correct(question, answer):
   screen.blit(q, [328, 308])
   screen.blit(ans, [245, 387])
 
+def play_music(file):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play(-1)
 
 # Main game function
 def game(user):
@@ -459,7 +463,6 @@ def game(user):
       pause = True
     elif dontrun == 1:
       if countdown > 0 and pause == True and timerDown > 0 and result is False:
-        print("pooppiee")
         snake_pause = True
         if countdown == 600:
           currQNA = Question(user).generate_question("+")
@@ -582,6 +585,7 @@ def game(user):
   pygame.quit()
 
 def snakeSums(username, password):
+    play_music("sound/SnakeSumsMusic.mp3")
     user = Player(name=username, password=password)
     # Main game loop
     run = True
@@ -614,6 +618,7 @@ def snakeSums(username, password):
         pygame.display.update()
 
     # Quit back to the game map
+    pygame.mixer.music.stop()
     return
 
 # pygame.quit()
