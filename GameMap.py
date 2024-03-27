@@ -100,7 +100,9 @@ def load_map(username, password):
       screen.blit(RESIZED_MULTTEMP, (582, 90))
       if event.type == pygame.MOUSEBUTTONDOWN:
         if MULTTEMP.checkInput(MOUSE_POS):
+            pygame.mixer.music.stop()
             running_army(username, password)
+            play_music("sound/EDM.mp3")
     
     # sandwich stack game
     if (363<mouse_x<410 and 383<mouse_y<446):
