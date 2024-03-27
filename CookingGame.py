@@ -37,8 +37,13 @@ RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.pn
 start_screen = pygame.image.load("images/Cooking Game Start Screen.png")
 
 #game over or congrats screens
-question_scroll = pygame.image.load("images/bigScroll.png")
-happypanda = pygame.image.load("images/thumbsuppanda.png")
+#question_scroll = pygame.image.load("images/bigScroll.png")
+#happypanda = pygame.image.load("images/thumbsuppanda.png")
+
+
+LOSE_SCREEN = pygame.image.load("images/Cooking game lose game.png")
+WIN_SCREEN = pygame.image.load("images/Cooking game winning.png")
+
 
 # Initialize the game screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -50,7 +55,7 @@ clock = pygame.time.Clock()
 #font = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 20)
 
 number_of_dumplings = 0
-correct_answer = 0
+#correct_answer = 0
 
 def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
@@ -132,13 +137,12 @@ def handle_events(dumpling_positions, central_area, questions):
             elif event.key == pygame.K_SPACE and questions:  # Check answer when space bar is pressed
                 # Assume the question is directly asking for the number of dumplings
                 if number_of_dumplings == questions[0][1]:  # Assuming the question is simply the expected number
-                    print("Correct")
                     # Clears the number of dumplings on the screen when the question is answered correctly
                     dumpling_positions.clear()
                     number_of_dumplings = 0
                     return True
                 else:
-                    print("Incorrect")
+                    dumpling_positions.clear()
                     return False
     return None 
     #return True
@@ -162,50 +166,79 @@ def update_photos(photo_positions, last_photo_time, current_time, total_question
     return last_photo_time, photo_added
     
 
-def end_game_screen(correct_order, question):
-    run = True
-    NEXT_BUTTON = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (650, 400), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-
-    #screen.blit(dead_panda, (x_pos-5, 385))
+def lose_screen(correct_order, question):
+    
+    run = True    
     pygame.display.update()
+    pygame.time.delay(1000)
 
-    pygame.time.delay(100)
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
-        # Display question screen
-        screen.blit(question_scroll, (25, 100))
-
+        # Load buttons
+        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
+        
+        screen.blit(LOSE_SCREEN, (0, 0))
+    
         if correct_order == 5:
             title_lines = ["Congratulations you moved up one level!"]
         else:
-            title_lines = ["Keep practicing!, Incorrect", f"Correct Answer = {question[1]}", f"Your Answer = {number_of_dumplings}"]
+            title_lines = ["Incorrect", f"Correct Answer = {question[1]}", f"Your Answer = {number_of_dumplings}"]
         
         line_height = get_font(25).get_height()
 
         for i, line in enumerate(title_lines):
-            title_text = get_font(20).render(line, True, WHITE)
+            title_text = get_font(35).render(line, True, WHITE)
             inputRect = title_text.get_rect()
-            inputRect.center = (SCREEN_WIDTH // 2, 225 + i * line_height)  # Adjust position for each line
+            inputRect.center = (SCREEN_WIDTH // 2, 300 + i * line_height)  # Adjust position for each line
             screen.blit(title_text, inputRect)
-        
-        screen.blit(happypanda, (250, 330))
 
-        if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
-            screen.blit(RESIZED_NEXT, (510, 249))
-        
-        NEXT_BUTTON.update(screen)
+        RETURN.changeColour(GAME_MOUSE_POS)
+        RETURN.update(screen)
 
-        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if NEXT_BUTTON.checkInput(GAME_MOUSE_POS):
+                if RETURN.checkInput(GAME_MOUSE_POS):
                     run = False
+
+        if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
+            screen.blit(RESIZED_NEXT, (510, 249))
+        
         # Update the display
         pygame.display.update()
+    return 
+    
+
+def win_screen():
+    run = True
+    while run:
+            MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+            GAME_MOUSE_POS = pygame.mouse.get_pos()
+            # Load buttons
+            RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
+            
+            screen.blit(WIN_SCREEN, (0, 0))
+
+            RETURN.changeColour(GAME_MOUSE_POS)
+            RETURN.update(screen)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if RETURN.checkInput(GAME_MOUSE_POS):
+                        return
+
+            if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
+                screen.blit(RESIZED_NEXT, (510, 249))
+            
+            # Update the display
+            pygame.display.update()
+    return 
 
 def draw_screen(dumpling_positions, photo_positions, questions, level):
     screen.fill(WHITE)
@@ -239,9 +272,14 @@ def draw_screen(dumpling_positions, photo_positions, questions, level):
     pygame.display.flip()
 
 
-def playGame():
-    player = Player("Robert", "Robert123")
+def playGame(username, password):
+    player = Player(username, password)
     player.load_player()
+    
+    global correct_answer, number_of_dumplings
+    
+    correct_answer = 0
+    number_of_dumplings = 0
     
     done = False
     dumpling_positions = []
@@ -258,22 +296,16 @@ def playGame():
     
     total_questions_generated = 0  # Keep track of the total number of questions generated
     
-    #player_level = player.get_sub()
-    #level = int(player_level[0])
     level = int(player.get_sub())
-    print(level)
     
     
     current_question = Question(player)
-    
-    
-    global correct_answer
     
     while not done:
         current_time = pygame.time.get_ticks()
         ans = handle_events(dumpling_positions, central_area, questions)
         if ans == False:
-            end_game_screen(correct_answer, questions[0])
+            lose_screen(correct_answer, questions[0])
             done = True
             break
         
@@ -295,19 +327,18 @@ def playGame():
             # End the game when all 5 questions have been generated and answered
             if correct_answer == 5:
                 level = level + 1
-                print(level)
                 player.update_sub(str(level))
-            end_game_screen(correct_answer, questions[0])
+            win_screen()
             done = True
         
         
         pygame.time.Clock().tick(60)
         pygame.display.flip()
     
-    pygame.quit()
+    return
 
 
-def cookingGame():
+def cooking_game(username, password):
     run = True
     while run:
         # display start screen
@@ -327,7 +358,7 @@ def cookingGame():
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                     if START_BUTTON.checkInput(MOUSE_POS):
-                        playGame()
+                        playGame(username, password)
                     if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
                         instruction()
                     if RETURN_BUTTON.checkInput(MOUSE_POS):
@@ -337,6 +368,4 @@ def cookingGame():
         pygame.display.update()
 
     # Quit back to the game map
-    return 
-    
-cookingGame()
+    return

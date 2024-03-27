@@ -13,13 +13,12 @@ class Question:
             
             
         if operation == '-':
-            #level_tuple = self.player.get_sub()  # This is a tuple
             level = int(self.player.get_sub())
-            #level = int(level_tuple[0]) 
-            print(level)
             
             if level <= 5:
-                digits = (1, 9) # single digits
+                digits = (1, 9) # single digits   
+            elif level <=10:
+                digits = (1, 20)
             else:
                 digits = (1, 50) #double digits
             
