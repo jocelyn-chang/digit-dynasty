@@ -261,7 +261,7 @@ def foodEaten(foodCoord, correctAns):
         return 2
     i += 1
   if snakex == 0 or snakex == 800 or snakey == 0 or snakey == 600:
-     return 1
+     return 3
   return 0
 
 
@@ -348,6 +348,7 @@ def correct(question, answer):
 
 # Main game function
 def game(user):
+  dontrun = 1
   doneYet = 0
   result = False
   fruit_delay = 4
@@ -452,8 +453,9 @@ def game(user):
     if elements_delay_counter > 0:
       elements_delay_counter -= 1
       pause = True
-    else:
+    elif dontrun == 1:
       if countdown > 0 and pause == True and timerDown > 0 and result is False:
+        print("pooppiee")
         snake_pause = True
         if countdown == 600:
           currQNA = question(level)
@@ -546,10 +548,10 @@ def game(user):
         plss = response(True, currQ, correctAns)
         elements_delay_counter = 1
         if plss == True:
-          new_score = int(user.get_add()) + 1
-          user.update_div(str(new_score))
+          new_score = user.get_add() + 1
+          user.update_add(str(new_score))
           return
-      elif level < 5:
+      elif level < 5 and dontrun == 1:
         foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
         snake_len += 1
         elements_delay_counter = 1
@@ -557,7 +559,7 @@ def game(user):
         countdown = 600
         timerDown = 10
         result = True
-      else: 
+      elif dontrun == 1: 
         foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
         snake_len += 1
         elements_delay_counter = 1
@@ -567,10 +569,14 @@ def game(user):
         result = True
     if doneYet == 1:
       result = False
+      dontrun = 0
       plss = response(False, currQ, correctAns)
       elements_delay_counter = 1
       if plss == True:
         return
+    if doneYet == 3:
+       end_screen(False)
+       return
   
     pygame.display.flip()
 
@@ -616,6 +622,6 @@ def snakeSums(username, password):
 # pygame.quit()
 
 # Run the game
-# username = "jocelyn"
-# password = 12345678
-# snakeSums(username, password)
+username = "jocelyn"
+password = 12345678
+snakeSums(username, password)
