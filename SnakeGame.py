@@ -107,23 +107,6 @@ def timeLeft(time):
   main = get_font(25).render("Time Left: " + str(time), True, white)
   screen.blit(main, [280, 60])
 
-# NEED TO CHANGE LATER TO USE THE QUESTION CLASS INSTEAD
-# Generates the question and answer
-def question(level):
-  if level < 5: # For single digit addition
-    num1 = random.randint(1, 9)
-    num2 = random.randint(1, 9)
-  elif level < 10:
-    num1 = random.randint(1, 49)
-    num2 = random.randint(1, 49)
-  else: # For double digit addition
-    num1 = random.randint(1, 99)
-    num2 = random.randint(1, 99)
-
-  ans = num1 + num2
-  q = str(num1) + " + " + str(num2) + " = ?"
-  return [q, ans]
-
 # Generates the options for the question
 def options(correctAns):
   opt1 = correctAns + random.randint(1, 5) # altered by adding a random number
@@ -270,6 +253,9 @@ def foodEaten(foodCoord, correctAns):
 
 
 def end_screen(result):
+    pygame.mixer.init()
+    pygame.mixer.music.load("sound/LossSound.mp3")
+    pygame.mixer.music.play(0)
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
 
@@ -288,6 +274,7 @@ def end_screen(result):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if RETURN.checkInput(MOUSE_POS):
+                    play_music("sound/SnakeSumsMusic.mp3")
                     return
 
         pygame.display.update()
