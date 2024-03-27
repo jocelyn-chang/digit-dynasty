@@ -149,6 +149,7 @@ def start_game():
                         invalid_password = True
                     else:
                         append_to_csv(username, password)
+                        play_music("sound/Gong.mp3")
                         load_map(username, password)
                         return
                 elif username_rect.collidepoint(event.pos):
@@ -257,6 +258,7 @@ def load_game():
                         if input_username == "ADMIN" and input_password == "DD2024":
                             debug_mode(input_username, input_password)
                         else:
+                            play_music("sound/Gong.mp3")
                             load_map(input_username, input_password)
                         return
                     else:
