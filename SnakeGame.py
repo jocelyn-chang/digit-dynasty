@@ -1,9 +1,7 @@
 import pygame, sys
-import time
 import random
 from Player import Player
 from Button import Button
-import math
 
 # Initialize Pygame
 pygame.init()
@@ -158,21 +156,6 @@ def options(correctAns):
 
   return [a, b, c, d, rightChoice]
 
-# # Create list of coordinates for the food
-# def foodCoordinates(x1, y1):
-#   # Randomize position of fruits
-#   foodCoord = [[x1, y1]]
-#   i = 0
-#   while i < 4:
-#     num1 = round(random.randrange(50, SCREEN_WIDTH -(snake_block + 50)) / 10.0) * 10.0
-#     num2 = round(random.randrange(50, SCREEN_HEIGHT - (snake_block + 50)) / 10.0) * 10.0
-#     while foodCoord.__contains__((num1, num2)):
-#       num1 = round(random.randrange(50, SCREEN_WIDTH - (snake_block + 50)) / 10.0) * 10.0
-#       num2 = round(random.randrange(50, SCREEN_HEIGHT - (snake_block + 50)) / 10.0) * 10.0
-#     foodCoord.append([num1, num2])
-#     i += 1
-#   return foodCoord
-
 # Intructions screen
 def instruction1():
     run = True
@@ -305,8 +288,67 @@ def end_screen(result):
 
         pygame.display.update()
 
+def response(correct, question, answer):
+  screen.blit(overlay, (0, 0))
+  screen.blit(QBOX, (141, 115))
+  # Shadow text
+  shadow = get_font(25).render("Press Space To Continue", True, green4)
+  # Main text
+  main = get_font(25).render("Press Space To Continue", True, white)
+        
+  screen.blit(shadow, [199, 525])
+  screen.blit(main, [197, 523])
+  # Shadow text
+  if correct == False:
+    shadow = get_font(50).render("Nice Try!", True, green4)
+    # Main text
+    main = get_font(50).render("Nice Try!", True, white)
+    screen.blit(shadow, [256, 212])
+    screen.blit(main, [256, 210])
+    q = get_font(25).render(question, True, black)
+    # Main text
+    ans = get_font(25).render("Correct Answer: " + str(answer), True, black)
+    screen.blit(q, [328, 308])
+    screen.blit(ans, [245, 387])
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_SPACE]:
+      end_screen(False)
+      return True
+  else:
+    shadow = get_font(50).render("Good Job!", True, green4)
+    # Main text
+    main = get_font(50).render("Good Job!", True, white)
+    screen.blit(shadow, [245, 212])
+    screen.blit(main, [243, 210])
+    q = get_font(25).render(question, True, black)
+    # Main text
+    ans = get_font(25).render("Correct Answer: " + str(answer), True, black)
+    screen.blit(q, [328, 308])
+    screen.blit(ans, [245, 387])
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_SPACE]:
+      end_screen(True)
+      return True
+    # result = False
+    # fruit_delay = 4
+    # countdown = 600
+
+def correct(question, answer):
+  good = get_font(50).render("Good Job!", True, green4)
+  # Main text
+  good1 = get_font(50).render("Good Job!", True, white)
+  screen.blit(good, [245, 212])
+  screen.blit(good1, [243, 210])
+  q = get_font(25).render(question, True, black)
+  # Main text
+  ans = get_font(25).render("Correct Answer: " + str(answer), True, black)
+  screen.blit(q, [328, 308])
+  screen.blit(ans, [245, 387])
+
+
 # Main game function
 def game(user):
+  doneYet = 0
   result = False
   fruit_delay = 4
   run = True 
@@ -320,10 +362,6 @@ def game(user):
   correctAns = currQNA[1]
   optionList = options(correctAns) # creates list of answer options
 
-  # # Snake starting coordinates
-  # x1 = SCREEN_WIDTH / 2
-  # y1 = SCREEN_HEIGHT / 2
-
   # Initialize change in coordinates
   x1_change = 0
   y1_change = 0
@@ -331,7 +369,6 @@ def game(user):
   # List of snake body parts coordinates
   snake_list = []
   snake_len = 1
-
 
   # Randomize and create coordinates for each orange
   foodCoord = foodCoordinates(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
@@ -469,6 +506,14 @@ def game(user):
         
         screen.blit(shadow, [199, 525])
         screen.blit(main, [197, 523])
+        # if firstpause == 2:
+          # # Shadow text
+          # shadow = get_font(50).render("Good Job!", True, green4)
+          # # Main text
+          # main = get_font(50).render("Good Job!", True, white)
+          # screen.blit(shadow, [245, 212])
+          # screen.blit(main, [243, 210])
+        correct(currQ, correctAns)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
           result = False
@@ -477,8 +522,6 @@ def game(user):
       else:
         pause = False
       
-      
-
       if pause == False: 
         if fruit_delay > 0:
            fruit_delay -= 1
@@ -499,10 +542,13 @@ def game(user):
       screen.blit(RESIZED_BACK, (-120,-126))
     if doneYet == 2:
       if (snake_len - 1) == 4:
-        end_screen(True)
+        result = False
+        plss = response(True, currQ, correctAns)
         elements_delay_counter = 1
-        fruit_delay = 4
-        pause = True
+        if plss == True:
+          new_score = int(user.get_add()) + 1
+          user.update_div(str(new_score))
+          return
       elif level < 5:
         foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
         snake_len += 1
@@ -520,8 +566,11 @@ def game(user):
         timerDown = 30
         result = True
     if doneYet == 1:
-      end_screen(False)
-      return
+      result = False
+      plss = response(False, currQ, correctAns)
+      elements_delay_counter = 1
+      if plss == True:
+        return
   
     pygame.display.flip()
 
