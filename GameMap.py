@@ -2,8 +2,9 @@ import pygame, sys
 from Button import Button
 from runningArmy import running_army
 from SnakeGame import snakeSums
-#from CookingGame import CookingGame
+from CookingGame import cooking_game
 from SandwichStack import sandwich_stack
+from ArithmeticEmperor import arithmetic_emperor
 
 pygame.init()
 
@@ -40,6 +41,11 @@ green3 = (113, 182, 135)
 green4 = (88, 133, 120)
 green5 = (117, 132, 133)
 
+def play_music(file):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play(-1)
+
 # get the font
 def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
@@ -50,8 +56,10 @@ def load_map(username, password):
 
     MULTTEMP = Button(pygame.image.load("images/templeright.png"), pos = (600, 131), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     TOPTEMP = Button(pygame.image.load("images/templetop.png"), pos = (372, 32), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    MIDTEMP = Button(pygame.image.load("images/templemiddle.png"), pos = (350, 220), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     Back_Button = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     DIV = Button(RESIZED_MIDDLETEMP, pos = (340, 352), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    LEFTTEMP = Button(pygame.image.load("images/templeleft.png"), pos = (160, 160), text_input="", font=get_font(15), base_colour="White", hovering_colour="#b51f09")
 
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -64,44 +72,58 @@ def load_map(username, password):
     # Get the current mouse position
     mouse_x, mouse_y = pygame.mouse.get_pos()
     MOUSE_POS = pygame.mouse.get_pos()
-
+    
     # go back
     if (40<mouse_x<75 and 40<mouse_y<70):
         screen.blit(RESIZED_BACK, (-90,-96))
         if event.type == pygame.MOUSEBUTTONDOWN:
           if Back_Button.checkInput(MOUSE_POS):
             return
+          
     # cooking game
     if (133<mouse_x<180 and 139<mouse_y<202):
       screen.blit(RESIZED_LEFTTEMP, (110, 92))
-      #if event.type == pygame.MOUSEBUTTONDOWN:
-         #if LEFTTEMP.checkInput(MOUSE_POS):
-            #CookingGame()
+      if event.type == pygame.MOUSEBUTTONDOWN:
+         if LEFTTEMP.checkInput(MOUSE_POS):
+            pygame.mixer.music.stop()
+            cooking_game(username, password)
+            play_music("sound/EDM.mp3")
+
 
     # snake game
     if (372<mouse_x<419 and 32<mouse_y<95):
       screen.blit(RESIZED_TOPTEMP, (348, -2))
       if event.type == pygame.MOUSEBUTTONDOWN:
          if TOPTEMP.checkInput(MOUSE_POS):
+            pygame.mixer.music.stop()
             snakeSums(username, password)
+            play_music("sound/EDM.mp3")
     
     # running army
     if (600<mouse_x<647 and 131<mouse_y<194):
       screen.blit(RESIZED_MULTTEMP, (582, 90))
       if event.type == pygame.MOUSEBUTTONDOWN:
         if MULTTEMP.checkInput(MOUSE_POS):
+            pygame.mixer.music.stop()
             running_army(username, password)
+            play_music("sound/EDM.mp3")
     
     # sandwich stack game
     if (363<mouse_x<410 and 383<mouse_y<446):
       screen.blit(RESIZED_BOTTOMTEMP, (340, 352))
       if event.type == pygame.MOUSEBUTTONDOWN:
          if DIV.checkInput(MOUSE_POS):
+            pygame.mixer.music.stop()
             sandwich_stack(username, password)
+            pygame.mixer.music.stop()
+            play_music("sound/EDM.mp3")
     
     # boss battle (arithmetic emperor)
     if (350<mouse_x<450 and 220<mouse_y<380):
       screen.blit(RESIZED_MIDDLETEMP, (326, 180))
+      if event.type == pygame.MOUSEBUTTONDOWN:
+         if MIDTEMP.checkInput(MOUSE_POS):
+            arithmetic_emperor(username, password)
 
     # Get mouse position
     mouse_pos = pygame.mouse.get_pos()
@@ -113,7 +135,7 @@ def load_map(username, password):
     # screen.blit(text, (10, 10))
     # # Update the display
     Back_Button.update(screen)
-
+    
     pygame.display.flip()
 
   pygame.quit()

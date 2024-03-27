@@ -67,15 +67,6 @@ def instruction1():
             screen.blit(RESIZED_BACK, (-90,-96))
         if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
             screen.blit(RESIZED_NEXT, (540, 324))
-            
-    #    # Get mouse position
-    #     mouse_pos = pygame.mouse.get_pos()
-    #     mouse_x, mouse_y = mouse_pos
-
-    #     # Display mouse position on the screen
-    #     font = pygame.font.Font(None, 36)
-    #     text = font.render(f"Mouse Position: ({mouse_x}, {mouse_y})", True, (0, 0, 0))
-    #     screen.blit(text, (10, 10))
 
         INSTRUCTIONS_BACK.update(screen)
         INSTRUCTIONS_NEXT.update(screen)
@@ -411,9 +402,14 @@ def start_game(username, password):
 
     return
 
+def play_music(file):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play(-1)
 
 def running_army(username, password):
     # Main game loop
+    play_music("sound/RunningArmyMusic.mp3")
     run = True
     while run:
         # display start screen
@@ -444,6 +440,5 @@ def running_army(username, password):
         pygame.display.update()
 
     # Quit back to the game map
+    pygame.mixer.music.stop()
     return
-
-# running_army()

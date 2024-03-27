@@ -112,6 +112,7 @@ def instruction2():
         pygame.display.update()
 
 def sandwich_stack(username, password):
+    play_music("sound/SandwichStackMusic.mp3")
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
         SCREEN.blit(START_SCREEN, (0,0))
@@ -190,6 +191,11 @@ def lose_screen(username, password, score):
                     return
 
         pygame.display.update()
+
+def play_music(file):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play(-1)
 
 def start_game(username, password):
     MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
