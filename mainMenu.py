@@ -627,7 +627,15 @@ def debug_mode(username, password):
     boss_rect = pygame.Rect(420, 420, 100, 50)
 
     while True:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+
         SCREEN.blit(BACKGROUND, (0, 0))
+
+        START_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",22), base_colour = "White", hovering_colour = "#b51f09")
+        START_BACK.update(SCREEN)
+
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            SCREEN.blit(RESIZED_BACK, (-90,-96))
         
         PLAY_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "PLAY", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
 
@@ -647,7 +655,9 @@ def debug_mode(username, password):
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if add_rect.collidepoint(event.pos):
+                if START_BACK.checkInput(event.pos):
+                    return
+                elif add_rect.collidepoint(event.pos):
                     add_active = not add_active
                     sub_active = False
                     mult_active = False
