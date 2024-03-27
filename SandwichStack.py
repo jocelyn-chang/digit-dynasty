@@ -263,6 +263,7 @@ def lose_screen(username, password, score):
     Returns:
     None
     """
+    play_music("sound/LossSound.mp3")
     player = Player(username, password)
     player.load_player()
     while True:
