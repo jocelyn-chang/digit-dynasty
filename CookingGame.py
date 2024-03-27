@@ -37,8 +37,8 @@ RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.pn
 start_screen = pygame.image.load("images/Cooking Game Start Screen.png")
 
 #game over or congrats screens
-question_scroll = pygame.image.load("images/bigScroll.png")
-happypanda = pygame.image.load("images/thumbsuppanda.png")
+#question_scroll = pygame.image.load("images/bigScroll.png")
+#happypanda = pygame.image.load("images/thumbsuppanda.png")
 
 
 LOSE_SCREEN = pygame.image.load("images/Cooking game lose game.png")
@@ -55,7 +55,7 @@ clock = pygame.time.Clock()
 #font = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 20)
 
 number_of_dumplings = 0
-correct_answer = 0
+#correct_answer = 0
 
 def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
@@ -142,6 +142,7 @@ def handle_events(dumpling_positions, central_area, questions):
                     number_of_dumplings = 0
                     return True
                 else:
+                    dumpling_positions.clear()
                     return False
     return None 
     #return True
@@ -271,9 +272,14 @@ def draw_screen(dumpling_positions, photo_positions, questions, level):
     pygame.display.flip()
 
 
-def playGame():
-    player = Player("Robert", "Robert123")
+def playGame(username, password):
+    player = Player(username, password)
     player.load_player()
+    
+    global correct_answer, number_of_dumplings
+    
+    correct_answer = 0
+    number_of_dumplings = 0
     
     done = False
     dumpling_positions = []
@@ -294,9 +300,6 @@ def playGame():
     
     
     current_question = Question(player)
-    
-    
-    global correct_answer
     
     while not done:
         current_time = pygame.time.get_ticks()
@@ -332,10 +335,10 @@ def playGame():
         pygame.time.Clock().tick(60)
         pygame.display.flip()
     
-    pygame.quit()
+    return
 
 
-def cookingGame():
+def cooking_game(username, password):
     run = True
     while run:
         # display start screen
@@ -355,7 +358,7 @@ def cookingGame():
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                     if START_BUTTON.checkInput(MOUSE_POS):
-                        playGame()
+                        playGame(username, password)
                     if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
                         instruction()
                     if RETURN_BUTTON.checkInput(MOUSE_POS):
@@ -365,6 +368,4 @@ def cookingGame():
         pygame.display.update()
 
     # Quit back to the game map
-    return 
-    
-cookingGame()
+    return

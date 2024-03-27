@@ -16,7 +16,9 @@ class Question:
             level = int(self.player.get_sub())
             
             if level <= 5:
-                digits = (1, 9) # single digits
+                digits = (1, 9) # single digits   
+            elif level <=10:
+                digits = (1, 20)
             else:
                 digits = (1, 50) #double digits
             
