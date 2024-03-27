@@ -95,7 +95,9 @@ def load_map(username, password):
       screen.blit(RESIZED_TOPTEMP, (348, -2))
       if event.type == pygame.MOUSEBUTTONDOWN:
          if TOPTEMP.checkInput(MOUSE_POS):
+            pygame.mixer.music.stop()
             snakeSums(username, password)
+            play_music("sound/EDM.mp3")
     
     # running army
     if (600<mouse_x<647 and 131<mouse_y<194):
