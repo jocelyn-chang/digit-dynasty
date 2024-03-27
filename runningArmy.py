@@ -287,7 +287,7 @@ def generate_arrows(incorrect_counter, num_pandas):
 def start_game(username, password):
     # Scrolling variables
     scroll = 0
-    scroll_speed = 2
+    scroll_speed = 4
     x = (SCREEN_WIDTH) // 2
     speed = 5
     num_arrows = 1
