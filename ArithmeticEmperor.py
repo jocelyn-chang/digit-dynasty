@@ -2,8 +2,12 @@ import pygame
 import glob
 import random
 from Button import Button
+from Player import Player
+from question import Question
 
 pygame.init()
+
+pygame.display.set_caption('DIGIT DYNASTY')
 
 #Load Screen
 SCREEN_WIDTH = 800
@@ -11,8 +15,15 @@ SCREEN_HEIGHT = 600
 
 #Load Regular Images
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('DIGIT DYNASTY')
 BACKGROUND = pygame.image.load("images/AE_background.png")
+START_SCREEN = pygame.image.load("images/AE_title_screen.png")
+BEDMAS_INSTRUCTIONS = pygame.image.load("images/bedmas_instruction.png")
+AE_INSTRUCTIONS = pygame.image.load("images/AE_instructions.png")
+BACK = pygame.image.load("images/back_button.png")
+RESIZED_BACK = pygame.image.load("images/resized_back.png")
+RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
+WIN_SCREEN = pygame.image.load("images/AE_win_background.png")
+LOSE_SCREEN = pygame.image.load("images/AE_lose_background.png")
 EMPERORMONKEY = pygame.image.load("images/emperor_monkey.png")
 EMPERORPIG = pygame.image.load("images/emperor_pig.png")
 EMPERORPHOENIX = pygame.image.load("images/emperor_phoenix.png")
@@ -29,7 +40,6 @@ HAPPYPANDA = pygame.image.load("images/thumbsuppanda.png")
 
 emperorImages = [[EMPERORMONKEY, (460, 40)], [EMPERORPIG, (460, 10)], [EMPERORPHOENIX, (460, 20)], [EMPERORDRAGON, (480, -5)]]
 deadEmperorImages = [[DEADMONKEY, (420, 20)], [DEADPIG, (460, 30)], [DEADPHOENIX, (460, 40)], [DEADDRAGON, (410, -5)]]
-emperorRotation = 3
 
 #Load Attack Animation Frames
 emperorFramePaths = sorted(glob.glob('images/AE_emperor_attack/*.png')) 
@@ -51,19 +61,6 @@ divAttackFrames = [pygame.transform.scale(pygame.image.load(path), (589, 375)) f
 frame_rate = 10
 frame_index = 0
 
-#Set up Variables
-emperorLevel = 0    #get from player class
-emperorAttackPower = 100 #change it so that it's based on emperorLevel
-playerHealth = 100   #change depending on their level
-emperorHealth = 100 #multiply these by emperor level once determined
-addAttackPower = 100 #multiply these by strength once determined
-subAttackPower = 10
-mulAttackPower = 10
-divAttackPower = 10
-
-#the health bar is 188 pixels, so need to get num pixels per 1 health
-emperorHealthDisplayFactor = 188/emperorHealth
-playerHealthDisplayFactor = 188/playerHealth
 
 actionTexts = ["Choose an attack...", "You used ", "You missed your attack", "The emperor uses Blazing Fury!", "The emperor missed its attack!"]
 emperorNames = ["Emperor AddWukong", "Emperor DivPorkus", "Emperor SubPyrros", "Emperor MulSmaug"]
@@ -74,6 +71,84 @@ operandSymbols = ['+', '-', '*', '/']
 # define colours
 white = (255, 255, 255)
 black = (0, 0, 0)
+
+# Intructions screen
+def instruction1():
+    while True:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(BEDMAS_INSTRUCTIONS, (0, 0))
+        
+        INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font("Shojumaru", 15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font("Shojumaru", 15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_BACK.update(SCREEN)
+        INSTRUCTIONS_NEXT.update(SCREEN)
+
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            SCREEN.blit(RESIZED_BACK, (-90,-96))
+        if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
+            SCREEN.blit(RESIZED_NEXT, (540, 324))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    return
+                if INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
+                    instruction2()
+
+        pygame.display.update()
+
+def instruction2():
+    while True:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(AE_INSTRUCTIONS, (0, 0))
+        
+        INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font("Shojumaru", 15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_BACK.update(SCREEN)
+
+        if (40 < MOUSE_X < 75 and 40 < MOUSE_Y < 70):
+            SCREEN.blit(RESIZED_BACK, (-90,-96))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    return
+
+        pygame.display.update()
+
+def arithmetic_emperor(username, password):
+    while True:
+        MOUSE_POS = pygame.mouse.get_pos()
+        SCREEN.blit(START_SCREEN, (0,0))
+
+        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 250), text_input = "START GAME", font = get_font("Shojumaru", 22), base_colour = "#b51f09", hovering_colour = "White")
+        INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 380), text_input = "INSTRUCTIONS", font = get_font("Shojumaru", 22), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 510), text_input = "BACK TO MAP", font = get_font("Shojumaru", 22), base_colour = "#b51f09", hovering_colour = "White")
+
+        for button in [START_BUTTON, INSTRUCTION_BUTTON, RETURN_BUTTON] :
+            button.changeColour(MOUSE_POS)
+            button.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if START_BUTTON.checkInput(MOUSE_POS):
+                      start_game(username, password)
+                if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
+                     instruction1()
+                if RETURN_BUTTON.checkInput(MOUSE_POS):
+                     return
+
+        # Update the display
+        pygame.display.update()
 
 def get_font(font, size):
     if font == "Sawarabi":
@@ -107,6 +182,8 @@ def display_static_text(text, position, colour, max_width):
     return rendered_lines
    
 def display_basic_screen(emperorImage, emperorPos, emperorName):
+    global emperorHealthDisplayFactor, playerHealthDisplayFactor, emperorHealth, playerHealth, emperorRotation
+
     #Draw the background image onto the screen
     SCREEN.blit(BACKGROUND, (0, 0))
     SCREEN.blit(emperorImage, emperorPos)
@@ -121,36 +198,41 @@ def display_basic_screen(emperorImage, emperorPos, emperorName):
     pygame.draw.rect(SCREEN, (239, 39, 39), pygame.Rect(130, 102, emperorHealthDisplayFactor*emperorHealth, 20))
     pygame.draw.rect(SCREEN, (239, 39, 39), pygame.Rect(543, 430, playerHealthDisplayFactor*playerHealth, 20))
 
-def attack_emperor(attackType, attackFrames, position, attacker, attackTypeText):
-  global emperorHealth
-  animate_attack(attackFrames, position, attacker, attackTypeText)
-  emperorHealth = emperorHealth - attackType
+def attack_emperor(playerAttack, attackFrames, position, attacker, attackTypeText):
+    global emperorHealth, playerHealth
 
-def attack_player(attackFrames, position, attacker, attackTypeText, attackedEmperor):
-  global playerHealth
-  random_number = random.uniform(1, 2)
-
-  #if player attached emperor, 50% change emperor will attack back
-  if (attackedEmperor):
-    random_number = random.uniform(1, 2)
-    if random_number <= 1.5:
-      animate_attack(attackFrames, position, attacker, attackTypeText)
-      playerHealth = playerHealth - emperorAttackPower
-    else:
-      display_basic_screen(emperorImages[emperorRotation][0], emperorImages[emperorRotation][1], emperorNames[emperorRotation])
-      display_static_text(actionTexts[4], (40, 510), white, 300)
-      pygame.display.update()
-      pygame.time.delay(3000)
-
-  #If player didn't attack emperor, emperor will 100% attack player
-  else:
-    display_basic_screen(emperorImages[emperorRotation][0], emperorImages[emperorRotation][1], emperorNames[emperorRotation])
-    display_static_text(actionTexts[2], (40, 510), white, 300)
-    pygame.display.update()
-    pygame.time.delay(3000)
-    
     animate_attack(attackFrames, position, attacker, attackTypeText)
-    playerHealth = playerHealth - emperorAttackPower
+    emperorHealth = emperorHealth - playerAttack
+    return emperorHealth
+
+def attack_player(emperorAttackPower, attackFrames, position, attacker, attackTypeText, attackedEmperor):
+    global emperorHealth, playerHealth, emperorRotation
+
+    random_number = random.uniform(1, 2)
+
+    #if player attached emperor, 50% change emperor will attack back
+    if (attackedEmperor):
+        random_number = random.uniform(1, 2)
+        if random_number <= 1.5:
+            animate_attack(attackFrames, position, attacker, attackTypeText)
+            playerHealth = playerHealth - emperorAttackPower
+        else:
+            display_basic_screen(emperorImages[emperorRotation][0], emperorImages[emperorRotation][1], emperorNames[emperorRotation])
+            display_static_text(actionTexts[4], (40, 510), white, 300)
+            pygame.display.update()
+            pygame.time.delay(3000)
+
+    #If player didn't attack emperor, emperor will 100% attack player
+    else:
+        display_basic_screen(emperorImages[emperorRotation][0], emperorImages[emperorRotation][1], emperorNames[emperorRotation])
+        display_static_text(actionTexts[2], (40, 510), white, 300)
+        pygame.display.update()
+        pygame.time.delay(3000)
+        
+        animate_attack(attackFrames, position, attacker, attackTypeText)
+        playerHealth = playerHealth - emperorAttackPower
+        
+    return playerHealth
 
 def check_answer(answer, correct_answer):
     # Display question screen
@@ -183,24 +265,28 @@ def check_answer(answer, correct_answer):
     return correct
 
 def generate_question_answer():
-   while True:
+    
+    equationFound = False
+    while True:
         num_operands = random.randint(2, 4)  # Random number of operands
         operands = random.choices(operandSymbols, k=num_operands)  # Randomly select operands
         numbers = [random.randint(1, 10) for _ in range(num_operands + 1)]  # Generate random numbers
-
-        # Construct the expression string
-        expression = ' '.join([f'{num} {op}' for num, op in zip(numbers[:-1], operands)]) + f' {numbers[-1]}'
-
-        try:
-            # Evaluate the expression
-            result = eval(expression)
-
-            # Check if the result is a whole number
-            if isinstance(result, int) and result == round(result):
-                return [expression, result]  # Return the expression and its result as a list
-        except Exception:
-            pass  # Ignore any errors during evaluation and continue generating a new question
         
+        for i in range (len(operands)):
+            if operands[i] == '/':
+                if numbers[i]%numbers[i + 1] == 0:
+                    equationFound = True
+                else:
+                    equationFound = False
+                    break
+
+        if equationFound:
+            break
+
+    expression = ' '.join([f'{num} {op}' for num, op in zip(numbers[:-1], operands)]) + f' {numbers[-1]}'
+    result = eval(expression)
+    return [expression, result]
+
 def question():
     answer = ""
     questionAndAnswer = generate_question_answer()
@@ -249,7 +335,7 @@ def question():
         pygame.display.update()
 
 def animate_attack(attackFrames, position, attacker, attackTypeText):
-  global frame_index
+  global frame_index, emperorHealth, playerHealth, emperorRotation
    
   clock = pygame.time.Clock()
   frame_delay = 10
@@ -271,130 +357,167 @@ def animate_attack(attackFrames, position, attacker, attackTypeText):
     # Delay for specified time
     clock.tick(frame_delay)
 
-def end_game_screen(playerWon):
-    run = True
-    NEXT_BUTTON = Button(BACKBUTTON, pos = (650, 300), text_input = "", font = get_font("Sawarabi",24), base_colour = "White", hovering_colour = "#b51f09")
-
-    if (playerWon):
-       display_basic_screen(deadEmperorImages[emperorRotation][0], deadEmperorImages[emperorRotation][1], emperorNames[emperorRotation])
-       display_static_text("Congratulations! The emperor has been defeated.", (40, 510), white, 300)
-    else:
-       SCREEN.blit(DEADPANDASCREEN, (-1, 301))
-       display_static_text("You have been defeated by the emperor.", (40, 510), white, 300)
-
+def win_screen(score):
+    global emperorHealth, playerHealth
+    display_basic_screen(deadEmperorImages[emperorRotation][0], deadEmperorImages[emperorRotation][1], emperorNames[emperorRotation])
+    display_static_text("Congratulations! The emperor has been defeated.", (40, 510), white, 300)
     pygame.display.update()
-    pygame.time.delay(2000)
+    pygame.time.delay(3000)
 
-    while run:
-        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
-        GAME_MOUSE_POS = pygame.mouse.get_pos()
-        # Display question screen
-        SCREEN.blit(QUESTIONSCROLL, (25, 100))
+    while True:
+        MOUSE_POS = pygame.mouse.get_pos()
 
-        if emperorHealth < 0:
-            title_lines = ["Congratulations you imroved"]
-        else:
-            title_lines = ["Keep practicing!"]
+        SCREEN.blit(WIN_SCREEN, (0, 0))
+        score_font = get_font("Shojumaru", 20)
+        score_surface = score_font.render(f"Your Player Level is Now: {score}", True, "White")
+        SCREEN.blit(score_surface, (215, 420))
+            
+        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (SCREEN_WIDTH / 2, 520), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN.changeColour(MOUSE_POS)
+        RETURN.update(SCREEN)
 
-        for i, line in enumerate(title_lines):
-            title_text = get_font("Sawarabi",24).render(line, True, white)
-            inputRect = title_text.get_rect()
-            inputRect.center = (SCREEN_WIDTH // 2, 225 + i * get_font("Sawarabi",25).get_height())  # Adjust position for each line
-            SCREEN.blit(title_text, inputRect)
-        
-        SCREEN.blit(HAPPYPANDA, (250, 330))
-
-        if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
-            SCREEN.blit(RESIZED_NEXT, (510, 249))
-        
-        NEXT_BUTTON.update(SCREEN)
-
-        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if NEXT_BUTTON.checkInput(GAME_MOUSE_POS):
-                    run = False
-        # Update the display
+                if RETURN.checkInput(MOUSE_POS):
+                    return
+
         pygame.display.update()
 
-def start_game():
-  global emperorHealth, emperorHealthDisplayFactor, playerHealthDisplayFactor, frame_index, attackedEmperor
+def lose_screen(username, password):
+    global emperorHealth, playerHealth
+    SCREEN.blit(DEADPANDASCREEN, (-1, 301))
+    display_static_text("You have been defeated by the emperor.", (40, 510), white, 300)
+    pygame.display.update()
+    pygame.time.delay(3000)
 
-  while True:
-    #Get Mouse Pos
-    MOUSE_POS = pygame.mouse.get_pos()  
-  
-    attackedEmperor = False 
+    player = Player(username, password)
+    player.load_player()
+    while True:
+        MOUSE_POS = pygame.mouse.get_pos()
 
-    display_basic_screen(emperorImages[emperorRotation][0], emperorImages[emperorRotation][1], emperorNames[emperorRotation])
-    display_static_text(actionTexts[0], (40, 510), white, 300)
+        SCREEN.blit(LOSE_SCREEN, (0, 0))
+        level_font = get_font("Shojumaru", 20)
+        level_surface = level_font.render(f"Current level: {player.get_bosses()}", True, "White")
+        SCREEN.blit(level_surface, (130, 340))
 
-    #if player died
-    if (playerHealth <= 0):
-        end_game_screen(False)
-        return
+        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (SCREEN_WIDTH / 2, 440), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN.changeColour(MOUSE_POS)
+        RETURN.update(SCREEN)
 
-    #Attack Buttons
-    ADD_BUTTON = Button(image = None, pos = (500, 520), text_input = "Addition", font = get_font("Sawarabi",24), base_colour = "black", hovering_colour = "#d73c37")
-    DIV_BUTTON = Button(image = None, pos = (500, 560), text_input = "Division", font = get_font("Sawarabi",24), base_colour = "black", hovering_colour = "#d73c37")
-    SUB_BUTTON = Button(image = None, pos = (690, 520), text_input = "Subtraction", font = get_font("Sawarabi",24), base_colour = "black", hovering_colour = "#d73c37")
-    MUL_BUTTON = Button(image = None, pos = (700, 560), text_input = "Multiplication", font = get_font("Sawarabi",24), base_colour = "black", hovering_colour = "#d73c37")
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if RETURN.checkInput(MOUSE_POS):
+                    return
 
-    for button in [ADD_BUTTON, DIV_BUTTON, SUB_BUTTON, MUL_BUTTON]:
-      button.changeColour(MOUSE_POS)
-      button.update(SCREEN)
+        pygame.display.update()
 
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        pygame.quit()
-      if event.type == pygame.MOUSEBUTTONDOWN:
-        if ADD_BUTTON.checkInput(MOUSE_POS):
-            if question():
-              attack_emperor(addAttackPower, addAttackFrames, (365, 25), 1, "Addition Anarchy!")
-              attackedEmperor = True
-              if (emperorHealth <= 0):
-                end_game_screen(True)
-                return
-            attack_player(emperorAttackFrames, (-45, 170), 3, "", attackedEmperor)
+def start_game(username, password):
+    global frame_index, emperorHealthDisplayFactor, playerHealthDisplayFactor, emperorHealth, playerHealth, emperorLevel, emperorRotation
+    player = Player(username, password)
+    player.load_player()
 
-        if SUB_BUTTON.checkInput(MOUSE_POS):
-            if question():
-              attack_emperor(subAttackPower, subAttackFrames, (320, -30), 1, "Subtraction Storm!")
-              attackedEmperor = True
-              if (emperorHealth <= 0):
-                end_game_screen(True)
-                return
-
-            attack_player(emperorAttackFrames, (-45, 170), 3, "", attackedEmperor)
-
-        if DIV_BUTTON.checkInput(MOUSE_POS):
-            if question():
-              attack_emperor(divAttackPower, divAttackFrames, (290, 25), 1, "Division Disaster!")
-              attackedEmperor = True
-              if (emperorHealth <= 0):
-                end_game_screen(True)
-                return
-
-            attack_player(emperorAttackFrames, (-45, 170), 3, "", attackedEmperor)
-
-        if MUL_BUTTON.checkInput(MOUSE_POS):
-            if question():
-              attack_emperor(mulAttackPower, mulAttackFrames, (295, -80), 1, "Multiplication Magnetism!")
-              attackedEmperor = True
-              if (emperorHealth <= 0):
-                end_game_screen(True)
-                return
-
-            attack_player(emperorAttackFrames, (-45, 170), 3, "", attackedEmperor)
+    #Set up Emperor Variables
+    emperorLevel = int(player.get_bosses())
+    emperorAttackPower = 20 + 2 * emperorLevel
+    emperorHealth = 100 + 5 * emperorLevel
+    emperorRotation = emperorLevel % 3
     
-    mouse_x, mouse_y = MOUSE_POS
-    font = pygame.font.Font(None, 36)
-    text = font.render(f"Mouse Position: ({mouse_x}, {mouse_y})", True, (0,0,0))
-    SCREEN.blit(text,(10,10))
+    #Set up Player Variables (each attack has base power of 20, and get stronger based on operand score)
+    playerHealth = 100
+    addAttackPower = 20 + int(player.get_add())
+    subAttackPower = 20 + int(player.get_sub())
+    mulAttackPower = 20 + int(player.get_mul())
+    divAttackPower = 20 + int(player.get_div())
 
-    # Update the display
-    pygame.display.flip()
+    #the health bar is 188 pixels, so need to get num pixels per 1 health
+    emperorHealthDisplayFactor = 188/emperorHealth
+    playerHealthDisplayFactor = 188/playerHealth
+    
+    while True:
+        #Get Mouse Pos
+        MOUSE_POS = pygame.mouse.get_pos()  
+    
+        attackedEmperor = False 
 
-start_game()
+        display_basic_screen(emperorImages[emperorRotation][0], emperorImages[emperorRotation][1], emperorNames[emperorRotation])
+        display_static_text(actionTexts[0], (40, 510), white, 300)
+
+        #if player died
+        if (playerHealth <= 0):
+            lose_screen(username, password)
+            return
+
+        #Attack Buttons
+        ADD_BUTTON = Button(image = None, pos = (500, 520), text_input = "Addition", font = get_font("Sawarabi",24), base_colour = "black", hovering_colour = "#d73c37")
+        DIV_BUTTON = Button(image = None, pos = (500, 560), text_input = "Division", font = get_font("Sawarabi",24), base_colour = "black", hovering_colour = "#d73c37")
+        SUB_BUTTON = Button(image = None, pos = (690, 520), text_input = "Subtraction", font = get_font("Sawarabi",24), base_colour = "black", hovering_colour = "#d73c37")
+        MUL_BUTTON = Button(image = None, pos = (700, 560), text_input = "Multiplication", font = get_font("Sawarabi",24), base_colour = "black", hovering_colour = "#d73c37")
+
+        for button in [ADD_BUTTON, DIV_BUTTON, SUB_BUTTON, MUL_BUTTON]:
+            button.changeColour(MOUSE_POS)
+            button.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if ADD_BUTTON.checkInput(MOUSE_POS):
+                    if question():
+                        emperorHealth = attack_emperor(addAttackPower, addAttackFrames, (365, 25), 1, "Addition Anarchy!")
+                        attackedEmperor = True
+                    if (emperorHealth <= 0):
+                        new_score = int(player.get_bosses()) + 1
+                        player.update_bosses(str(new_score))
+                        win_screen(new_score)
+                        return
+                    playerHealth = attack_player(emperorAttackPower, emperorAttackFrames, (-45, 170), 3, "", attackedEmperor)
+
+                if SUB_BUTTON.checkInput(MOUSE_POS):
+                    if question():
+                        emperorHealth = attack_emperor(subAttackPower, subAttackFrames, (320, -30), 1, "Subtraction Storm!")
+                        attackedEmperor = True
+                    if (emperorHealth <= 0):
+                        new_score = int(player.get_bosses()) + 1
+                        player.update_bosses(str(new_score))
+                        win_screen(new_score)
+                        return
+
+                    playerHealth = attack_player( emperorAttackPower, emperorAttackFrames, (-45, 170), 3, "", attackedEmperor)
+
+                if DIV_BUTTON.checkInput(MOUSE_POS):
+                    if question():
+                        emperorHealth = attack_emperor(divAttackPower, divAttackFrames, (290, 25), 1, "Division Disaster!")
+                        attackedEmperor = True
+                    if (emperorHealth <= 0):
+                        new_score = int(player.get_bosses()) + 1
+                        player.update_bosses(str(new_score))
+                        win_screen(new_score)
+                        return
+
+                    playerHealth = attack_player(emperorAttackPower, emperorAttackFrames, (-45, 170), 3, "", attackedEmperor)
+
+                if MUL_BUTTON.checkInput(MOUSE_POS):
+                    if question():
+                        emperorHealth = attack_emperor(mulAttackPower, mulAttackFrames, (295, -80), 1, "Multiplication Magnetism!")
+                        attackedEmperor = True
+                    if (emperorHealth <= 0):
+                        new_score = int(player.get_bosses()) + 1
+                        player.update_bosses(str(new_score))
+                        win_screen(new_score)
+                        return
+
+                    playerHealth = attack_player(emperorAttackPower, emperorAttackFrames, (-45, 170), 3, "", attackedEmperor)
+            
+        mouse_x, mouse_y = MOUSE_POS
+        font = pygame.font.Font(None, 36)
+        text = font.render(f"Mouse Position: ({mouse_x}, {mouse_y})", True, (0,0,0))
+        SCREEN.blit(text,(10,10))
+
+        # Update the display
+        pygame.display.flip()
+
+#arithmetic_emperor("test", "test")
