@@ -10,6 +10,19 @@ class Question:
     def generate_question(self, operation):
         if operation == '+':
             level = self.player.get_add()
+            if level < 5: # For single digit addition
+                num1 = random.randint(1, 9)
+                num2 = random.randint(1, 9)
+            elif level < 10:
+                num1 = random.randint(1, 49)
+                num2 = random.randint(1, 49)
+            else: # For double digit addition
+                num1 = random.randint(1, 99)
+                num2 = random.randint(1, 99)
+
+            ans = num1 + num2
+            q = str(num1) + " + " + str(num2) + " = ?"
+            return [q, ans]
             
             
         if operation == '-':

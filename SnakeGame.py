@@ -2,6 +2,7 @@ import pygame, sys
 import random
 from Player import Player
 from Button import Button
+from question import Question
 
 # Initialize Pygame
 pygame.init()
@@ -112,6 +113,9 @@ def question(level):
   if level < 5: # For single digit addition
     num1 = random.randint(1, 9)
     num2 = random.randint(1, 9)
+  elif level < 10:
+    num1 = random.randint(1, 49)
+    num2 = random.randint(1, 49)
   else: # For double digit addition
     num1 = random.randint(1, 99)
     num2 = random.randint(1, 99)
@@ -358,7 +362,7 @@ def game(user):
   level = user.get_add() # get addition level from the user
 
   # Initialize questions, options, and answer
-  currQNA = question(level) # gets question and the answer
+  currQNA = Question(user).generate_question("+") # gets question and the answer
   currQ = currQNA[0] 
   correctAns = currQNA[1]
   optionList = options(correctAns) # creates list of answer options
@@ -458,7 +462,7 @@ def game(user):
         print("pooppiee")
         snake_pause = True
         if countdown == 600:
-          currQNA = question(level)
+          currQNA = Question(user).generate_question("+")
           currQ = currQNA[0]
           correctAns = currQNA[1]
           optionList = options(correctAns)
@@ -508,13 +512,6 @@ def game(user):
         
         screen.blit(shadow, [199, 525])
         screen.blit(main, [197, 523])
-        # if firstpause == 2:
-          # # Shadow text
-          # shadow = get_font(50).render("Good Job!", True, green4)
-          # # Main text
-          # main = get_font(50).render("Good Job!", True, white)
-          # screen.blit(shadow, [245, 212])
-          # screen.blit(main, [243, 210])
         correct(currQ, correctAns)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
