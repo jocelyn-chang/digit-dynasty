@@ -5,6 +5,7 @@ class Player:
     def __init__ (self, name, password):
         self.name = name
         self.password = password
+        self.level = 0
         self.addition = 0
         self.subtraction = 0
         self.multiplication = 0
@@ -46,6 +47,11 @@ class Player:
         with open("data.csv", "w", newline='') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerows(player)
+    
+    # update Player's add high score
+    def update_bosses (self, new_bosses_score):
+        self.bosses = new_bosses_score
+        self.save_info()
 
     # update Player's add high score
     def update_add (self, new_add_score):
@@ -70,6 +76,10 @@ class Player:
     # get Player's name
     def get_name (self):
         return self.name
+    
+    # get Player's name
+    def get_bosses (self):
+        return self.bosses
     
     # get Player's addition score
     def get_add (self):

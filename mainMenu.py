@@ -198,7 +198,7 @@ def load_player(input_username, input_password):
                     'Subtraction': row[3],
                     'Multiplication': row[4],
                     'Division': row[5],
-                    'Bosses': row[6]
+                    'Bosses': row[6],
                 }
                 return player_info
     return None

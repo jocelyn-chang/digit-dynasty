@@ -4,6 +4,7 @@ from runningArmy import running_army
 from SnakeGame import snakeSums
 #from CookingGame import CookingGame
 from SandwichStack import sandwich_stack
+from ArithmeticEmperor import arithmetic_emperor
 
 pygame.init()
 
@@ -50,8 +51,10 @@ def load_map(username, password):
 
     MULTTEMP = Button(pygame.image.load("images/templeright.png"), pos = (600, 131), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     TOPTEMP = Button(pygame.image.load("images/templetop.png"), pos = (372, 32), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    MIDTEMP = Button(pygame.image.load("images/templemiddle.png"), pos = (350, 220), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     Back_Button = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
     DIV = Button(RESIZED_MIDDLETEMP, pos = (340, 352), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    
 
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -102,6 +105,9 @@ def load_map(username, password):
     # boss battle (arithmetic emperor)
     if (350<mouse_x<450 and 220<mouse_y<380):
       screen.blit(RESIZED_MIDDLETEMP, (326, 180))
+      if event.type == pygame.MOUSEBUTTONDOWN:
+         if MIDTEMP.checkInput(MOUSE_POS):
+            arithmetic_emperor(username, password)
 
     # Get mouse position
     mouse_pos = pygame.mouse.get_pos()
