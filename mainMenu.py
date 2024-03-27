@@ -2,6 +2,7 @@
 import pygame, sys, csv
 from Button import Button
 from GameMap import load_map
+from Player import Player
 
 # Define screen dimensions
 SCREEN_WIDTH = 800
@@ -26,6 +27,7 @@ INSTRUCTOR_DASHBOARD = pygame.image.load("images/Instructor dashboard.png")
 DETAILED_STUDENT = pygame.image.load("images/detailed student.png")
 
 black = (0, 0, 0)
+white = (255, 255, 255)
 
 def get_font(font, size):
     if font == "Sawarabi":
@@ -252,7 +254,10 @@ def load_game():
                     player_info = load_player(input_username, input_password)
 
                     if player_info:
-                        load_map(input_username, input_password)
+                        if input_username == "ADMIN" and input_password == "DD2024":
+                            debug_mode(input_username, input_password)
+                        else:
+                            load_map(input_username, input_password)
                         return
                     else:
                         player_not_found = True
@@ -584,7 +589,7 @@ def instructor_dashboard_login():
                     else:
                         password += event.unicode
 
-        input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
+        input_box(SCREEN, password_rect, password, input_font, active = False, is_password = True)
         
         if player_not_found:
             font = get_font('Shojumaru', 15)
@@ -593,6 +598,71 @@ def instructor_dashboard_login():
 
         PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()
+
+def debug_mode(username, password):
+    print("in debug mode")
+    player = Player(name=username, password=password)
+    player.load_player()
+    input_font = get_font("Sawarabi",35)
+
+    # input for each box
+    add_input = ''
+    sub_input = ''
+    mult_input = ''
+    div_input = ''
+    boss_input = ''
+
+    # check if box is clicked
+    add_active = False
+    sub_active = False
+    mult_active = False
+    div_active = False
+    boss_active = False
+
+    # pos then size
+    add_rect = pygame.Rect(420, 100, 100, 50)
+    sub_rect = pygame.Rect(420, 180, 100, 50)
+    mult_rect = pygame.Rect(420, 260, 100, 50)
+    div_rect = pygame.Rect(420, 340, 100, 50)
+    boss_rect = pygame.Rect(420, 420, 100, 50)
+
+    while True:
+        SCREEN.blit(BACKGROUND, (0, 0))
+        
+        subtitles = ["Addition Score:", "Subtraction Score:", "Multiplication Score:", "Division Score:", "Boss Battle Score:"]
+        y_coordinate = 115
+        for i, line in enumerate(subtitles):
+            subtitle_text = get_font('Shojumaru', 20).render(line, True, white)
+            inputRect = subtitle_text.get_rect()
+            inputRect.right = SCREEN_WIDTH // 2  # Adjust position for each line
+            inputRect.y = y_coordinate
+            y_coordinate += 80
+            SCREEN.blit(subtitle_text, inputRect)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.mixer.music.stop()
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if add_rect.collidepoint(event.pos):
+                    add_active = not add_active
+                else:
+                    add_active = False
+                    sub_active = False
+                    mult_active = False
+                    div_active = False
+                    boss_active = False
+            if event.type== pygame.KEYDOWN:
+                if add_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        add_input = add_input[:-1]
+                    else:
+                        add_input += event.unicode
+        
+        input_box(SCREEN, add_rect, add_input, input_font, active = add_active)
+
+        pygame.display.update()
 
 def welcome_screen():
     run = True
