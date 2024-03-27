@@ -40,6 +40,11 @@ green3 = (113, 182, 135)
 green4 = (88, 133, 120)
 green5 = (117, 132, 133)
 
+def play_music(file):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play(-1)
+
 # get the font
 def get_font(size):
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
@@ -78,7 +83,10 @@ def load_map(username, password):
       screen.blit(RESIZED_LEFTTEMP, (110, 92))
       if event.type == pygame.MOUSEBUTTONDOWN:
          if LEFTTEMP.checkInput(MOUSE_POS):
+            pygame.mixer.music.stop()
             cooking_game(username, password)
+            play_music("sound/EDM.mp3")
+
 
     # snake game
     if (372<mouse_x<419 and 32<mouse_y<95):
