@@ -1,17 +1,32 @@
+"""
+This module implements the logic and the requirements to run teh Sandwich Stack game using Pygame. It is a game
+where the player uses the left and right arrow keys to move a panda character left and right of the screen to
+catch falling food to answer the required math questions. The game includes a start, instruction, win, loss,
+and game screen, as well as movement mechanics and the logic for collision detection.
+"""
 # Import appropriate libraries
 import pygame, sys, random
 from Button import Button
 from Player import Player
 from question import Question
 
+# Initialize Pygame
 pygame.init()
+pygame.mixer.init()
+pygame.mixer.set_num_channels(8)
 
+LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
+WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
+CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
+ENTER = pygame.mixer.Sound("sound/GameEnter.mp3") 
+
+# Initialize the base screen
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-PANDA_SPEED = 4
-
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('SANDWICH STACK')
+
+# Initialize the screen backgrounds
 BACKGROUND = pygame.image.load("images/sandwich_stack_bg.png")
 START_SCREEN = pygame.image.load("images/sandwich_stack_start.png")
 DIVISION_INSTRUCTIONS = pygame.image.load("images/division_instruction.png")
@@ -19,6 +34,8 @@ SS_INSTRUCTIONS = pygame.image.load("images/ss_instructions.png")
 WIN_SCREEN = pygame.image.load("images/ss_win_screen.png")
 LOSE_SCREEN = pygame.image.load("images/ss_lose_screen.png")
 RECTANGLE = pygame.image.load("images/rectangle.png")
+
+# Initalize smaller assets and features
 LINE = pygame.image.load("images/line.png")
 BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
@@ -28,38 +45,75 @@ HEART_E = pygame.image.load("images/heart_empty.png")
 HEART_FULL = pygame.transform.scale(HEART_F, (50, 50))
 HEART_EMPTY = pygame.transform.scale(HEART_E, (50, 50))
 
+# Initialize the player's character (panda)
+PANDA_SPEED = 4
 PANDA = pygame.transform.scale(pygame.image.load("images/panda_tray.png"), (190, 126))
+panda_rect = PANDA.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT - 50))
+
+# Initialize the food items
 CARROT = pygame.transform.scale(pygame.image.load("images/carrot.png"), (75, 79))
 BREAD = pygame.transform.scale(pygame.image.load("images/bread.png"), (90, 62))
 CUCUMBER = pygame.transform.scale(pygame.image.load("images/cucumber.png"), (70, 70))
 MEAT = pygame.transform.scale(pygame.image.load("images/meat.png"), (115, 54))
-
 food_items = [CARROT, BREAD, CUCUMBER, MEAT]
-panda_rect = PANDA.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT - 50))
+
 
 def get_font(font, size):
+    """
+    Loads and returns a Pygame font object based on a given font name and size.
+
+    Parameters:
+    - font (str): A string representing the font name. If the font is "Sawarabi" or "Shojumaru",
+            a specific font fle is loaded
+    - size (int): The size of the font in points
+
+    Returns:
+    A Pygame font object.
+    """
     if font == "Sawarabi":
         return pygame.font.Font("fonts/SawarabiMincho-Regular.ttf", size)
     elif font == "Shojumaru":
         return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 def spawn_food(answer_bank):
-    food = random.choice(food_items)
-    answer = random.choice(answer_bank)
-    x_pos = random.randrange(0, SCREEN_WIDTH - food.get_width())
-    y_pos = -food.get_height()
-    food_rect = food.get_rect(topleft = (x_pos, y_pos))
+    """
+    Selects a random food item and spawns it as a random location at the top of the screen.
+    An answer is chosen randomly from the provided answer band and associated with the food item.
+
+    Parameters:
+    - answer_bank: A list of possible answer (integers) that can be associated with the food item.
+
+    Returns:
+    A tuple containing the food surface, its Rect object, the chosen answer, the rendered answer
+    text surface, adn its Rect object.
+    """
+    food = random.choice(food_items)                                    # Randomly choose a food item from the food item list
+    answer = random.choice(answer_bank)                                 # Randomly choose an answer from the answer bank list
+    x_pos = random.randrange(0, SCREEN_WIDTH - food.get_width())        # Get the x position to randomly spawn the item
+    y_pos = -food.get_height()                                          # Get the y position fo the food item
+    food_rect = food.get_rect(topleft = (x_pos, y_pos))                 # Obtain the rectangle surrounding the food item
 
     font = get_font('Shojumaru', 15)
     text_surface = font.render(str(answer), True, "white")
     text_rect = text_surface.get_rect(center = (food_rect.centerx, food_rect.y - 20))
     return food, food_rect, answer, text_surface, text_rect
 
-
+# Start spawning food items
 current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food([random.randint(1, 144), random.randint(1, 144)])
 
-# Intructions screen
 def instruction1():
+    """
+    Displays the first instruction screen.
+
+    This screen shows the instructions for the division operation and has two buttons: one to go to the previous screen and one to proceed to the next
+    instruction screen. This function checks for a mouse input to determine which button has been clicked.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -89,6 +143,18 @@ def instruction1():
         pygame.display.update()
 
 def instruction2():
+    """
+    Displays the second instruction screen.
+
+    This screen shows the instructions to play the game and has a button to back to the first instruction screen when clicked. It checks for the mouse position and input
+    to determine if the back button has been clicked.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -112,6 +178,20 @@ def instruction2():
         pygame.display.update()
 
 def sandwich_stack(username, password):
+    """
+    Initiates the Sandwich Stack game from the main menu.
+
+    The title screen has three options: start the game, view instructions, or return to the game map. This function sets ip the title screen and handles button clicks for navigating. Background
+    music is played upon starting this screen.
+
+    Parameters:
+    - username (str): A string representing the player's username. Used for authentication purposes for later uses (obtaining the player's division level).
+    - password (str): A string representing the player's password. Used for authentication purposes for later uses (obtaining the player's division level).
+
+    Returns:
+    None
+    """
+    play_music("sound/SandwichStackMusic.mp3")
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
         SCREEN.blit(START_SCREEN, (0,0))
@@ -140,6 +220,20 @@ def sandwich_stack(username, password):
         pygame.display.update()
 
 def win_screen(score):
+    """
+    Displays the win screen after a player successfully completes the game (earning a score of 5).
+
+    The screen congratulates the player and shows their updated division level. 
+    It provides a button to return to the title screen.
+
+    Parameters:
+    - score (int): The final score achieved by the player, used to display the division level.
+
+    Returns:
+    None
+    """
+    pygame.mixer.music.stop()
+    WIN.play()
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
 
@@ -163,6 +257,23 @@ def win_screen(score):
         pygame.display.update()
 
 def lose_screen(username, password, score):
+    """
+    Displays the lose screen if the player loses all three lives before completing the game.
+
+    The screen shows the player's current division level and the score they achieved. It also 
+    provides a button to return to the title screen. The player's data, such as the division level, 
+    is loaded based on the provided username and password.
+
+    Parameters:
+    - username (str): The username of the player, used to load player data.
+    - password (str): The password of the player, used for authentication purposes when loading player data.
+    - score (int): The score achieved by the player up to the point of losing the game.
+
+    Returns:
+    None
+    """
+    pygame.mixer.music.stop()
+    LOSS.play()
     player = Player(username, password)
     player.load_player()
     while True:
@@ -191,7 +302,32 @@ def lose_screen(username, password, score):
 
         pygame.display.update()
 
+def play_music(file):
+    """
+    Initializes the Pygame mixer module and plays the specified music file in a continuous loop.
+
+    Parameters:
+    - file (str): The path to the music file to be played.
+
+    Returns:
+    None
+    """
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play(-1)
+
 def start_game(username, password):
+    """
+    Starts the game loop. The player controls a panda character to catch falling food item that represent answers to the math question displayed. If the player catches the item with the
+    correct answer, score increase by one until they reach five points. This means that they have practiced enough to earn a level point for their division skill. If the player catches
+    the wrong item, they lose one life until they lose all three of their lives. This results in a game over and the player is prompted to return back to the title screen.
+
+    Parameters:
+    - username (str): A string representing the player's username. Used for authentication purposes (obtaining the player's division level).
+    - password (str): A string representing the player's password. Used for authentication purposes (obtaining the player's division level).
+    
+    The function uses global variables for game state, such as the food items, panda character, and scores.
+    """
     MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
     MOUSE_POS = pygame.mouse.get_pos()
     lives = 3
@@ -287,6 +423,7 @@ def start_game(username, password):
             if current_answer == correct_answer:
                 display_correct_message = True
                 display_incorrect_message = False
+                CORRECT.play()
                 score += 1
             else:
                 display_incorrect_message = True

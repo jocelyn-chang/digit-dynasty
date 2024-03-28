@@ -3,7 +3,6 @@ from Button import Button
 from question import Question
 from Player import Player
 
-
 pygame.init()
 
 SCREEN_WIDTH = 800
@@ -47,12 +46,23 @@ scaled_height = int(image_height * (SCREEN_WIDTH / image_width))
 # Scale the image to fill the width of the screen while maintaining the aspect ratio
 scaled_image = pygame.transform.scale(image, (SCREEN_WIDTH, scaled_height))
 
-# get the font
 def get_font(size):
+    """
+    Returns a pygame font object with the specified size.
+
+    Args:
+        size (int): The size of the font.
+
+    Returns:
+        pygame.font.Font: A font object with the specified size.
+    """
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
-# Intructions screen
 def instruction1():
+    """
+    Displays the first instruction screen for how to use multiplication.
+    Allows the user to navigate to the next instruction screen or go back.
+    """
     run = True
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
@@ -67,15 +77,6 @@ def instruction1():
             screen.blit(RESIZED_BACK, (-90,-96))
         if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
             screen.blit(RESIZED_NEXT, (540, 324))
-            
-    #    # Get mouse position
-    #     mouse_pos = pygame.mouse.get_pos()
-    #     mouse_x, mouse_y = mouse_pos
-
-    #     # Display mouse position on the screen
-    #     font = pygame.font.Font(None, 36)
-    #     text = font.render(f"Mouse Position: ({mouse_x}, {mouse_y})", True, (0, 0, 0))
-    #     screen.blit(text, (10, 10))
 
         INSTRUCTIONS_BACK.update(screen)
         INSTRUCTIONS_NEXT.update(screen)
@@ -94,6 +95,10 @@ def instruction1():
         pygame.display.update()
 
 def instruction2():
+    """
+    Displays the second instruction screen for how to play the game.
+    Allows the user to navigate back to the first instruction screen.
+    """
     run = True
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
@@ -102,15 +107,8 @@ def instruction2():
         screen.blit(INSTRUCTION2, (0, 0))
         
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        
-        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
-            screen.blit(RESIZED_BACK, (-90,-96))
-        if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
-            screen.blit(RESIZED_NEXT, (540, 324))
+        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image))
 
-        INSTRUCTIONS_BACK.update(screen)
-        INSTRUCTIONS_NEXT.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -123,7 +121,16 @@ def instruction2():
         pygame.display.update()
 
 def check_answer(answer, correct_answer):
-    # Display question screen
+    """
+    Checks if the user's answer is correct and displays the result on the screen.
+
+    Args:
+        answer (str): The user's answer to the question.
+        correct_answer (str): The correct answer to the question.
+
+    Returns:
+        bool: True if the user's answer is correct, False otherwise.
+    """
     screen.blit(question_scroll, (25, 100))
     title = get_font(25).render("Answer the Following Question:", True, white)
     titleRect = title.get_rect()
@@ -131,7 +138,7 @@ def check_answer(answer, correct_answer):
     screen.blit(title, titleRect)
     
     correct = False
-
+    
     if int(answer) == int(correct_answer):
         # Display user's input text
         correct = get_font(20).render('CORRECT', True, white)
@@ -158,6 +165,16 @@ def check_answer(answer, correct_answer):
 
 
 def question(numpandas, multiplier):
+    """
+    Displays a multiplication question and checks if the user's answer is correct.
+
+    Args:
+        numpandas (int): The number of pandas.
+        multiplier (int): The multiplier for the question.
+
+    Returns:
+        bool: True if the user's answer is correct, False otherwise.
+    """
     answer = ""
     correct_answer = numpandas*multiplier
     run = True
@@ -205,6 +222,12 @@ def question(numpandas, multiplier):
         pygame.display.update()
 
 def lose_screen(x_pos):
+    """
+    Displays the lose screen when the player loses the game.
+
+    Args:
+        x_pos (int): The x position of the dead panda.
+    """
     run = True    
     screen.blit(dead_panda, (x_pos-5, 385))
     pygame.display.update()
@@ -237,6 +260,9 @@ def lose_screen(x_pos):
     return 
 
 def win_screen():
+    """
+    Displays the win screen when the player wins the game.
+    """
     run = True
     while run:
             MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
@@ -265,6 +291,16 @@ def win_screen():
     return 
 
 def generate_arrows(incorrect_counter, num_pandas):
+    """
+    Generates the number of arrows based on the number of pandas and the incorrect counter.
+
+    Args:
+        incorrect_counter (int): The number of incorrect answers given by the player.
+        num_pandas (int): The number of pandas.
+
+    Returns:
+        int: The number of arrows to be generated.
+    """
     randomizer = random.randint(1, 100)
     if incorrect_counter == 0:
         if num_pandas < 4:
@@ -294,9 +330,16 @@ def generate_arrows(incorrect_counter, num_pandas):
     return num_arrows
 
 def start_game(username, password):
+    """
+    Starts the main game loop.
+
+    Args:
+        username (str): The username of the player.
+        password (str): The password of the player.
+    """
     # Scrolling variables
     scroll = 0
-    scroll_speed = 2
+    scroll_speed = 4
     x = (SCREEN_WIDTH) // 2
     speed = 5
     num_arrows = 1
@@ -411,9 +454,27 @@ def start_game(username, password):
 
     return
 
+def play_music(file):
+    """
+    Starts the main game loop.
+
+    Args:
+        username (str): The username of the player.
+        password (str): The password of the player.
+    """
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play(-1)
 
 def running_army(username, password):
-    # Main game loop
+    """
+    Initializes and runs the "Running Army" game.
+
+    Args:
+        username (str): The username of the player.
+        password (str): The password of the player.
+    """
+    play_music("sound/RunningArmyMusic.mp3")
     run = True
     while run:
         # display start screen
@@ -430,7 +491,8 @@ def running_army(username, password):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BUTTON.checkInput(MOUSE_POS):
                     start_game(username, password)
@@ -444,6 +506,5 @@ def running_army(username, password):
         pygame.display.update()
 
     # Quit back to the game map
+    pygame.mixer.music.stop()
     return
-
-# running_army()

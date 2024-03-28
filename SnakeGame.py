@@ -1,9 +1,9 @@
+# Import libraries and classes
 import pygame, sys
-import time
 import random
 from Player import Player
 from Button import Button
-import math
+from question import Question
 
 # Initialize Pygame
 pygame.init()
@@ -108,20 +108,6 @@ def timeLeft(time):
   main = get_font(25).render("Time Left: " + str(time), True, white)
   screen.blit(main, [280, 60])
 
-# NEED TO CHANGE LATER TO USE THE QUESTION CLASS INSTEAD
-# Generates the question and answer
-def question(level):
-  if level < 5: # For single digit addition
-    num1 = random.randint(1, 9)
-    num2 = random.randint(1, 9)
-  else: # For double digit addition
-    num1 = random.randint(1, 99)
-    num2 = random.randint(1, 99)
-
-  ans = num1 + num2
-  q = str(num1) + " + " + str(num2) + " = ?"
-  return [q, ans]
-
 # Generates the options for the question
 def options(correctAns):
   opt1 = correctAns + random.randint(1, 5) # altered by adding a random number
@@ -157,21 +143,6 @@ def options(correctAns):
   d = get_font(25).render(str(optD), True, black)
 
   return [a, b, c, d, rightChoice]
-
-# # Create list of coordinates for the food
-# def foodCoordinates(x1, y1):
-#   # Randomize position of fruits
-#   foodCoord = [[x1, y1]]
-#   i = 0
-#   while i < 4:
-#     num1 = round(random.randrange(50, SCREEN_WIDTH -(snake_block + 50)) / 10.0) * 10.0
-#     num2 = round(random.randrange(50, SCREEN_HEIGHT - (snake_block + 50)) / 10.0) * 10.0
-#     while foodCoord.__contains__((num1, num2)):
-#       num1 = round(random.randrange(50, SCREEN_WIDTH - (snake_block + 50)) / 10.0) * 10.0
-#       num2 = round(random.randrange(50, SCREEN_HEIGHT - (snake_block + 50)) / 10.0) * 10.0
-#     foodCoord.append([num1, num2])
-#     i += 1
-#   return foodCoord
 
 # Intructions screen
 def instruction1():
@@ -278,11 +249,14 @@ def foodEaten(foodCoord, correctAns):
         return 2
     i += 1
   if snakex == 0 or snakex == 800 or snakey == 0 or snakey == 600:
-     return 1
+     return 3
   return 0
 
 
 def end_screen(result):
+    pygame.mixer.init()
+    pygame.mixer.music.load("sound/LossSound.mp3")
+    pygame.mixer.music.play(0)
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
 
@@ -301,12 +275,77 @@ def end_screen(result):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if RETURN.checkInput(MOUSE_POS):
+                    play_music("sound/SnakeSumsMusic.mp3")
                     return
 
         pygame.display.update()
 
+def response(correct, question, answer):
+  screen.blit(overlay, (0, 0))
+  screen.blit(QBOX, (141, 115))
+  # Shadow text
+  shadow = get_font(25).render("Press Space To Continue", True, green4)
+  # Main text
+  main = get_font(25).render("Press Space To Continue", True, white)
+        
+  screen.blit(shadow, [199, 525])
+  screen.blit(main, [197, 523])
+  # Shadow text
+  if correct == False:
+    shadow = get_font(50).render("Nice Try!", True, green4)
+    # Main text
+    main = get_font(50).render("Nice Try!", True, white)
+    screen.blit(shadow, [256, 212])
+    screen.blit(main, [256, 210])
+    q = get_font(25).render(question, True, black)
+    # Main text
+    ans = get_font(25).render("Correct Answer: " + str(answer), True, black)
+    screen.blit(q, [328, 308])
+    screen.blit(ans, [245, 387])
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_SPACE]:
+      end_screen(False)
+      return True
+  else:
+    shadow = get_font(50).render("Good Job!", True, green4)
+    # Main text
+    main = get_font(50).render("Good Job!", True, white)
+    screen.blit(shadow, [245, 212])
+    screen.blit(main, [243, 210])
+    q = get_font(25).render(question, True, black)
+    # Main text
+    ans = get_font(25).render("Correct Answer: " + str(answer), True, black)
+    screen.blit(q, [328, 308])
+    screen.blit(ans, [245, 387])
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_SPACE]:
+      end_screen(True)
+      return True
+    # result = False
+    # fruit_delay = 4
+    # countdown = 600
+
+def correct(question, answer):
+  good = get_font(50).render("Good Job!", True, green4)
+  # Main text
+  good1 = get_font(50).render("Good Job!", True, white)
+  screen.blit(good, [245, 212])
+  screen.blit(good1, [243, 210])
+  q = get_font(25).render(question, True, black)
+  # Main text
+  ans = get_font(25).render("Correct Answer: " + str(answer), True, black)
+  screen.blit(q, [328, 308])
+  screen.blit(ans, [245, 387])
+
+def play_music(file):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play(-1)
+
 # Main game function
 def game(user):
+  dontrun = 1
+  doneYet = 0
   result = False
   fruit_delay = 4
   run = True 
@@ -315,14 +354,10 @@ def game(user):
   level = user.get_add() # get addition level from the user
 
   # Initialize questions, options, and answer
-  currQNA = question(level) # gets question and the answer
+  currQNA = Question(user).generate_question("+") # gets question and the answer
   currQ = currQNA[0] 
   correctAns = currQNA[1]
   optionList = options(correctAns) # creates list of answer options
-
-  # # Snake starting coordinates
-  # x1 = SCREEN_WIDTH / 2
-  # y1 = SCREEN_HEIGHT / 2
 
   # Initialize change in coordinates
   x1_change = 0
@@ -331,7 +366,6 @@ def game(user):
   # List of snake body parts coordinates
   snake_list = []
   snake_len = 1
-
 
   # Randomize and create coordinates for each orange
   foodCoord = foodCoordinates(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
@@ -415,11 +449,11 @@ def game(user):
     if elements_delay_counter > 0:
       elements_delay_counter -= 1
       pause = True
-    else:
+    elif dontrun == 1:
       if countdown > 0 and pause == True and timerDown > 0 and result is False:
         snake_pause = True
         if countdown == 600:
-          currQNA = question(level)
+          currQNA = Question(user).generate_question("+")
           currQ = currQNA[0]
           correctAns = currQNA[1]
           optionList = options(correctAns)
@@ -469,6 +503,7 @@ def game(user):
         
         screen.blit(shadow, [199, 525])
         screen.blit(main, [197, 523])
+        correct(currQ, correctAns)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
           result = False
@@ -477,8 +512,6 @@ def game(user):
       else:
         pause = False
       
-      
-
       if pause == False: 
         if fruit_delay > 0:
            fruit_delay -= 1
@@ -499,11 +532,14 @@ def game(user):
       screen.blit(RESIZED_BACK, (-120,-126))
     if doneYet == 2:
       if (snake_len - 1) == 4:
-        end_screen(True)
+        result = False
+        plss = response(True, currQ, correctAns)
         elements_delay_counter = 1
-        fruit_delay = 4
-        pause = True
-      elif level < 5:
+        if plss == True:
+          new_score = user.get_add() + 1
+          user.update_add(str(new_score))
+          return
+      elif level < 5 and dontrun == 1:
         foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
         snake_len += 1
         elements_delay_counter = 1
@@ -511,7 +547,7 @@ def game(user):
         countdown = 600
         timerDown = 10
         result = True
-      else: 
+      elif dontrun == 1: 
         foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
         snake_len += 1
         elements_delay_counter = 1
@@ -520,8 +556,15 @@ def game(user):
         timerDown = 30
         result = True
     if doneYet == 1:
-      end_screen(False)
-      return
+      result = False
+      dontrun = 0
+      plss = response(False, currQ, correctAns)
+      elements_delay_counter = 1
+      if plss == True:
+        return
+    if doneYet == 3:
+       end_screen(False)
+       return
   
     pygame.display.flip()
 
@@ -530,6 +573,7 @@ def game(user):
   pygame.quit()
 
 def snakeSums(username, password):
+    play_music("sound/SnakeSumsMusic.mp3")
     user = Player(name=username, password=password)
     # Main game loop
     run = True
@@ -562,6 +606,7 @@ def snakeSums(username, password):
         pygame.display.update()
 
     # Quit back to the game map
+    pygame.mixer.music.stop()
     return
 
 # pygame.quit()

@@ -2,6 +2,7 @@
 import pygame, sys, csv
 from Button import Button
 from GameMap import load_map
+from Player import Player
 
 # Define screen dimensions
 SCREEN_WIDTH = 800
@@ -9,6 +10,11 @@ SCREEN_HEIGHT = 600
 
 # Initialize Pygame
 pygame.init()
+pygame.mixer.init()
+pygame.mixer.set_num_channels(8)
+
+gong = pygame.mixer.Sound("sound/Gong.mp3")
+
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('DIGIT DYNASTY')
 BACKGROUND = pygame.image.load("images/background.png")
@@ -26,6 +32,7 @@ INSTRUCTOR_DASHBOARD = pygame.image.load("images/Instructor dashboard.png")
 DETAILED_STUDENT = pygame.image.load("images/detailed student.png")
 
 black = (0, 0, 0)
+white = (255, 255, 255)
 
 def get_font(font, size):
     if font == "Sawarabi":
@@ -83,8 +90,23 @@ def append_to_csv(username, password):
         writer = csv.writer(file)
         writer.writerow(row)
 
+# Method to check if player already exists
+def username_exists(username, filepath = "data.csv"):
+    with open("data.csv", newline = '') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            if username == row[0]:
+                return True
+    return False
+
+# Method to validate the username entered
+def validate_username(username):
+    if not username.isalnum():
+        return False
+    return True
+
 # Method to validate the password entered
-def valid_password(password):
+def validate_password(password):
     if len(password) < 8 or len(password) > 16:
         return False
     if not password.isalnum():
@@ -98,7 +120,8 @@ def start_game():
     username_active = False
     password_active = False
     existing_player = False
-    invalid_password = False
+    valid_password = True
+    valid_username = True
     no_entry = False
     input_font = get_font("Sawarabi",35)
 
@@ -130,23 +153,22 @@ def start_game():
                 if START_BACK.checkInput(GAME_MOUSE_POS):
                     return
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
-                    existing_player = False
-                    invalid_password = False
                     no_entry = False
-
-                    with open("data.csv", newline = '') as csvfile:
-                        reader = csv.reader(csvfile)
-                        for row in reader:
-                            compare_Username = row[0]
+                    existing_player = False
+                    valid_username = True
+                    valid_password = True
 
                     if username == "" or password == "":
                         no_entry = True
-                    elif username == compare_Username:
+                    elif username_exists(username):
                         existing_player = True
-                    elif not valid_password(password):
-                        invalid_password = True
+                    elif not validate_username(username):
+                        valid_username = False
+                    elif not validate_password(password):
+                        valid_password = False
                     else:
                         append_to_csv(username, password)
+                        gong.play()
                         load_map(username, password)
                         return
                 elif username_rect.collidepoint(event.pos):
@@ -174,14 +196,22 @@ def start_game():
             font = get_font('Shojumaru', 13)
             text_surface = font.render('Enter a username and a password.', True, 'white')
             SCREEN.blit(text_surface, (249, 455))
-        if existing_player:
-            font = get_font('Shojumaru', 15)
-            text_surface = font.render('Existing player. Enter a new username or log in.', True, 'white')
-            SCREEN.blit(text_surface, (165, 455))
-        if invalid_password:
+        elif existing_player:
             font = get_font('Shojumaru', 13)
-            text_surface = font.render('Your password should be 8 - 16 characters and only have letters and numbers.', True, 'white')
+            text_surface = font.render('Existing player. Enter a new username or log in.', True, 'white')
+            SCREEN.blit(text_surface, (185, 455))
+        elif not valid_username and valid_password:
+            font = get_font('Shojumaru', 13)
+            text_surface = font.render('Your username can only have letters and/or numbers.', True, 'white')
+            SCREEN.blit(text_surface, (160, 455))
+        elif not valid_password and valid_username:
+            font = get_font('Shojumaru', 13)
+            text_surface = font.render('Your password should be 8 - 16 characters and only have letters and/or numbers.', True, 'white')
             SCREEN.blit(text_surface, (45, 455))
+        elif not valid_password and not valid_username:
+            font = get_font('Shojumaru', 13)
+            text_surface = font.render('Error with username and password.', True, 'white')
+            SCREEN.blit(text_surface, (249, 455))
         
         PLAY_BUTTON.changeColour(GAME_MOUSE_POS)
         PLAY_BUTTON.update(SCREEN)
@@ -201,7 +231,7 @@ def load_player(input_username, input_password):
                     'Subtraction': row[3],
                     'Multiplication': row[4],
                     'Division': row[5],
-                    'Bosses': row[6]
+                    'Bosses': row[6],
                 }
                 return player_info
     return None
@@ -252,7 +282,11 @@ def load_game():
                     player_info = load_player(input_username, input_password)
 
                     if player_info:
-                        load_map(input_username, input_password)
+                        if input_username == "ADMIN" and input_password == "DD2024":
+                            debug_mode(input_username, input_password)
+                        else:
+                            gong.play()
+                            load_map(input_username, input_password)
                         return
                     else:
                         player_not_found = True
@@ -584,7 +618,7 @@ def instructor_dashboard_login():
                     else:
                         password += event.unicode
 
-        input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
+        input_box(SCREEN, password_rect, password, input_font, active = False, is_password = True)
         
         if player_not_found:
             font = get_font('Shojumaru', 15)
@@ -593,6 +627,143 @@ def instructor_dashboard_login():
 
         PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()
+
+def debug_mode(username, password):
+    print("in debug mode")
+    player = Player(name=username, password=password)
+    player.load_player()
+    input_font = get_font("Sawarabi",35)
+
+    # input for each box
+    add_input = ''
+    sub_input = ''
+    mult_input = ''
+    div_input = ''
+    boss_input = ''
+
+    # check if box is clicked
+    add_active = False
+    sub_active = False
+    mult_active = False
+    div_active = False
+    boss_active = False
+
+    # pos then size
+    add_rect = pygame.Rect(420, 100, 100, 50)
+    sub_rect = pygame.Rect(420, 180, 100, 50)
+    mult_rect = pygame.Rect(420, 260, 100, 50)
+    div_rect = pygame.Rect(420, 340, 100, 50)
+    boss_rect = pygame.Rect(420, 420, 100, 50)
+
+    while True:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+
+        SCREEN.blit(BACKGROUND, (0, 0))
+
+        START_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",22), base_colour = "White", hovering_colour = "#b51f09")
+        START_BACK.update(SCREEN)
+
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            SCREEN.blit(RESIZED_BACK, (-90,-96))
+        
+        PLAY_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "PLAY", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
+
+        subtitles = ["Addition Score:", "Subtraction Score:", "Multiplication Score:", "Division Score:", "Boss Battle Score:"]
+        y_coordinate = 115
+        for i, line in enumerate(subtitles):
+            subtitle_text = get_font('Shojumaru', 20).render(line, True, white)
+            inputRect = subtitle_text.get_rect()
+            inputRect.right = SCREEN_WIDTH // 2  # Adjust position for each line
+            inputRect.y = y_coordinate
+            y_coordinate += 80
+            SCREEN.blit(subtitle_text, inputRect)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.mixer.music.stop()
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if START_BACK.checkInput(event.pos):
+                    return
+                elif add_rect.collidepoint(event.pos):
+                    add_active = not add_active
+                    sub_active = False
+                    mult_active = False
+                    div_active = False
+                    boss_active = False
+                elif sub_rect.collidepoint(event.pos):
+                    sub_active = not sub_active
+                    add_active = False
+                    mult_active = False
+                    div_active = False
+                    boss_active = False
+                elif mult_rect.collidepoint(event.pos):
+                    mult_active = not mult_active
+                    add_active = False
+                    sub_active = False
+                    div_active = False
+                    boss_active = False
+                elif div_rect.collidepoint(event.pos):
+                    div_active = not div_active
+                    add_active = False
+                    sub_active = False
+                    mult_active = False
+                    boss_active = False
+                elif boss_rect.collidepoint(event.pos):
+                    boss_active = not boss_active
+                    add_active = False
+                    sub_active = False
+                    mult_active = False
+                    div_active = False
+                elif PLAY_BUTTON.checkInput(event.pos):
+                    load_map(username, password)
+                else:
+                    add_active = False
+                    sub_active = False
+                    mult_active = False
+                    div_active = False
+                    boss_active = False
+            if event.type== pygame.KEYDOWN:
+                if add_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        add_input = add_input[:-1]
+                    else:
+                        add_input += event.unicode
+                elif sub_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        sub_input = sub_input[:-1]
+                    else:
+                        sub_input += event.unicode
+                elif mult_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        mult_input = mult_input[:-1]
+                    else:
+                        mult_input += event.unicode
+                elif div_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        div_input = div_input[:-1]
+                    else:
+                        div_input += event.unicode
+                elif boss_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        boss_input = boss_input[:-1]
+                    else:
+                        boss_input += event.unicode
+            player.update_add(add_input)
+            player.update_sub(sub_input)
+            player.update_mul(mult_input)
+            player.update_div(div_input)
+
+        input_box(SCREEN, add_rect, add_input, input_font, active = add_active)
+        input_box(SCREEN, sub_rect, sub_input, input_font, active = sub_active)
+        input_box(SCREEN, mult_rect, mult_input, input_font, active = mult_active)
+        input_box(SCREEN, div_rect, div_input, input_font, active = div_active)
+        input_box(SCREEN, boss_rect, boss_input, input_font, active = boss_active)
+        
+        PLAY_BUTTON.update(SCREEN)
+
+        pygame.display.update()
 
 def welcome_screen():
     run = True

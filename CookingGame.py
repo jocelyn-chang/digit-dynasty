@@ -51,6 +51,11 @@ clock = pygame.time.Clock()
 
 number_of_dumplings = 0
 
+def play_music(file):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play(-1)
+
 def get_font(size):
     """
     Returns the font used in the game of a specified size.
@@ -383,6 +388,7 @@ def playGame(username, password):
 
 
 def cooking_game(username, password):
+    play_music("sound/CookingGameMusic.mp3")
     run = True
     while run:
         # display start screen
@@ -413,4 +419,5 @@ def cooking_game(username, password):
         pygame.display.update()
 
     # Quit back to the game map
+    pygame.mixer.music.stop()
     return
