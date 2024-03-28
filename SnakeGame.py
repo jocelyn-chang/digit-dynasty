@@ -1,3 +1,4 @@
+# Import libraries and classes
 import pygame, sys
 import random
 from Player import Player

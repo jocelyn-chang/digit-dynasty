@@ -188,9 +188,9 @@ def load_map(username, password):
 
   pygame.quit()
 
-username = "Audrey"
-password = "AudreyLi192004"
-load_map(username, password)
+# username = "Audrey"
+# password = "AudreyLi192004"
+# load_map(username, password)
 
 '''    # Display mouse position on the screen
     font = pygame.font.Font(None, 36)
