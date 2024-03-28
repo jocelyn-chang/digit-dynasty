@@ -10,6 +10,11 @@ SCREEN_HEIGHT = 600
 
 # Initialize Pygame
 pygame.init()
+pygame.mixer.init()
+pygame.mixer.set_num_channels(8)
+
+gong = pygame.mixer.Sound("sound/Gong.mp3")
+
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('DIGIT DYNASTY')
 BACKGROUND = pygame.image.load("images/background.png")
@@ -85,8 +90,14 @@ def append_to_csv(username, password):
         writer = csv.writer(file)
         writer.writerow(row)
 
+# Method to validate the username entered
+def validate_username(username):
+    if not username.isalnum():
+        return False
+    return True
+
 # Method to validate the password entered
-def valid_password(password):
+def validate_password(password):
     if len(password) < 8 or len(password) > 16:
         return False
     if not password.isalnum():
@@ -100,7 +111,8 @@ def start_game():
     username_active = False
     password_active = False
     existing_player = False
-    invalid_password = False
+    valid_password = True
+    valid_username = True
     no_entry = False
     input_font = get_font("Sawarabi",35)
 
@@ -132,9 +144,6 @@ def start_game():
                 if START_BACK.checkInput(GAME_MOUSE_POS):
                     return
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
-                    existing_player = False
-                    invalid_password = False
-                    no_entry = False
 
                     with open("data.csv", newline = '') as csvfile:
                         reader = csv.reader(csvfile)
@@ -145,11 +154,13 @@ def start_game():
                         no_entry = True
                     elif username == compare_Username:
                         existing_player = True
-                    elif not valid_password(password):
-                        invalid_password = True
+                    elif not validate_username(username):
+                        valid_username = False
+                    elif not validate_password(password):
+                        valid_password = False
                     else:
                         append_to_csv(username, password)
-                        play_music("sound/Gong.mp3")
+                        gong.play()
                         load_map(username, password)
                         return
                 elif username_rect.collidepoint(event.pos):
@@ -178,13 +189,21 @@ def start_game():
             text_surface = font.render('Enter a username and a password.', True, 'white')
             SCREEN.blit(text_surface, (249, 455))
         if existing_player:
-            font = get_font('Shojumaru', 15)
-            text_surface = font.render('Existing player. Enter a new username or log in.', True, 'white')
-            SCREEN.blit(text_surface, (165, 455))
-        if invalid_password:
             font = get_font('Shojumaru', 13)
-            text_surface = font.render('Your password should be 8 - 16 characters and only have letters and numbers.', True, 'white')
+            text_surface = font.render('Existing player. Enter a new username or log in.', True, 'white')
+            SCREEN.blit(text_surface, (160, 455))
+        if not valid_username and valid_password:
+            font = get_font('Shojumaru', 13)
+            text_surface = font.render('Your username can only have letters and/or numbers.', True, 'white')
+            SCREEN.blit(text_surface, (160, 455))
+        if not valid_password and valid_username:
+            font = get_font('Shojumaru', 13)
+            text_surface = font.render('Your password should be 8 - 16 characters and only have letters and/or numbers.', True, 'white')
             SCREEN.blit(text_surface, (45, 455))
+        if not valid_password and not valid_username:
+            font = get_font('Shojumaru', 13)
+            text_surface = font.render('Error with username and password.', True, 'white')
+            SCREEN.blit(text_surface, (249, 455))
         
         PLAY_BUTTON.changeColour(GAME_MOUSE_POS)
         PLAY_BUTTON.update(SCREEN)
@@ -258,7 +277,7 @@ def load_game():
                         if input_username == "ADMIN" and input_password == "DD2024":
                             debug_mode(input_username, input_password)
                         else:
-                            play_music("sound/Gong.mp3")
+                            gong.play()
                             load_map(input_username, input_password)
                         return
                     else:

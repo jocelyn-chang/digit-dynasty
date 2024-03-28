@@ -12,6 +12,13 @@ from question import Question
 
 # Initialize Pygame
 pygame.init()
+pygame.mixer.init()
+pygame.mixer.set_num_channels(8)
+
+LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
+WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
+CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
+ENTER = pygame.mixer.Sound("sound/GameEnter.mp3") 
 
 # Initialize the base screen
 SCREEN_WIDTH = 800
@@ -225,6 +232,8 @@ def win_screen(score):
     Returns:
     None
     """
+    pygame.mixer.music.stop()
+    WIN.play()
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
 
@@ -263,7 +272,8 @@ def lose_screen(username, password, score):
     Returns:
     None
     """
-    play_music("sound/LossSound.mp3")
+    pygame.mixer.music.stop()
+    LOSS.play()
     player = Player(username, password)
     player.load_player()
     while True:
@@ -413,6 +423,7 @@ def start_game(username, password):
             if current_answer == correct_answer:
                 display_correct_message = True
                 display_incorrect_message = False
+                CORRECT.play()
                 score += 1
             else:
                 display_incorrect_message = True
