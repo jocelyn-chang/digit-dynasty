@@ -90,6 +90,15 @@ def append_to_csv(username, password):
         writer = csv.writer(file)
         writer.writerow(row)
 
+# Method to check if player already exists
+def username_exists(username, filepath = "data.csv"):
+    with open("data.csv", newline = '') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            if username == row[0]:
+                return True
+    return False
+
 # Method to validate the username entered
 def validate_username(username):
     if not username.isalnum():
@@ -144,15 +153,14 @@ def start_game():
                 if START_BACK.checkInput(GAME_MOUSE_POS):
                     return
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
-
-                    with open("data.csv", newline = '') as csvfile:
-                        reader = csv.reader(csvfile)
-                        for row in reader:
-                            compare_Username = row[0]
+                    no_entry = False
+                    existing_player = False
+                    valid_username = True
+                    valid_password = True
 
                     if username == "" or password == "":
                         no_entry = True
-                    elif username == compare_Username:
+                    elif username_exists(username):
                         existing_player = True
                     elif not validate_username(username):
                         valid_username = False
@@ -188,19 +196,19 @@ def start_game():
             font = get_font('Shojumaru', 13)
             text_surface = font.render('Enter a username and a password.', True, 'white')
             SCREEN.blit(text_surface, (249, 455))
-        if existing_player:
+        elif existing_player:
             font = get_font('Shojumaru', 13)
             text_surface = font.render('Existing player. Enter a new username or log in.', True, 'white')
-            SCREEN.blit(text_surface, (160, 455))
-        if not valid_username and valid_password:
+            SCREEN.blit(text_surface, (185, 455))
+        elif not valid_username and valid_password:
             font = get_font('Shojumaru', 13)
             text_surface = font.render('Your username can only have letters and/or numbers.', True, 'white')
             SCREEN.blit(text_surface, (160, 455))
-        if not valid_password and valid_username:
+        elif not valid_password and valid_username:
             font = get_font('Shojumaru', 13)
             text_surface = font.render('Your password should be 8 - 16 characters and only have letters and/or numbers.', True, 'white')
             SCREEN.blit(text_surface, (45, 455))
-        if not valid_password and not valid_username:
+        elif not valid_password and not valid_username:
             font = get_font('Shojumaru', 13)
             text_surface = font.render('Error with username and password.', True, 'white')
             SCREEN.blit(text_surface, (249, 455))
