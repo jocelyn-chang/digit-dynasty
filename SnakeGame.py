@@ -24,8 +24,8 @@ overlay.fill((0, 0, 0))  # Fill with black
 # Load images
 BACKGROUND = pygame.image.load("images/snakegamebg.png")
 QBOX = pygame.image.load("images/snakegameqbox.png")
-INSTRUCTION1 = pygame.image.load("images/Multiplication_instruction.png")
-INSTRUCTION2 = pygame.image.load("images/Instructions for running army.png")
+INSTRUCTION1 = pygame.image.load("images/additionInstructions.png")
+INSTRUCTION2 = pygame.image.load("images/snakeSumsInstructions.png")
 BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
 RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
@@ -410,7 +410,6 @@ def game(user):
               select = 4
               pause = False
             
-            
 
             # Control snake movement when not paused
     if not pause:
@@ -538,13 +537,6 @@ def game(user):
         if countdown % 10 == 0 and timerDown > 0:
           timerDown -= 1
         snake_pause = True
-        # keys = pygame.key.get_pressed()
-        # if keys[pygame.MOUSEBUTTONDOWN]:
-        #   print("mouse down")
-        #   if FRUIT_AB.checkInput(MOUSE_POS):
-        #      pause = False
-        # if keys[pygame.K_SPACE]:
-        #   pause = False
       elif result is True:
         screen.blit(overlay, (0, 0))
         screen.blit(QBOX, (141, 115))
@@ -570,7 +562,7 @@ def game(user):
         else:
           snake(snake_block, snake_list)
           current_score(snake_len - 1)
-          current_level((snake_len - 1)//5)
+          current_level(int(user.get_add()))
           if select == 1:
             screen.blit(ORANGE_BORDER, ((foodCoord[1][0]) - 5, (foodCoord[1][1]) - 5))
           elif select == 2:
@@ -637,6 +629,7 @@ def game(user):
 def snakeSums(username, password):
     play_music("sound/SnakeSumsMusic.mp3")
     user = Player(name=username, password=password)
+    user.load_player()
     # Main game loop
     run = True
     while run:
@@ -674,6 +667,6 @@ def snakeSums(username, password):
 # pygame.quit()
 
 # Run the game
-# username = "jocelyn"
-# password = 12345678
-# snakeSums(username, password)
+username = "jocelyn"
+password = 12345678
+snakeSums(username, password)
