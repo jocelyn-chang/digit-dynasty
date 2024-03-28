@@ -150,7 +150,7 @@ def load_map(username, password):
     # boss battle (arithmetic emperor)
     if int(player.get_add()) and int(player.get_sub()) and int(player.get_mul()) and int(player.get_div()) == (int(player.get_bosses()) + 1) * 5:
       if (350<mouse_x<450 and 220<mouse_y<380):
-        screen.blit(RESIZED_MIDDLETEMP, (360, 223))
+        screen.blit(RESIZED_MIDDLETEMP, (323, 180))
         if event.type == pygame.MOUSEBUTTONDOWN:
             if MIDTEMP.checkInput(MOUSE_POS):
               arithmetic_emperor(username, password)
@@ -171,11 +171,11 @@ def load_map(username, password):
     sub_surface = font.render(f"Subtraction: {player.get_sub()}", True, "White")
     mul_surface = font.render(f"Multiplication: {player.get_mul()}", True, "White")
     div_surface = font.render(f"Division: {player.get_mul()}", True, "White")
-    screen.blit(name_surface, (550, 15))
-    screen.blit(add_surface, (550, 35))
-    screen.blit(sub_surface, (550, 55))
-    screen.blit(mul_surface, (550, 75))
-    screen.blit(div_surface, (550, 95))
+    screen.blit(name_surface, (565, 485))
+    screen.blit(add_surface, (565, 505))
+    screen.blit(sub_surface, (565, 525))
+    screen.blit(mul_surface, (565, 545))
+    screen.blit(div_surface, (565, 565))
 
     if no_entry:
       font = get_font('Shojumaru', 18)
@@ -188,8 +188,8 @@ def load_map(username, password):
 
   pygame.quit()
 
-username = "jocelyn"
-password = 12345678
+username = "Audrey"
+password = "AudreyLi192004"
 load_map(username, password)
 
 '''    # Display mouse position on the screen
