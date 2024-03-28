@@ -210,7 +210,7 @@ def foodCoordinates(x1, y1):
   # Randomize position of fruits
   foodCoord = [[x1, y1]]
   i = 0
-  min_distance = 50
+  min_distance = 100
   while i < 4:
     while True:
       num1 = round(random.randrange(50, SCREEN_WIDTH - (snake_block + 50)) / 10.0) * 10.0
@@ -242,7 +242,7 @@ def foodEaten(foodCoord, correctAns):
     answer = 4
   i = 1
   while i < 5:
-    if snakex >= (foodCoord[i][0]-20) and snakex <= (foodCoord[i][0]+30) and snakey >= (foodCoord[i][1]-20) and snakey <= (foodCoord[i][1]+40):
+    if snakex >= (foodCoord[i][0]-25) and snakex <= (foodCoord[i][0]+35) and snakey >= (foodCoord[i][1]-25) and snakey <= (foodCoord[i][1]+45):
       if i != answer:
         return 1
       else:
@@ -596,7 +596,7 @@ def game(user):
         plss = response(True, currQ, correctAns)
         elements_delay_counter = 1
         if plss == True:
-          new_score = user.get_add() + 1
+          new_score = int(user.get_add()) + 1
           user.update_add(str(new_score))
           return
       elif level < 5 and dontrun == 1:
@@ -674,6 +674,6 @@ def snakeSums(username, password):
 # pygame.quit()
 
 # Run the game
-username = "jocelyn"
-password = 12345678
-snakeSums(username, password)
+# username = "jocelyn"
+# password = 12345678
+# snakeSums(username, password)
