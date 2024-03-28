@@ -36,14 +36,11 @@ RESIZED_BACK = pygame.image.load("images/resized_back.png")
 RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
 start_screen = pygame.image.load("images/Cooking Game Start Screen.png")
 
-#game over or congrats screens
-#question_scroll = pygame.image.load("images/bigScroll.png")
-#happypanda = pygame.image.load("images/thumbsuppanda.png")
-
-
 LOSE_SCREEN = pygame.image.load("images/Cooking game lose game.png")
 WIN_SCREEN = pygame.image.load("images/Cooking game winning.png")
 
+BACK = pygame.image.load("images/back_button.png")
+RESIZED_BACK = pygame.image.load("images/resized_back.png")
 
 # Initialize the game screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -52,12 +49,17 @@ pygame.display.set_caption('COOKING GAME')
 # Clock for controlling game speed
 clock = pygame.time.Clock()
 
-#font = pygame.font.Font("fonts/Shojumaru-Regular.ttf", 20)
-
 number_of_dumplings = 0
-#correct_answer = 0
 
 def get_font(size):
+    """
+    Returns the font used in the game of a specified size.
+
+    :param size: The size of the font to be returned.
+    :type size: int
+    :return: A pygame font object of the specified size.
+    :rtype: pygame.font.Font
+    """
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 def instruction():
@@ -126,7 +128,19 @@ def handle_events(dumpling_positions, central_area, questions):
     global number_of_dumplings
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            return False
+            pygame.quit()
+            sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            MOUSE_POS = pygame.mouse.get_pos()
+            MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+            BACK = Button(image="images/back_button.png", pos=(40, 25), text_input="", font=get_font(22), base_colour="White", hovering_colour="#b51f09")
+            BACK.update(screen)
+            
+            if (10<MOUSE_X<45 and 10<MOUSE_Y<40):
+                screen.blit(RESIZED_BACK, (-120,-126))
+            
+            if BACK.checkInput(MOUSE_POS):
+                return 3  # Signal that we should go back
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
                 add_dumpling(dumpling_positions, central_area)
@@ -140,10 +154,10 @@ def handle_events(dumpling_positions, central_area, questions):
                     # Clears the number of dumplings on the screen when the question is answered correctly
                     dumpling_positions.clear()
                     number_of_dumplings = 0
-                    return True
+                    return 1
                 else:
                     dumpling_positions.clear()
-                    return False
+                    return 2
     return None 
     #return True
 
@@ -268,7 +282,32 @@ def draw_screen(dumpling_positions, photo_positions, questions, level):
     level_text = get_font(20).render(f"Level: {level}", True, (0, 0, 0))
     screen.blit(level_text, (26, SCREEN_HEIGHT - 135))
     
+    MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+    BACK = Button(image="images/back_button.png", pos=(40, 25), text_input="", font=get_font(22), base_colour="White", hovering_colour="#b51f09")
+    BACK.update(screen)
+            
+    if (10<MOUSE_X<45 and 10<MOUSE_Y<40):
+        screen.blit(RESIZED_BACK, (-120,-126))
+    
+    '''
+    BACK = Button(image="images/back_button.png", pos=(40, 25), text_input="", font=get_font(22), base_colour="White", hovering_colour="#b51f09")
+    BACK.update(screen)
+    
+    MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+    
+    if (10<MOUSE_X<45 and 10<MOUSE_Y<40):
+        screen.blit(RESIZED_BACK, (-120,-126))
+    
 
+    for event in pygame.event.get():
+        MOUSE_POS = pygame.mouse.get_pos()
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if BACK.checkInput(MOUSE_POS):
+                return True  # Signal that the BACK button was pressed
+    '''
     pygame.display.flip()
 
 
@@ -304,12 +343,17 @@ def playGame(username, password):
     while not done:
         current_time = pygame.time.get_ticks()
         ans = handle_events(dumpling_positions, central_area, questions)
-        if ans == False:
+        
+        
+        if ans == 2:
             lose_screen(correct_answer, questions[0])
             done = True
             break
         
-        elif ans == True and questions:
+        elif ans == 3:
+            return
+        
+        elif ans == 1 and questions:
             correct_answer = correct_answer + 1
             questions.pop(0)  # Remove the answered question
             photo_positions.pop(0)  # Remove the corresponding photo
@@ -355,7 +399,8 @@ def cooking_game(username, password):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                     if START_BUTTON.checkInput(MOUSE_POS):
                         playGame(username, password)
