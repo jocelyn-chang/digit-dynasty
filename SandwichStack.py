@@ -8,7 +8,7 @@ and game screen, as well as movement mechanics and the logic for collision detec
 import pygame, sys, random
 from Button import Button
 from Player import Player
-from question import Question
+from Question import Question
 
 # Initialize Pygame
 pygame.init()
@@ -86,7 +86,7 @@ def spawn_food(answer_bank):
 
     Returns:
     A tuple containing the food surface, its Rect object, the chosen answer, the rendered answer
-    text surface, adn its Rect object.
+    text surface, and its Rect object.
     """
     food = random.choice(food_items)                                    # Randomly choose a food item from the food item list
     answer = random.choice(answer_bank)                                 # Randomly choose an answer from the answer bank list
@@ -94,9 +94,9 @@ def spawn_food(answer_bank):
     y_pos = -food.get_height()                                          # Get the y position fo the food item
     food_rect = food.get_rect(topleft = (x_pos, y_pos))                 # Obtain the rectangle surrounding the food item
 
-    font = get_font('Shojumaru', 15)
-    text_surface = font.render(str(answer), True, "white")
-    text_rect = text_surface.get_rect(center = (food_rect.centerx, food_rect.y - 20))
+    font = get_font('Shojumaru', 15)                                                        # Initialize the font for the potential answer
+    text_surface = font.render(str(answer), True, "white")                                  # Establish the text
+    text_rect = text_surface.get_rect(center = (food_rect.centerx, food_rect.y - 20))       # Create the answer text and place it on 
     return food, food_rect, answer, text_surface, text_rect
 
 # Start spawning food items
