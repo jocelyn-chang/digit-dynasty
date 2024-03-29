@@ -39,7 +39,7 @@ TUTORIAL = pygame.image.load("images/Instructions for cooking game.png")
 BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
 RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
-start_screen = pygame.image.load("images/Cooking Game Start Screen.png")
+START_SCREEN = pygame.image.load("images/Cooking Game Start Screen.png")
 
 LOSE_SCREEN = pygame.image.load("images/Cooking game lose game.png")
 WIN_SCREEN = pygame.image.load("images/Cooking game winning.png")
@@ -113,22 +113,18 @@ def tutorial():
         screen.blit(TUTORIAL, (0, 0))
         
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        #INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        
+                
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             screen.blit(RESIZED_BACK, (-90,-96))
-        #if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
-            #screen.blit(RESIZED_NEXT, (540, 324))
 
         INSTRUCTIONS_BACK.update(screen)
-        #INSTRUCTIONS_NEXT.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS): #or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
                     run = False
 
         pygame.display.update()
@@ -169,7 +165,6 @@ def handle_events(dumpling_positions, central_area, questions):
                     dumpling_positions.clear()
                     return 2
     return None 
-    #return True
 
 def add_dumpling(dumpling_positions, central_area):
     new_x = random.randint(central_area.left, central_area.right - DUMPLING_SIZE)
@@ -401,7 +396,7 @@ def cooking_game(username, password):
     run = True
     while run:
         # display start screen
-        screen.blit(start_screen, (0,0))
+        screen.blit(START_SCREEN, (0,0))
         MOUSE_POS = pygame.mouse.get_pos()
 
         START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 250), text_input = "START GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
