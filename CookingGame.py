@@ -173,7 +173,7 @@ def tutorial():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(game_mouse_pos):
-                    run = False
+                    return
         
         # Update the display
         pygame.display.update()
