@@ -18,7 +18,7 @@ pygame.mixer.set_num_channels(8)
 LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
 WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
 CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
-ENTER = pygame.mixer.Sound("sound/GameEnter.mp3") 
+# ENTER = pygame.mixer.Sound("sound/GameEnter.mp3") 
 
 # Initialize the base screen
 SCREEN_WIDTH = 800

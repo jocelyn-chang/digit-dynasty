@@ -19,32 +19,35 @@ RESIZED_BACK = pygame.image.load("images/resized_back.png")
 RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
 WIN_SCREEN = pygame.image.load("images/win_screen_mult.png")
 LOSE_SCREEN = pygame.image.load("images/lose_screen_mult.png")
-start_screen = pygame.image.load("images/Running Army Start Screen.png")
-image = pygame.image.load("images/running_army_bg.png")
-panda = pygame.transform.scale(pygame.image.load("images/panda1.png"), (50, 50))
-dead_panda = pygame.transform.scale(pygame.image.load("images/panda4.png"), (60, 60))
-gate = pygame.transform.scale(pygame.image.load("images/gates.png"), (400, 125))
-qbox = pygame.transform.scale(pygame.image.load("images/questionscreen.png"), (400, 125))
-arrow = pygame.transform.scale(pygame.image.load("images/parrow.png"), (50, 50))
-question_scroll = pygame.image.load("images/bigScroll.png")
-happypanda = pygame.image.load("images/thumbsuppanda.png")
+START_SCREEN = pygame.image.load("images/Running Army Start Screen.png")
+IMAGE = pygame.image.load("images/running_army_bg.png")
+PANDA = pygame.transform.scale(pygame.image.load("images/panda1.png"), (50, 50))
+DEAD_PANDA = pygame.transform.scale(pygame.image.load("images/panda4.png"), (60, 60))
+GATE = pygame.transform.scale(pygame.image.load("images/gates.png"), (400, 125))
+ARROW = pygame.transform.scale(pygame.image.load("images/parrow.png"), (50, 50))
+QUESTION_SCROLL = pygame.image.load("images/bigScroll.png")
 
-image_height = image.get_height()
-image_width = image.get_width()
+# Load Sounds
+LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
+WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
+CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
+
+image_height = IMAGE.get_height()
+image_width = IMAGE.get_width()
 
 # define colours
 white = (255, 255, 255)
 
 # movement for panda/arrow
-arrow_rect = arrow.get_rect()
-panda_rect = panda.get_rect()
+arrow_rect = ARROW.get_rect()
+panda_rect = PANDA.get_rect()
 
 
 # Calculate the new height of the image to maintain the aspect ratio
 scaled_height = int(image_height * (SCREEN_WIDTH / image_width))
 
 # Scale the image to fill the width of the screen while maintaining the aspect ratio
-scaled_image = pygame.transform.scale(image, (SCREEN_WIDTH, scaled_height))
+scaled_image = pygame.transform.scale(IMAGE, (SCREEN_WIDTH, scaled_height))
 
 def get_font(size):
     """
@@ -131,7 +134,7 @@ def check_answer(answer, correct_answer):
     Returns:
         bool: True if the user's answer is correct, False otherwise.
     """
-    screen.blit(question_scroll, (25, 100))
+    screen.blit(QUESTION_SCROLL, (25, 100))
     title = get_font(25).render("Answer the Following Question:", True, white)
     titleRect = title.get_rect()
     titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
@@ -140,6 +143,9 @@ def check_answer(answer, correct_answer):
     correct = False
     
     if int(answer) == int(correct_answer):
+        #play sound
+        CORRECT.play()
+        
         # Display user's input text
         correct = get_font(20).render('CORRECT', True, white)
         inputRect = correct.get_rect()
@@ -182,7 +188,7 @@ def question(numpandas, multiplier):
     while run:
         
         # Display question screen
-        screen.blit(question_scroll, (25, 100))
+        screen.blit(QUESTION_SCROLL, (25, 100))
         title = get_font(20).render("Answer the Following Question:", True, white)
         titleRect = title.get_rect()
         titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
@@ -229,13 +235,15 @@ def lose_screen(x_pos):
         x_pos (int): The x position of the dead panda.
     """
     run = True    
-    screen.blit(dead_panda, (x_pos-5, 385))
+    screen.blit(DEAD_PANDA, (x_pos-5, 385))
     pygame.display.update()
     pygame.time.delay(2000)
-
+    # play sound once
+    LOSS.play()
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
+        
         # Load buttons
         RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
         
@@ -263,10 +271,15 @@ def win_screen():
     """
     Displays the win screen when the player wins the game.
     """
+    
+    # play sound once
+    WIN.play()
+
     run = True
     while run:
             MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
             GAME_MOUSE_POS = pygame.mouse.get_pos()
+
             # Load buttons
             RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
             
@@ -415,13 +428,13 @@ def start_game(username, password):
         # Draw the scaled image twice to create the looping effect and gates
         screen.blit(scaled_image, (0, scroll - scaled_height))
         screen.blit(scaled_image, (0, scroll))
-        screen.blit(gate, (200, scroll - 125))
+        screen.blit(GATE, (200, scroll - 125))
 
         # draw current score and level
-        score_text = get_font(40).render((f"Score: {gates}"), True, white)
-        level_text = get_font(40).render((f"Level: {player.get_mul}"), True, white)
-        screen.blit(score_text, (25, 50))
-        screen.blit(level_text, (25, 100))
+        score_text = get_font(20).render((f"Score: {gates}"), True, white)
+        level_text = get_font(20).render((f"Level: {player.get_mul()}"), True, white)
+        screen.blit(score_text, (25, 20))
+        screen.blit(level_text, (25, 50))
 
 
         # Draw the panda and arrow
@@ -435,8 +448,8 @@ def start_game(username, password):
         arrow_rect.y = scroll - 450
         arrow_rect.x = x
 
-        screen.blit(panda, panda_rect)
-        screen.blit(arrow, (arrow_rect))
+        screen.blit(PANDA, panda_rect)
+        screen.blit(ARROW, (arrow_rect))
 
         # Display number of arrows and pandas
         arrow_text = get_font(20).render(str(num_arrows), True, white)
@@ -485,7 +498,7 @@ def running_army(username, password):
     run = True
     while run:
         # display start screen
-        screen.blit(start_screen, (0,0))
+        screen.blit(START_SCREEN, (0,0))
         MOUSE_POS = pygame.mouse.get_pos()
 
         START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 250), text_input = "START GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
