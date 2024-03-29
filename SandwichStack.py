@@ -18,7 +18,7 @@ pygame.mixer.set_num_channels(8)
 LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
 WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
 CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
-#ENTER = pygame.mixer.Sound("sound/GameEnter.mp3") 
+# INCORRECT = pygame.mixer.Sound("sound/Incorrect.mp3")
 
 # Initialize the base screen
 SCREEN_WIDTH = 800
@@ -241,8 +241,8 @@ def win_screen(score):
         font = get_font("Shojumaru", 15)
         score_surface = font.render(f"Your Division Level is Now: {score}", True, "White")
         progress_surface = font.render("Your progress has been saved.", True, "White")
-        SCREEN.blit(score_surface, (235, 420))
-        SCREEN.blit(progress_surface, (225, 440))
+        SCREEN.blit(score_surface, (250, 420))
+        SCREEN.blit(progress_surface, (240, 440))
             
         RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (SCREEN_WIDTH / 2, 520), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
         RETURN.changeColour(MOUSE_POS)
@@ -344,12 +344,13 @@ def start_game(username, password):
     player = Player(username, password)
     player.load_player()
 
-    answer_bank = [random.randint(1, 144) for _ in range(4)]  # Create an initial answer bank
+    answer_bank = [random.randint(1, 144) for _ in range(3)]  # Create an initial answer bank
     current_question = Question(player)
     correct_answer, question = current_question.generate_question("/")
     answer_bank[0] = correct_answer  # Ensure one of the answers is correct
     answers = [correct_answer, correct_answer]
     previous_answer = answers[0]
+    level = player.get_mul()
 
     # Re-use the global variables to keep the current state
     global current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect
@@ -413,9 +414,11 @@ def start_game(username, password):
             SCREEN.blit(HEART_EMPTY, (450, 90))
             SCREEN.blit(HEART_EMPTY, (500, 90))
 
+        level_surface = font.render(f'Level: {level}', True, "White")
         score_surface = font.render(f'Score: {score} / 5', True, "White")
         lives_surface = font.render('Lives:', True, "White")
-        SCREEN.blit(score_surface, (600, 80))
+        SCREEN.blit(level_surface, (600, 80))
+        SCREEN.blit(score_surface, (600, 100))
         SCREEN.blit(lives_surface, (440, 65))
 
         if panda_rect.colliderect(current_food_rect):
@@ -430,6 +433,7 @@ def start_game(username, password):
             else:
                 display_incorrect_message = True
                 display_correct_message = False
+                INCORRECT.play()
                 lives -= 1
 
             if score == 5:
@@ -439,7 +443,7 @@ def start_game(username, password):
                 return
             elif lives > 0:
                 # Generate a new question and answer set
-                answer_bank = [random.randint(1, 144) for _ in range(4)]
+                answer_bank = [random.randint(1, 144) for _ in range(3)]
                 correct_answer, question = current_question.generate_question("/")
                 answer_bank[0] = correct_answer  # Update the answer bank with the new correct answer
                 answers = [answers[1], correct_answer]
@@ -471,4 +475,3 @@ def start_game(username, password):
 
         pygame.display.update()
         clock.tick(60)  # Keep the game running at 60 FPS
-
