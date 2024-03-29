@@ -417,6 +417,13 @@ def start_game(username, password):
         screen.blit(scaled_image, (0, scroll))
         screen.blit(gate, (200, scroll - 125))
 
+        # draw current score and level
+        score_text = get_font(40).render((f"Score: {gates}"), True, white)
+        level_text = get_font(40).render((f"Level: {player.get_mul}"), True, white)
+        screen.blit(score_text, (25, 50))
+        screen.blit(level_text, (25, 100))
+
+
         # Draw the panda and arrow
         amplitude = 10
         frequency = 10
