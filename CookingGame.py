@@ -117,8 +117,8 @@ def tutorial():
         
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             screen.blit(RESIZED_BACK, (-90,-96))
-        if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
-            screen.blit(RESIZED_NEXT, (540, 324))
+        #if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
+            #screen.blit(RESIZED_NEXT, (540, 324))
 
         INSTRUCTIONS_BACK.update(screen)
         #INSTRUCTIONS_NEXT.update(screen)
