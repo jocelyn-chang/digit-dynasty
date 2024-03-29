@@ -17,6 +17,11 @@ PHOTO_SIZE = (200, 250)
 PHOTO_INTERVAL_MS = 100
 PHOTO_SPACING = 150
 
+# Sounds
+LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
+WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
+CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
+
 # Colors
 WHITE = (255, 255, 255)
 GREEN = (88, 133, 120)
@@ -108,7 +113,7 @@ def tutorial():
         screen.blit(TUTORIAL, (0, 0))
         
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        #INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
         
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             screen.blit(RESIZED_BACK, (-90,-96))
@@ -116,14 +121,14 @@ def tutorial():
             screen.blit(RESIZED_NEXT, (540, 324))
 
         INSTRUCTIONS_BACK.update(screen)
-        INSTRUCTIONS_NEXT.update(screen)
+        #INSTRUCTIONS_NEXT.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS) or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS): #or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
                     run = False
 
         pygame.display.update()
@@ -186,7 +191,8 @@ def update_photos(photo_positions, last_photo_time, current_time, total_question
     
 
 def lose_screen(correct_order, question):
-    
+    pygame.mixer.music.stop()
+    LOSS.play()
     run = True    
     pygame.display.update()
     pygame.time.delay(1000)
@@ -232,6 +238,8 @@ def lose_screen(correct_order, question):
     
 
 def win_screen():
+    pygame.mixer.music.stop()
+    WIN.play()
     run = True
     while run:
             MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
@@ -359,6 +367,7 @@ def playGame(username, password):
             return
         
         elif ans == 1 and questions:
+            CORRECT.play()
             correct_answer = correct_answer + 1
             questions.pop(0)  # Remove the answered question
             photo_positions.pop(0)  # Remove the corresponding photo
