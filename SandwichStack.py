@@ -18,7 +18,7 @@ pygame.mixer.set_num_channels(8)
 LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
 WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
 CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
-ENTER = pygame.mixer.Sound("sound/GameEnter.mp3") 
+#ENTER = pygame.mixer.Sound("sound/GameEnter.mp3") 
 
 # Initialize the base screen
 SCREEN_WIDTH = 800
@@ -238,9 +238,11 @@ def win_screen(score):
         MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(WIN_SCREEN, (0, 0))
-        score_font = get_font("Shojumaru", 20)
-        score_surface = score_font.render(f"Your Division Level is Now: {score}", True, "White")
-        SCREEN.blit(score_surface, (215, 420))
+        font = get_font("Shojumaru", 15)
+        score_surface = font.render(f"Your Division Level is Now: {score}", True, "White")
+        progress_surface = font.render("Your progress has been saved.", True, "White")
+        SCREEN.blit(score_surface, (235, 420))
+        SCREEN.blit(progress_surface, (225, 440))
             
         RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (SCREEN_WIDTH / 2, 520), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
         RETURN.changeColour(MOUSE_POS)
