@@ -15,6 +15,7 @@ pygame.init()
 pygame.mixer.init()
 pygame.mixer.set_num_channels(8)
 
+# Initialize sounds for game
 LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
 WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
 CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
@@ -440,6 +441,7 @@ def start_game(username, password):
                 new_score = int(player.get_div()) + 1
                 player.update_div(str(new_score))
                 win_screen(new_score)
+                play_music("sound/SandwichStackMusic.mp3")
                 return
             elif lives > 0:
                 # Generate a new question and answer set
@@ -452,6 +454,7 @@ def start_game(username, password):
             else:
                 game_active = False  # End game loop if no lives left
                 lose_screen(username, password, score)
+                play_music("sound/SandwichStackMusic.mp3")
                 return
 
         if current_food_rect.top > SCREEN_HEIGHT:
