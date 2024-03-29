@@ -108,7 +108,7 @@ def tutorial():
         screen.blit(TUTORIAL, (0, 0))
         
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        #INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
         
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             screen.blit(RESIZED_BACK, (-90,-96))
@@ -116,14 +116,14 @@ def tutorial():
             screen.blit(RESIZED_NEXT, (540, 324))
 
         INSTRUCTIONS_BACK.update(screen)
-        INSTRUCTIONS_NEXT.update(screen)
+        #INSTRUCTIONS_NEXT.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS) or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS): #or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
                     run = False
 
         pygame.display.update()
