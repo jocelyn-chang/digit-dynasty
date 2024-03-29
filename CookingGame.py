@@ -130,7 +130,6 @@ def instruction():
                     run = False
                 if INSTRUCTIONS_NEXT.checkInput(game_mouse_pos):
                     tutorial()
-                    run = False
         
         # Update the display
         pygame.display.update()
