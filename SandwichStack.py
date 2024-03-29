@@ -8,17 +8,18 @@ and game screen, as well as movement mechanics and the logic for collision detec
 import pygame, sys, random
 from Button import Button
 from Player import Player
-from question import Question
+from Question import Question
 
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()
 pygame.mixer.set_num_channels(8)
 
+# Initialize sounds for game
 LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
 WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
 CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
-ENTER = pygame.mixer.Sound("sound/GameEnter.mp3") 
+INCORRECT = pygame.mixer.Sound("sound/Incorrect.mp3")
 
 # Initialize the base screen
 SCREEN_WIDTH = 800
@@ -85,14 +86,16 @@ def spawn_food(answer_bank):
 
     Returns:
     A tuple containing the food surface, its Rect object, the chosen answer, the rendered answer
-    text surface, adn its Rect object.
+    text surface, and its Rect object.
     """
-    food = random.choice(food_items)                                    # Randomly choose a food item from the food item list
-    answer = random.choice(answer_bank)                                 # Randomly choose an answer from the answer bank list
-    x_pos = random.randrange(0, SCREEN_WIDTH - food.get_width())        # Get the x position to randomly spawn the item
-    y_pos = -food.get_height()                                          # Get the y position fo the food item
-    food_rect = food.get_rect(topleft = (x_pos, y_pos))                 # Obtain the rectangle surrounding the food item
+    # This block of code randomly chooses a food item and answer from a item list and answer bank list, then randomly places them
+    food = random.choice(food_items)
+    answer = random.choice(answer_bank)
+    x_pos = random.randrange(0, SCREEN_WIDTH - food.get_width())
+    y_pos = -food.get_height()
+    food_rect = food.get_rect(topleft = (x_pos, y_pos))
 
+    # Initializes the font for the text and renders the text
     font = get_font('Shojumaru', 15)
     text_surface = font.render(str(answer), True, "white")
     text_rect = text_surface.get_rect(center = (food_rect.centerx, food_rect.y - 20))
@@ -115,31 +118,40 @@ def instruction1():
     None
     """
     while True:
+        # Obtain the mouse position on the screen
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
+        # Place the first instruction screen
         SCREEN.blit(DIVISION_INSTRUCTIONS, (0, 0))
-        
+
+        # Create the next and back buttons
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font("Shojumaru", 15), base_colour = "White", hovering_colour = "#b51f09")
         INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font("Shojumaru", 15), base_colour = "White", hovering_colour = "#b51f09")
         INSTRUCTIONS_BACK.update(SCREEN)
         INSTRUCTIONS_NEXT.update(SCREEN)
 
+        # If the mouse hovers over the buttons, resize the button to be bigger
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             SCREEN.blit(RESIZED_BACK, (-90,-96))
         if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
             SCREEN.blit(RESIZED_NEXT, (540, 324))
 
+        # Check for events
         for event in pygame.event.get():
+            # If the user exits out of the screen, close pygame and exit the system
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Go back to the title screen if the back button is pressed
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
                     return
+                # Go to next instruction screen if the next button is pressed
                 if INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
                     instruction2()
-
+        # Update the screen
         pygame.display.update()
 
 def instruction2():
@@ -156,25 +168,33 @@ def instruction2():
     None
     """
     while True:
+        # Obtain the mouse position on the screen
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
+        # Place the second instruction screen
         SCREEN.blit(SS_INSTRUCTIONS, (0, 0))
         
+        # Create the next and back buttons
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font("Shojumaru", 15), base_colour = "White", hovering_colour = "#b51f09")
         INSTRUCTIONS_BACK.update(SCREEN)
 
-        if (40 < MOUSE_X < 75 and 40 < MOUSE_Y < 70):
+        # If the mouse hovers over the buttons, resize the button to be bigger
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             SCREEN.blit(RESIZED_BACK, (-90,-96))
 
+        # Check for events
         for event in pygame.event.get():
+            # If the user exits out of the screen, close pygame and exit the system
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Go back to the first instruction screen if the back button is pressed
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
                     return
-
+        # Update the screen
         pygame.display.update()
 
 def sandwich_stack(username, password):
@@ -191,28 +211,39 @@ def sandwich_stack(username, password):
     Returns:
     None
     """
+    # Play the background music
     play_music("sound/SandwichStackMusic.mp3")
     while True:
+        # Obtain the mouse position on the screen
         MOUSE_POS = pygame.mouse.get_pos()
+        # Place the title screen
         SCREEN.blit(START_SCREEN, (0,0))
 
+        # Create the start, instructions, and return to game map buttons
         START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 250), text_input = "START GAME", font = get_font("Shojumaru", 22), base_colour = "#b51f09", hovering_colour = "White")
         INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 380), text_input = "INSTRUCTIONS", font = get_font("Shojumaru", 22), base_colour = "#b51f09", hovering_colour = "White")
         RETURN_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 510), text_input = "BACK TO MAP", font = get_font("Shojumaru", 22), base_colour = "#b51f09", hovering_colour = "White")
 
+        # For each button, allow the button to change the colour duing the hover state and then update the button on the screen
         for button in [START_BUTTON, INSTRUCTION_BUTTON, RETURN_BUTTON] :
             button.changeColour(MOUSE_POS)
             button.update(SCREEN)
 
+        # Check for events
         for event in pygame.event.get():
+            # If the user exits out of the screen, close pygame and exit the system
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Start the game if the "start" button is clicked
                 if START_BUTTON.checkInput(MOUSE_POS):
                       start_game(username, password)
+                # Go to the instructions page if the "instruction" button is clicked
                 if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
                      instruction1()
+                # Go back to the game map if the "return" button is clicked
                 if RETURN_BUTTON.checkInput(MOUSE_POS):
                      return
 
@@ -232,28 +263,39 @@ def win_screen(score):
     Returns:
     None
     """
+    # Stop playing the background music and then play the level completed music
     pygame.mixer.music.stop()
     WIN.play()
     while True:
+        # Obtain the mouse position on the screen
         MOUSE_POS = pygame.mouse.get_pos()
-
+        # Place the win screen
         SCREEN.blit(WIN_SCREEN, (0, 0))
-        score_font = get_font("Shojumaru", 20)
-        score_surface = score_font.render(f"Your Division Level is Now: {score}", True, "White")
-        SCREEN.blit(score_surface, (215, 420))
+
+        # Create the new level update and progress status then place the font onto the screen
+        font = get_font("Shojumaru", 15)
+        score_surface = font.render(f"Your Division Level is Now: {score}", True, "White")
+        progress_surface = font.render("Your progress has been saved.", True, "White")
+        SCREEN.blit(score_surface, (250, 420))
+        SCREEN.blit(progress_surface, (240, 440))
             
+        # Place the button to return to the title screen
         RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (SCREEN_WIDTH / 2, 520), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
         RETURN.changeColour(MOUSE_POS)
         RETURN.update(SCREEN)
 
+        # Check for events
         for event in pygame.event.get():
+            # If the user exits out of the screen, close pygame and exit the system
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Go back to the title screen if the "return" button
                 if RETURN.checkInput(MOUSE_POS):
                     return
-
+        # Update the display
         pygame.display.update()
 
 def lose_screen(username, password, score):
@@ -299,7 +341,7 @@ def lose_screen(username, password, score):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if RETURN.checkInput(MOUSE_POS):
                     return
-
+        # Update the display
         pygame.display.update()
 
 def play_music(file):
@@ -342,12 +384,13 @@ def start_game(username, password):
     player = Player(username, password)
     player.load_player()
 
-    answer_bank = [random.randint(1, 144) for _ in range(4)]  # Create an initial answer bank
+    answer_bank = [random.randint(1, 144) for _ in range(3)]  # Create an initial answer bank
     current_question = Question(player)
     correct_answer, question = current_question.generate_question("/")
     answer_bank[0] = correct_answer  # Ensure one of the answers is correct
     answers = [correct_answer, correct_answer]
     previous_answer = answers[0]
+    level = player.get_mul()
 
     # Re-use the global variables to keep the current state
     global current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect
@@ -411,9 +454,11 @@ def start_game(username, password):
             SCREEN.blit(HEART_EMPTY, (450, 90))
             SCREEN.blit(HEART_EMPTY, (500, 90))
 
+        level_surface = font.render(f'Level: {level}', True, "White")
         score_surface = font.render(f'Score: {score} / 5', True, "White")
         lives_surface = font.render('Lives:', True, "White")
-        SCREEN.blit(score_surface, (600, 80))
+        SCREEN.blit(level_surface, (600, 80))
+        SCREEN.blit(score_surface, (600, 100))
         SCREEN.blit(lives_surface, (440, 65))
 
         if panda_rect.colliderect(current_food_rect):
@@ -428,16 +473,18 @@ def start_game(username, password):
             else:
                 display_incorrect_message = True
                 display_correct_message = False
+                INCORRECT.play()
                 lives -= 1
 
             if score == 5:
                 new_score = int(player.get_div()) + 1
                 player.update_div(str(new_score))
                 win_screen(new_score)
+                play_music("sound/SandwichStackMusic.mp3")
                 return
             elif lives > 0:
                 # Generate a new question and answer set
-                answer_bank = [random.randint(1, 144) for _ in range(4)]
+                answer_bank = [random.randint(1, 144) for _ in range(3)]
                 correct_answer, question = current_question.generate_question("/")
                 answer_bank[0] = correct_answer  # Update the answer bank with the new correct answer
                 answers = [answers[1], correct_answer]
@@ -446,6 +493,7 @@ def start_game(username, password):
             else:
                 game_active = False  # End game loop if no lives left
                 lose_screen(username, password, score)
+                play_music("sound/SandwichStackMusic.mp3")
                 return
 
         if current_food_rect.top > SCREEN_HEIGHT:
@@ -466,7 +514,7 @@ def start_game(username, password):
                 message_active = False
                 display_correct_message = False
                 display_incorrect_message = False
-
+        # Update the display
         pygame.display.update()
-        clock.tick(60)  # Keep the game running at 60 FPS
-
+        # Keep the game running at 60 FPS
+        clock.tick(60)
