@@ -3,7 +3,7 @@ import pygame, sys
 import random
 from Player import Player
 from Button import Button
-from question import Question
+from Question import Question
 
 # Initialize Pygame
 pygame.init()
@@ -15,6 +15,12 @@ SCREEN_HEIGHT = 600
 # Creating screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('SNAKE GAME')
+
+# Initialize sounds for game
+LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
+WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
+CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
+INCORRECT = pygame.mixer.Sound("sound/Incorrect.mp3")
 
 # Create dark overlay for question screen
 overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -257,6 +263,10 @@ def end_screen(result):
     if result == False:
       pygame.mixer.init()
       pygame.mixer.music.load("sound/LossSound.mp3")
+      pygame.mixer.music.play(0)
+    else:
+      pygame.mixer.init()
+      pygame.mixer.music.load("sound/LevelComplete.mp3")
       pygame.mixer.music.play(0)
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
@@ -617,8 +627,8 @@ def game(user):
       if plss == True:
         return
     if doneYet == 3:
-       end_screen(False)
-       return
+      end_screen(False)
+      return
   
     pygame.display.flip()
 
@@ -667,9 +677,9 @@ def snakeSums(username, password):
 # pygame.quit()
 
 # Run the game
-# username = "jocelyn"
-# password = 12345678
-# snakeSums(username, password)
+username = "jocelyn"
+password = 12345678
+snakeSums(username, password)
 
 # # Import libraries and classes
 # import pygame, sys
