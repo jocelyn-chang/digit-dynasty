@@ -7,6 +7,14 @@ from Question import Question
 
 # Initialize Pygame
 pygame.init()
+pygame.mixer.init()
+pygame.mixer.set_num_channels(8)
+
+# Initialize sounds for game
+LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
+WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
+CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
+INCORRECT = pygame.mixer.Sound("sound/Incorrect.mp3")
 
 # Colors
 GOLD3 = (179, 152, 96)
@@ -164,11 +172,10 @@ def instruction1():
         sys.exit()
       elif event.type == pygame.MOUSEBUTTONDOWN:
         if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-          run = False
+          return
         elif INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
           instruction2()
-          run = False
-        pygame.display.update()
+    pygame.display.update()
 
 # Second instruction screen
 def instruction2():
@@ -180,23 +187,19 @@ def instruction2():
         SCREEN.blit(INSTRUCTION2, (0, 0))
         
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
         
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             SCREEN.blit(RESIZED_BACK, (-90,-96))
-        if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
-            SCREEN.blit(RESIZED_NEXT, (540, 324))
 
         INSTRUCTIONS_BACK.update(SCREEN)
-        INSTRUCTIONS_NEXT.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS) or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
-                    run = False
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                  return
 
         pygame.display.update()
 
@@ -257,16 +260,16 @@ def fruit_eaten(coord_list, correct_ans):
 
 # Display ending screen
 def end_screen(result):
-  if result == False:
-    pygame.mixer.init()
-    pygame.mixer.music.load("sound/LossSound.mp3")
-    pygame.mixer.music.play(1)
   while True:
     MOUSE_POS = pygame.mouse.get_pos()
 
     if result == True:
+      pygame.mixer.music.stop()
+      WIN.play()
       SCREEN.blit(WIN_SCREEN, (0, 0))
     else:
+      pygame.mixer.music.stop()
+      LOSS.play()
       SCREEN.blit(LOST_SCREEN, (0, 0))
 
     RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "RETURN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
@@ -279,7 +282,7 @@ def end_screen(result):
         sys.exit()
       if event.type == pygame.MOUSEBUTTONDOWN:
         if RETURN.checkInput(MOUSE_POS):
-          play_music("sound/SnakeSumsMusic.mp3")
+          play_music("sound/SandwichStackMusic.mp3")
           return
 
     pygame.display.update()
@@ -296,6 +299,7 @@ def response(correct, question, answer):
   SCREEN.blit(main, [197, 523])
   # Shadow text
   if correct == False:
+    INCORRECT.play()
     shadow = get_font(50).render("Nice Try!", True, GREEN4)
     # Main text
     main = get_font(50).render("Nice Try!", True, WHITE)
@@ -311,6 +315,7 @@ def response(correct, question, answer):
       end_screen(False)
       return True
   else:
+    CORRECT.play()
     shadow = get_font(50).render("Good Job!", True, GREEN4)
     # Main text
     main = get_font(50).render("Good Job!", True, WHITE)
@@ -637,11 +642,12 @@ def snakeSums(username, password):
             if event.type == pygame.MOUSEBUTTONDOWN:
                     if START_BUTTON.checkInput(MOUSE_POS):
                         game(user)
+                        play_music("sound/SnakeSumsMusic.mp3")
                     if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
                         instruction1()
+                        play_music("sound/SnakeSumsMusic.mp3")
                     if RETURN_BUTTON.checkInput(MOUSE_POS):
-                        run = False
-                        break
+                        return
 
         # Update the display
         pygame.display.update()
@@ -649,10 +655,3 @@ def snakeSums(username, password):
     # Quit back to the game map
     pygame.mixer.music.stop()
     return
-
-# pygame.quit()
-
-# Run the game
-# username = "jocelyn"
-# password = 12345678
-# snakeSums(username, password)
