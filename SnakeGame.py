@@ -651,3 +651,7 @@ def snakeSums(username, password):
     # Quit back to the game map
     pygame.mixer.music.stop()
     return
+
+# username = "jocelyn"
+# password = "12345678"
+# snakeSums(username, password)
