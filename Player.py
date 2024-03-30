@@ -73,11 +73,6 @@ class Player:
         self.subtraction = new_sub_score
         self.save_info()
 
-    # update Player's boss high score
-    def update_boss (self, new_sub_score):
-        self.bosses = new_sub_score
-        self.save_info()
-
     # get Player's name
     def get_name (self):
         return self.name
@@ -101,7 +96,3 @@ class Player:
     # get Player's subtraction score
     def get_sub (self):
         return self.subtraction
-    
-    # get Player's boss score
-    def get_boss (self):
-        return self.bosses
