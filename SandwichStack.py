@@ -321,26 +321,35 @@ def lose_screen(username, password, score):
     player = Player(username, password)
     player.load_player()
     while True:
+        # Obtain the position of the mouse
         MOUSE_POS = pygame.mouse.get_pos()
 
+        # Display the losing screen background
         SCREEN.blit(LOSE_SCREEN, (0, 0))
+        # Create the player's level and display it on the screen
         level_font = get_font("Shojumaru", 20)
         level_surface = level_font.render(f"Current level: {player.get_div()}", True, "White")
         SCREEN.blit(level_surface, (130, 340))
 
+        # Create the player's current score and display it on the screen
         score_font = get_font("Shojumaru", 20)
         score_surface = score_font.render(f"Score: {score} / 5", True, "White")
         SCREEN.blit(score_surface, (520, 340))
 
+        # Create a return button to go back to the title screen
         RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (SCREEN_WIDTH / 2, 440), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
         RETURN.changeColour(MOUSE_POS)
         RETURN.update(SCREEN)
 
+        # Check for events
         for event in pygame.event.get():
+            # If the user exits out of the screen, close pygame and exit the system
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Go back to the title screen if the "return" button
                 if RETURN.checkInput(MOUSE_POS):
                     return
         # Update the display
@@ -356,9 +365,9 @@ def play_music(file):
     Returns:
     None
     """
-    pygame.mixer.init()
-    pygame.mixer.music.load(file)
-    pygame.mixer.music.play(-1)
+    pygame.mixer.init()                 # Initialize the music function from PyGame
+    pygame.mixer.music.load(file)       # Load the sound file
+    pygame.mixer.music.play(-1)         # Play the sound constantly
 
 def start_game(username, password):
     """
@@ -372,24 +381,29 @@ def start_game(username, password):
     
     The function uses global variables for game state, such as the food items, panda character, and scores.
     """
+    # Obtain the mouse position
     MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
     MOUSE_POS = pygame.mouse.get_pos()
+
+    # Initialize variables
     lives = 3
     score = 0
-
     message_active = True
     display_correct_message = False
     display_incorrect_message = False
     message_duration = 2000
     message_start_time = 0
 
+    # Create a new player instance and load the player's stats
     player = Player(username, password)
     player.load_player()
 
-    answer_bank = [random.randint(1, 144) for _ in range(3)]  # Create an initial answer bank
+    # Create an initial answer bank and generate a question to start 
+    answer_bank = [random.randint(1, 144) for _ in range(3)]                # Create an initial answer bank
     current_question = Question(player)
     correct_answer, question = current_question.generate_question("/")
-    answer_bank[0] = correct_answer  # Ensure one of the answers is correct
+    answer_bank[0] = correct_answer                                         # Ensure one of the answers is correct
+    # This will be used to display the previous correct answer if the player gets the wrong answer
     answers = [correct_answer, correct_answer]
     previous_answer = answers[0]
     level = player.get_mul()
@@ -402,60 +416,77 @@ def start_game(username, password):
 
     game_active = True
     while game_active:
+        # Obtain the mouse position
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         MOUSE_POS = pygame.mouse.get_pos()
+        # Check for events
         for event in pygame.event.get():
+            # If the user exits out of the program, quit the game and exit the system
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # If the user left clicks
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Go back to the title screen
                 if BACK.checkInput(MOUSE_POS):
                     return
 
+        # This block of code is to check for the keys pressed and moves the character accordingly
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and panda_rect.left > 0:
             panda_rect.x -= PANDA_SPEED
         if keys[pygame.K_RIGHT] and panda_rect.right < SCREEN_WIDTH:
             panda_rect.x += PANDA_SPEED
 
+        # Set the speed for the falling food
         current_food_rect.y += 3
 
+        # Place the answer rectangle on top of the food item
         answer_text_rect.centerx = current_food_rect.centerx
         answer_text_rect.y = current_food_rect.y - 20
 
-        SCREEN.blit(BACKGROUND, (0, 0))
-        SCREEN.blit(PANDA, panda_rect)
-        SCREEN.blit(current_food, current_food_rect)
-        SCREEN.blit(answer_text_surface, answer_text_rect)
+        SCREEN.blit(BACKGROUND, (0, 0))                         # Place the background
+        SCREEN.blit(PANDA, panda_rect)                          # Place the panda character
+        SCREEN.blit(current_food, current_food_rect)            # Place the food item
+        SCREEN.blit(answer_text_surface, answer_text_rect)      # Place the answer box
+        # Place the top header assets
         SCREEN.blit(RECTANGLE, (0,0))
         SCREEN.blit(LINE, (0, 47))
         SCREEN.blit(LINE, (0, 149))
 
+        # Set the font for the question and place the text on the screen
         font = get_font('Shojumaru', 20)
         text_surface = font.render('What is the answer to:', True, "White")
         question_surface = font.render(question, True, "White")
         SCREEN.blit(text_surface, (50, 75))
         SCREEN.blit(question_surface, (158, 100))
 
+        # Create and place a back button
         BACK = Button(image = "images/back_button.png", pos = (40, 25), text_input = "", font = get_font("Shojumaru", 22), base_colour = "White", hovering_colour = "#b51f09")
         BACK.update(SCREEN)
 
+        # If the user hovers over the back button, resize the image
         if (10<MOUSE_X<45 and 10<MOUSE_Y<40):
             SCREEN.blit(RESIZED_BACK, (-120,-126))
 
+        # Check if there are 3 lives
         if lives == 3:
+            # Place 3 full hearts
             SCREEN.blit(HEART_FULL, (400, 90))
             SCREEN.blit(HEART_FULL, (450, 90))
             SCREEN.blit(HEART_FULL, (500, 90))
         elif lives == 2:
+            # Place 2 full hearts, 1 empty heart
             SCREEN.blit(HEART_FULL, (400, 90))
             SCREEN.blit(HEART_FULL, (450, 90))
             SCREEN.blit(HEART_EMPTY, (500, 90))
         elif lives == 1:
+            # Place 1 full heart, 2 empty hearts
             SCREEN.blit(HEART_FULL, (400, 90))
             SCREEN.blit(HEART_EMPTY, (450, 90))
             SCREEN.blit(HEART_EMPTY, (500, 90))
 
+        # Place the player's current division power and their score out of 5
         level_surface = font.render(f'Level: {level}', True, "White")
         score_surface = font.render(f'Score: {score} / 5', True, "White")
         lives_surface = font.render('Lives:', True, "White")
@@ -463,56 +494,77 @@ def start_game(username, password):
         SCREEN.blit(score_surface, (600, 100))
         SCREEN.blit(lives_surface, (440, 65))
 
+        # Check if the character collides with the food item
         if panda_rect.colliderect(current_food_rect):
+            # Create a timer and flag for a message to appear
             message_start_time = pygame.time.get_ticks()
             message_active = True
 
+            # If the player grabs the correct answer
             if current_answer == correct_answer:
+                # Display "Correct", play the correct sound, and add 1 to their score
                 display_correct_message = True
                 display_incorrect_message = False
                 CORRECT.play()
                 score += 1
             else:
+                # Otherwise display the correct answer, play the incorrect sound, and subtract 1 life
                 display_incorrect_message = True
                 display_correct_message = False
-                # INCORRECT.play()
+                INCORRECT.play()
                 lives -= 1
 
+            # Check if the score is 5
             if score == 5:
-                new_score = int(player.get_div()) + 1
-                player.update_div(str(new_score))
-                win_screen(new_score)
-                play_music("sound/SandwichStackMusic.mp3")
+                # The player has completed the level
+                new_score = int(player.get_div()) + 1           # Add 1 to the player's current division level
+                player.update_div(str(new_score))               # Update the level in the database
+                win_screen(new_score)                           # Display the win screen
+                play_music("sound/SandwichStackMusic.mp3")      # Replay the music if the user returns back
                 return
             elif lives > 0:
                 # Generate a new question and answer set
                 answer_bank = [random.randint(1, 144) for _ in range(3)]
                 correct_answer, question = current_question.generate_question("/")
-                answer_bank[0] = correct_answer  # Update the answer bank with the new correct answer
+                # Update the answer bank with the new correct answer
+                answer_bank[0] = correct_answer
+                # Obtain the previous correct answer
                 answers = [answers[1], correct_answer]
                 previous_answer = answers[0]
+                # Spawn a new food item
                 current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food(answer_bank)
             else:
-                game_active = False  # End game loop if no lives left
-                lose_screen(username, password, score)
-                play_music("sound/SandwichStackMusic.mp3")
+                # End game loop if no lives left
+                game_active = False
+                lose_screen(username, password, score)      # Display the lose screen
+                play_music("sound/SandwichStackMusic.mp3")  # Replay the music if the user returns back
                 return
 
+        # If a food item goes off the bottom of the screen
         if current_food_rect.top > SCREEN_HEIGHT:
+            # Generate a new question and answer set
             current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect = spawn_food(answer_bank)
 
+        # If a message is required
         if message_active:
+            # Obtain the time (the message should display for 2 seconds)
             elapsed_time = pygame.time.get_ticks() - message_start_time
+            # If the time that has passed is less than the set message duration
             if elapsed_time < message_duration:
+                # If the message to display is the "correct" message
                 if display_correct_message:
+                    # Display "correct on the screen"
                     message_font = get_font("Shojumaru", 19)
                     message_surface = message_font.render("Correct!", True, "White")
                     SCREEN.blit(message_surface, (360, 160))
+                # If the message to display is the "incorrect" message
                 if display_incorrect_message:
+                    # Display "incorrect" and the correct answer to the previous question
                     message_font = get_font('Shojumaru', 19)
                     message_surface = message_font.render(f"Incorrect. The answer is: {previous_answer}", True, "White")
                     SCREEN.blit(message_surface, (220, 160))
             else:
+                # Otherwise set all the message flags to false
                 message_active = False
                 display_correct_message = False
                 display_incorrect_message = False

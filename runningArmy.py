@@ -49,17 +49,23 @@ scaled_height = int(image_height * (SCREEN_WIDTH / image_width))
 # Scale the image to fill the width of the screen while maintaining the aspect ratio
 scaled_image = pygame.transform.scale(IMAGE, (SCREEN_WIDTH, scaled_height))
 
-def get_font(size):
+def get_font(font, size):
     """
-    Returns a pygame font object with the specified size.
+    Retrieve the font object based on the specified font name and size.
+
+    This function returns the appropriate font object based on the specified font name and size.
 
     Args:
+        font (str): The name of the font.
         size (int): The size of the font.
 
     Returns:
-        pygame.font.Font: A font object with the specified size.
+        pygame.font.Font: The font object.
     """
-    return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
+    if font == "Sawarabi":
+        return pygame.font.Font("fonts/SawarabiMincho-Regular.ttf", size)
+    elif font == "Shojumaru":
+        return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 def instruction1():
     """
@@ -83,8 +89,8 @@ def instruction1():
         screen.blit(INSTRUCTION1, (0, 0))
 
         # Create the next and back buttons
-        INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font("Shojumaru", 15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font("Shojumaru", 15), base_colour = "White", hovering_colour = "#b51f09")
         INSTRUCTIONS_BACK.update(screen)
         INSTRUCTIONS_NEXT.update(screen)
 
@@ -133,7 +139,7 @@ def instruction2():
         screen.blit(INSTRUCTION2, (0, 0))
         
         # Create the next and back buttons
-        INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+        INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font("Shojumaru", 15), base_colour = "White", hovering_colour = "#b51f09")
         INSTRUCTIONS_BACK.update(screen)
 
         # If the mouse hovers over the buttons, resize the button to be bigger
@@ -166,7 +172,7 @@ def check_answer(answer, correct_answer):
         bool: True if the user's answer is correct, False otherwise.
     """
     screen.blit(QUESTION_SCROLL, (25, 100))
-    title = get_font(25).render("Answer the Following Question:", True, white)
+    title = get_font("Shojumaru", 25).render("Answer the Following Question:", True, white)
     titleRect = title.get_rect()
     titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
     screen.blit(title, titleRect)
@@ -178,7 +184,7 @@ def check_answer(answer, correct_answer):
         CORRECT.play()
 
         # Display user's input text
-        correct = get_font(20).render('CORRECT', True, white)
+        correct = get_font("Shojumaru", 20).render('CORRECT', True, white)
         inputRect = correct.get_rect()
         inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
         screen.blit(correct, inputRect)
@@ -186,7 +192,7 @@ def check_answer(answer, correct_answer):
 
     else:
         incorrect_lines = ["Incorrect", f"Correct Answer = {correct_answer}", f"Your Answer = {answer}"]
-        line_height = get_font(20).get_height()
+        line_height = get_font("Shojumaru", 20).get_height()
         for i, line in enumerate(incorrect_lines):
             incorrect_text = get_font("Shojumaru", 20).render(line, True, white)
             inputRect = incorrect_text.get_rect()
@@ -220,18 +226,18 @@ def question(numpandas, multiplier):
 
         # Display question screen
         screen.blit(QUESTION_SCROLL, (25, 100))
-        title = get_font(20).render("Answer the Following Question:", True, white)
+        title = get_font("Shojumaru", 20).render("Answer the Following Question:", True, white)
         titleRect = title.get_rect()
         titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
         screen.blit(title, titleRect)
 
-        title = get_font(40).render(f"{numpandas} X {multiplier}", True, white)
+        title = get_font("Shojumaru", 40).render(f"{numpandas} X {multiplier}", True, white)
         titleRect = title.get_rect()
         titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         screen.blit(title, titleRect)
 
         # Display user's input text
-        input_text = get_font(40).render(answer, True, white)
+        input_text = get_font("Shojumaru", 40).render(answer, True, white)
         inputRect = input_text.get_rect()
         inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100)  # Adjust position as needed
         screen.blit(input_text, inputRect)
@@ -280,11 +286,11 @@ def lose_screen(x_pos, username, password, gates):
         GAME_MOUSE_POS = pygame.mouse.get_pos()
         
         # Load buttons
-        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
         
         screen.blit(LOSE_SCREEN, (0, 0))
 
-        font = get_font(20)
+        font = get_font("Shojumaru", 20)
         level_surface = font.render(f"Current level: {player.get_div()}", True, "White")
         screen.blit(level_surface, (130, 390))
 
@@ -324,12 +330,12 @@ def win_screen(score):
             GAME_MOUSE_POS = pygame.mouse.get_pos()
 
             # Load buttons
-            RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
+            RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
             
             screen.blit(WIN_SCREEN, (0, 0))
 
             # Create the new level update and progress status then place the font onto the screen
-            font = get_font(15)
+            font = get_font("Shojumaru", 15)
             score_surface = font.render(f"Your Division Level is Now: {score}", True, "White")
             progress_surface = font.render("Your progress has been saved.", True, "White")
             screen.blit(score_surface, (250, 395))
@@ -491,8 +497,8 @@ def start_game(username, password):
         player = Player(username, password)
         player.load_player()
         # draw current score and level
-        score_text = get_font(20).render((f"Score: {gates}"), True, white)
-        level_text = get_font(20).render((f"Level: {player.get_mul()}"), True, white)
+        score_text = get_font("Shojumaru", 20).render((f"Score: {gates}"), True, white)
+        level_text = get_font("Shojumaru", 20).render((f"Level: {player.get_mul()}"), True, white)
         screen.blit(score_text, (25, 50))
         screen.blit(level_text, (25, 70))
 
@@ -511,21 +517,21 @@ def start_game(username, password):
         screen.blit(ARROW, (arrow_rect))
 
         # Display number of arrows and pandas
-        arrow_text = get_font(20).render(str(num_arrows), True, white)
+        arrow_text = get_font("Shojumaru", 20).render(str(num_arrows), True, white)
         screen.blit(arrow_text, (x+20, scroll - 475))
 
-        panda_text = get_font(20).render(str(num_pandas), True, white)
+        panda_text = get_font("Shojumaru", 20).render(str(num_pandas), True, white)
         screen.blit(panda_text, (x + 15, 450))
 
         # gets numbers for the gates
-        num1 = get_font(40).render(str(question_text[0]), True, white)
-        num2 = get_font(40).render(str(question_text[1]), True, white)
+        num1 = get_font("Shojumaru", 40).render(str(question_text[0]), True, white)
+        num2 = get_font("Shojumaru", 40).render(str(question_text[1]), True, white)
 
         if scroll-85 < 315:
             screen.blit(num1, (285, scroll - 85))
             screen.blit(num2, (485, scroll - 85))
 
-        BACK = Button(image = "images/back_button.png", pos = (40, 25), text_input = "", font = get_font(22), base_colour = "White", hovering_colour = "#b51f09")
+        BACK = Button(image = "images/back_button.png", pos = (40, 25), text_input = "", font = get_font("Shojumaru", 22), base_colour = "White", hovering_colour = "#b51f09")
         BACK.update(screen)
 
         if (10<MOUSE_X<45 and 10<MOUSE_Y<40):
@@ -566,9 +572,9 @@ def running_army(username, password):
         screen.blit(START_SCREEN, (0,0))
         MOUSE_POS = pygame.mouse.get_pos()
 
-        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 250), text_input = "START GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
-        INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 380), text_input = "INSTRUCTIONS", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
-        RETURN_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 510), text_input = "BACK TO MENU", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
+        START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 250), text_input = "START GAME", font = get_font("Shojumaru", 22), base_colour = "#b51f09", hovering_colour = "White")
+        INSTRUCTION_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 380), text_input = "INSTRUCTIONS", font = get_font("Shojumaru", 22), base_colour = "#b51f09", hovering_colour = "White")
+        RETURN_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 510), text_input = "BACK TO MENU", font = get_font("Shojumaru", 22), base_colour = "#b51f09", hovering_colour = "White")
 
         for button in [START_BUTTON, INSTRUCTION_BUTTON, RETURN_BUTTON] :
             button.changeColour(MOUSE_POS)
