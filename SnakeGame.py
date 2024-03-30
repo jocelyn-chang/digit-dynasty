@@ -294,7 +294,7 @@ def end_screen(result):
         sys.exit()
       if event.type == pygame.MOUSEBUTTONDOWN:
         if RETURN.checkInput(MOUSE_POS):
-          play_music("sound/SandwichStackMusic.mp3")
+          play_music("sound/SnakeSumsMusic.mp3")
           return
 
     pygame.display.update()
@@ -308,10 +308,6 @@ def response(correct, question, answer):
   main = get_font(25).render("Press Space To Continue", True, WHITE)
   SCREEN.blit(shadow, [199, 525])
   SCREEN.blit(main, [197, 523])
-  q = get_font(25).render(question, True, BLACK)
-  ans = get_font(25).render("Correct Answer: " + str(answer), True, BLACK)
-  SCREEN.blit(q, [328, 308])
-  SCREEN.blit(ans, [245, 387])
   
   # Display after incorrect answer
   if correct == False:
@@ -320,6 +316,10 @@ def response(correct, question, answer):
     main = get_font(50).render("Nice Try!", True, WHITE)
     SCREEN.blit(shadow, [256, 212])
     SCREEN.blit(main, [256, 210])
+    q = get_font(25).render(question, True, BLACK)
+    ans = get_font(25).render("Correct Answer: " + str(answer), True, BLACK)
+    SCREEN.blit(q, [328, 308])
+    SCREEN.blit(ans, [245, 387])
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
       end_screen(False)
@@ -332,10 +332,24 @@ def response(correct, question, answer):
     main = get_font(50).render("Good Job!", True, WHITE)
     SCREEN.blit(shadow, [245, 212])
     SCREEN.blit(main, [243, 210])
+    q = get_font(25).render(question, True, BLACK)
+    ans = get_font(25).render("Correct Answer: " + str(answer), True, BLACK)
+    SCREEN.blit(q, [328, 308])
+    SCREEN.blit(ans, [245, 387])
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
       end_screen(True)
       return True
+    
+def correct(question, answer):
+  good = get_font(50).render("Good Job!", True, GREEN4)
+  good1 = get_font(50).render("Good Job!", True, WHITE)
+  SCREEN.blit(good, [245, 212])
+  SCREEN.blit(good1, [243, 210])
+  q = get_font(25).render(question, True, BLACK)
+  ans = get_font(25).render("Correct Answer: " + str(answer), True, BLACK)
+  SCREEN.blit(q, [328, 308])
+  SCREEN.blit(ans, [245, 387])
 
 # Plays music
 def play_music(file):
@@ -534,7 +548,7 @@ def game(user):
         
         SCREEN.blit(shadow, [199, 525])
         SCREEN.blit(main, [197, 523])
-        response(True, currQ, correct_ans)
+        correct(currQ, correct_ans)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
           result = False
