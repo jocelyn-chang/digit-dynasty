@@ -78,7 +78,7 @@ class TestSandwichStack(unittest.TestCase):
         """
         self.game_state = GameState()
 
-    def test_spawn_food_returns_correct_elements(self):
+    def test_spawn_food(self):
         """
         Tests that the spawn_food function returns elements of correct types and values.
         """
