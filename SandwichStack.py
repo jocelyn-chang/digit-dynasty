@@ -8,7 +8,7 @@ and game screen, as well as movement mechanics and the logic for collision detec
 import pygame, sys, random
 from Button import Button
 from Player import Player
-from Question import Question
+from question import Question
 
 # Initialize Pygame
 pygame.init()

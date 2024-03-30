@@ -31,7 +31,6 @@ QUESTION_SCROLL = pygame.image.load("images/bigScroll.png")
 LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
 WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
 CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
-# INCORRECT = pygame.mixer.Sound("sound/Hover.mp3")
 INCORRECT = pygame.mixer.Sound("sound/Incorrect.mp3")
 
 image_height = IMAGE.get_height()
