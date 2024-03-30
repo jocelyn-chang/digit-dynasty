@@ -12,7 +12,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('DIGIT DYNASTY')
 
 # Load the tall image
-INSTRUCTION1 = pygame.image.load("images/Multiplication_instruction.png")
+INSTRUCTION1 = pygame.image.load("images/Multiplication.png")
 INSTRUCTION2 = pygame.image.load("images/Instructions for running army.png")
 BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
