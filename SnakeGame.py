@@ -3,10 +3,18 @@ import pygame, sys
 import random
 from Player import Player
 from Button import Button
-from question import Question
+from Question import Question
 
 # Initialize Pygame
 pygame.init()
+pygame.mixer.init()
+pygame.mixer.set_num_channels(8)
+
+# Initialize sounds for game
+LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
+WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
+CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
+INCORRECT = pygame.mixer.Sound("sound/Incorrect.mp3")
 
 # Colors
 GOLD3 = (179, 152, 96)
@@ -26,9 +34,9 @@ SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('SNAKE GAME')
 
 # Create dark overlay for question screen
-overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-overlay.set_alpha(128)  # Set transparency (0-255)
-overlay.fill(BLACK)  # Fill with black
+OVERLAY = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+OVERLAY.set_alpha(128)  # Set transparency (0-255)
+OVERLAY.fill(BLACK)  # Fill with black
 
 # Load images
 BACKGROUND = pygame.image.load("images/snakegamebg.png")
@@ -104,7 +112,7 @@ def options(correct_ans):
   opt3 = int(float(correct_ans) * (10+random.randint(1, 5))//10) # Altered by multiplying by a percentage of the answer
 
   # FIX THIS IF YOU CAN
-  if opt3 == opt2 or opt3 == opt1 or opt3 == correct_ans: # Changing opt3 if it rounds to a repeat number
+  while opt3 == opt2 or opt3 == opt1 or opt3 == correct_ans: # Changing opt3 if it rounds to a repeat number
     opt3 += 1
 
   opt_list = [opt1, opt2, opt3, correct_ans] # List of options
@@ -172,33 +180,33 @@ def instruction1():
 
 # Second instruction screen
 def instruction2():
-    run = True
-    while run:
-        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
-        GAME_MOUSE_POS = pygame.mouse.get_pos()
+  run = True
+  while run:
+    MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+    GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.blit(INSTRUCTION2, (0, 0))
+    SCREEN.blit(INSTRUCTION2, (0, 0))
         
-        INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
+    INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
         
-        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
-            SCREEN.blit(RESIZED_BACK, (-90,-96))
-        if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
-            SCREEN.blit(RESIZED_NEXT, (540, 324))
+    if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+      SCREEN.blit(RESIZED_BACK, (-90,-96))
+    if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
+      SCREEN.blit(RESIZED_NEXT, (540, 324))
 
-        INSTRUCTIONS_BACK.update(SCREEN)
-        INSTRUCTIONS_NEXT.update(SCREEN)
+    INSTRUCTIONS_BACK.update(SCREEN)
+    INSTRUCTIONS_NEXT.update(SCREEN)
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS) or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
-                    run = False
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        pygame.quit()
+        sys.exit()
+      if event.type == pygame.MOUSEBUTTONDOWN:
+        if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS) or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
+          run = False
 
-        pygame.display.update()
+    pygame.display.update()
 
 # Randomize position of fruits
 def fruit_coordinates(x1, y1):
@@ -257,22 +265,27 @@ def fruit_eaten(coord_list, correct_ans):
 
 # Display ending screen
 def end_screen(result):
+  # Play relative ending sound
+  pygame.mixer.music.stop()
   if result == False:
-    pygame.mixer.init()
-    pygame.mixer.music.load("sound/LossSound.mp3")
-    pygame.mixer.music.play(1)
+    LOSS.play()
+  else:
+    WIN.play()
+  
   while True:
     MOUSE_POS = pygame.mouse.get_pos()
-
+    # Display relative screen
     if result == True:
       SCREEN.blit(WIN_SCREEN, (0, 0))
     else:
       SCREEN.blit(LOST_SCREEN, (0, 0))
 
-    RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "RETURN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
+    # Create return button
+    RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
     RETURN.changeColour(MOUSE_POS)
     RETURN.update(SCREEN)
-
+    
+    # Event handling
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         pygame.quit()
@@ -284,58 +297,43 @@ def end_screen(result):
 
     pygame.display.update()
 
+# Display response after snake play
 def response(correct, question, answer):
-  SCREEN.blit(overlay, (0, 0))
+  # Display general screen and text
+  SCREEN.blit(OVERLAY, (0, 0))
   SCREEN.blit(QBOX, (141, 115))
-  # Shadow text
   shadow = get_font(25).render("Press Space To Continue", True, GREEN4)
-  # Main text
   main = get_font(25).render("Press Space To Continue", True, WHITE)
-        
   SCREEN.blit(shadow, [199, 525])
   SCREEN.blit(main, [197, 523])
-  # Shadow text
+  q = get_font(25).render(question, True, BLACK)
+  ans = get_font(25).render("Correct Answer: " + str(answer), True, BLACK)
+  SCREEN.blit(q, [328, 308])
+  SCREEN.blit(ans, [245, 387])
+  
+  # Display after incorrect answer
   if correct == False:
     shadow = get_font(50).render("Nice Try!", True, GREEN4)
-    # Main text
     main = get_font(50).render("Nice Try!", True, WHITE)
     SCREEN.blit(shadow, [256, 212])
     SCREEN.blit(main, [256, 210])
-    q = get_font(25).render(question, True, BLACK)
-    # Main text
-    ans = get_font(25).render("Correct Answer: " + str(answer), True, BLACK)
-    SCREEN.blit(q, [328, 308])
-    SCREEN.blit(ans, [245, 387])
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
       end_screen(False)
       return True
+  
+  # Display after correct answer
   else:
     shadow = get_font(50).render("Good Job!", True, GREEN4)
-    # Main text
     main = get_font(50).render("Good Job!", True, WHITE)
     SCREEN.blit(shadow, [245, 212])
     SCREEN.blit(main, [243, 210])
-    q = get_font(25).render(question, True, BLACK)
-    # Main text
-    ans = get_font(25).render("Correct Answer: " + str(answer), True, BLACK)
-    SCREEN.blit(q, [328, 308])
-    SCREEN.blit(ans, [245, 387])
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
       end_screen(True)
       return True
 
-def correct(question, answer):
-  good = get_font(50).render("Good Job!", True, GREEN4)
-  good1 = get_font(50).render("Good Job!", True, WHITE)
-  SCREEN.blit(good, [245, 212])
-  SCREEN.blit(good1, [243, 210])
-  q = get_font(25).render(question, True, BLACK)
-  ans = get_font(25).render("Correct Answer: " + str(answer), True, BLACK)
-  SCREEN.blit(q, [328, 308])
-  SCREEN.blit(ans, [245, 387])
-
+# Plays music
 def play_music(file):
     pygame.mixer.init()
     pygame.mixer.music.load(file)
@@ -471,7 +469,7 @@ def game(user):
           correct_ans = currQNA[1]
           optionList = options(correct_ans)
         countdown -= 1
-        SCREEN.blit(overlay, (0, 0))
+        SCREEN.blit(OVERLAY, (0, 0))
         SCREEN.blit(QBOX, (141, 115))
         time_left(timerDown)
         # Shadow text
@@ -524,7 +522,7 @@ def game(user):
           timerDown -= 1
         snake_pause = True
       elif result is True:
-        SCREEN.blit(overlay, (0, 0))
+        SCREEN.blit(OVERLAY, (0, 0))
         SCREEN.blit(QBOX, (141, 115))
         # Shadow text
         shadow = get_font(25).render("Press Space To Continue", True, GREEN4)
@@ -533,7 +531,7 @@ def game(user):
         
         SCREEN.blit(shadow, [199, 525])
         SCREEN.blit(main, [197, 523])
-        correct(currQ, correct_ans)
+        response(True, currQ, correct_ans)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
           result = False
@@ -604,6 +602,7 @@ def game(user):
         return
     if doneYet == 3:
        end_screen(False)
+       play_music("sound/SnakeSumsMusic.mp3")
        return
   
     pygame.display.flip()
@@ -653,6 +652,6 @@ def snakeSums(username, password):
 # pygame.quit()
 
 # Run the game
-# username = "jocelyn"
-# password = 12345678
-# snakeSums(username, password)
+username = "jocelyn"
+password = 12345678
+snakeSums(username, password)
