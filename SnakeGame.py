@@ -359,7 +359,7 @@ def game(user):
   currQNA = Question(user).generate_question("+") # gets question and the answer
   currQ = currQNA[0] 
   correct_ans = currQNA[1]
-  optionList = options(correct_ans) # creates list of answer options
+  option_list = options(correct_ans) # creates list of answer options
 
   # Initialize change in coordinates
   x1_change = 0
@@ -377,38 +377,37 @@ def game(user):
 
   # Adjust counter according to level, 10 seconds for < 5 and 30 seconds otherwise
   if level < 5: 
-    countdown = 600
-    timerDown = 10
+    count_down = 600
+    timer_down = 10
   else: 
-    countdown = 1800
-    timerDown = 30
+    count_down = 1800
+    timer_down = 30
 
   while run:
     MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
     MOUSE_POS = pygame.mouse.get_pos()
+
     # Event handling, stop run if quit
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         run = False
-      if event.type == pygame.MOUSEBUTTONDOWN:
+      elif event.type == pygame.MOUSEBUTTONDOWN:
         if BACK.checkInput(MOUSE_POS):
           return
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if FRUIT_AB.checkInput(MOUSE_POS):
-              select = 1
-              pause = False
-            elif FRUIT_BB.checkInput(MOUSE_POS):
-              select = 2
-              pause = False
-            elif FRUIT_CB.checkInput(MOUSE_POS):
-              select = 3
-              pause = False
-            elif FRUIT_DB.checkInput(MOUSE_POS):
-              select = 4
-              pause = False
+        elif FRUIT_AB.checkInput(MOUSE_POS):
+          select = 1
+          pause = False
+        elif FRUIT_BB.checkInput(MOUSE_POS):
+          select = 2
+          pause = False
+        elif FRUIT_CB.checkInput(MOUSE_POS):
+          select = 3
+          pause = False
+        elif FRUIT_DB.checkInput(MOUSE_POS):
+          select = 4
+          pause = False
             
-
-            # Control snake movement when not paused
+    # Control snake movement when not paused
     if not pause:
       # Refresh the direction changes
       if snake_pause:
@@ -465,17 +464,17 @@ def game(user):
       elements_delay_counter -= 1
       pause = True
     elif dontrun == 1:
-      if countdown > 0 and pause == True and timerDown > 0 and result is False:
+      if count_down > 0 and pause == True and timer_down > 0 and result is False:
         snake_pause = True
-        if countdown == 600:
+        if count_down == 600:
           currQNA = Question(user).generate_question("+")
           currQ = currQNA[0]
           correct_ans = currQNA[1]
-          optionList = options(correct_ans)
-        countdown -= 1
+          option_list = options(correct_ans)
+        count_down -= 1
         SCREEN.blit(OVERLAY, (0, 0))
         SCREEN.blit(QBOX, (141, 115))
-        time_left(timerDown)
+        time_left(timer_down)
         # Shadow text
         shadow = get_font(65).render(currQ, True, GOLD3)
         # Main text
@@ -494,10 +493,10 @@ def game(user):
         SCREEN.blit(shadow, [235, 525])
         SCREEN.blit(main, [233, 523])
 
-        SCREEN.blit(optionList[0], [315, 290])
-        SCREEN.blit(optionList[1], [315, 395])
-        SCREEN.blit(optionList[2], [505, 290])
-        SCREEN.blit(optionList[3], [505, 395])
+        SCREEN.blit(option_list[0], [315, 290])
+        SCREEN.blit(option_list[1], [315, 395])
+        SCREEN.blit(option_list[2], [505, 290])
+        SCREEN.blit(option_list[3], [505, 395])
         SCREEN.blit(FRUIT_A, [245, 280])
         SCREEN.blit(FRUIT_B, [245, 385])
         SCREEN.blit(FRUIT_C, [438, 280])
@@ -522,8 +521,8 @@ def game(user):
         elif (428<MOUSE_X<498 and 375<MOUSE_Y<445):
           SCREEN.blit(FRUIT_BORDER, [433, 380])
           SCREEN.blit(FRUIT_D, [438, 385])
-        if countdown % 10 == 0 and timerDown > 0:
-          timerDown -= 1
+        if count_down % 10 == 0 and timer_down > 0:
+          timer_down -= 1
         snake_pause = True
       elif result is True:
         SCREEN.blit(OVERLAY, (0, 0))
@@ -540,7 +539,7 @@ def game(user):
         if keys[pygame.K_SPACE]:
           result = False
           fruit_delay = 4
-          countdown = 600
+          count_down = 600
       else:
         pause = False
       
@@ -564,7 +563,7 @@ def game(user):
           SCREEN.blit(FRUIT_C, (coord_list[3][0], coord_list[3][1]))
           SCREEN.blit(FRUIT_D, (coord_list[4][0], coord_list[4][1]))
     
-    doneYet = fruit_eaten(coord_list, optionList[4])
+    doneYet = fruit_eaten(coord_list, option_list[4])
     BACK = Button(image = "images/back_button.png", pos = (40, 25), text_input = "", font = get_font(22), base_colour = "White", hovering_colour = "#b51f09")
     BACK.update(SCREEN)
 
@@ -584,8 +583,8 @@ def game(user):
         snake_len += 1
         elements_delay_counter = 1
         fruit_delay = 4
-        countdown = 600
-        timerDown = 10
+        count_down = 600
+        timer_down = 10
         select = 0
         result = True
       elif dontrun == 1: 
@@ -593,8 +592,8 @@ def game(user):
         snake_len += 1
         elements_delay_counter = 1
         fruit_delay = 4
-        countdown = 1800
-        timerDown = 30
+        count_down = 1800
+        timer_down = 30
         select = 0
         result = True
     if doneYet == 1:
