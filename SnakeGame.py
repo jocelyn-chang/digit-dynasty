@@ -4,7 +4,6 @@ import random
 from Player import Player
 from Button import Button
 from Question import Question
-from Question import Question
 
 # Initialize Pygame
 pygame.init()
@@ -269,16 +268,18 @@ def fruit_eaten(coord_list, correct_ans):
 
 # Display ending screen
 def end_screen(result):
+  if result == True:
+    WIN.play()
+  else:
+    LOSS.play()
   while True:
     MOUSE_POS = pygame.mouse.get_pos()
     # Display relative screen
     if result == True:
       pygame.mixer.music.stop()
-      WIN.play()
       SCREEN.blit(WIN_SCREEN, (0, 0))
     else:
       pygame.mixer.music.stop()
-      LOSS.play()
       SCREEN.blit(LOST_SCREEN, (0, 0))
 
     # Create return button
@@ -652,3 +653,7 @@ def snakeSums(username, password):
     # Quit back to the game map
     pygame.mixer.music.stop()
     return
+
+# username = "jocelyn"
+# password = "12345678"
+# snakeSums(username, password)

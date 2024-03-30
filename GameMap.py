@@ -1,7 +1,7 @@
 import pygame, sys
 from Button import Button
 from Player import Player
-from runningArmy import running_army
+from RunningArmy import running_army
 from SnakeGame import snakeSums
 from CookingGame import cooking_game
 from SandwichStack import sandwich_stack
@@ -88,7 +88,7 @@ def load_map(username, password):
           sys.exit()
     
     # Draw the background image onto the screen
-    if int(player.get_add()) == (int(player.get_bosses()) + 1) * 5 and int(player.get_sub()) == (int(player.get_bosses()) + 1) * 5 and int(player.get_mul()) == (int(player.get_bosses()) + 1) * 5 and int(player.get_div()) == (int(player.get_bosses()) + 1) * 5:
+    if int(player.get_add()) >= (int(player.get_bosses()) + 1) * 5 and int(player.get_sub()) >= (int(player.get_bosses()) + 1) * 5 and int(player.get_mul()) >= (int(player.get_bosses()) + 1) * 5 and int(player.get_div()) >= (int(player.get_bosses()) + 1) * 5:
        SCREEN.blit(BACKGROUND, (0, 0))
     else:
        SCREEN.blit(LOCK_BACKGROUND, (0, 0))
@@ -146,7 +146,7 @@ def load_map(username, password):
             play_music("sound/EDM.mp3")
     
     # boss battle (arithmetic emperor)
-    if int(player.get_add()) == (int(player.get_bosses()) + 1) * 5 and int(player.get_sub()) == (int(player.get_bosses()) + 1) * 5 and int(player.get_mul()) == (int(player.get_bosses()) + 1) * 5 and int(player.get_div()) == (int(player.get_bosses()) + 1) * 5:
+    if int(player.get_add()) >= (int(player.get_bosses()) + 1) * 5 and int(player.get_sub()) >= (int(player.get_bosses()) + 1) * 5 and int(player.get_mul()) >= (int(player.get_bosses()) + 1) * 5 and int(player.get_div()) >= (int(player.get_bosses()) + 1) * 5:
       if (350<MOUSE_X<450 and 220<MOUSE_Y<380):
         SCREEN.blit(RESIZED_MIDDLETEMP, (323, 180))
         if event.type == pygame.MOUSEBUTTONDOWN:

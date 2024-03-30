@@ -31,6 +31,7 @@ QUESTION_SCROLL = pygame.image.load("images/bigScroll.png")
 LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
 WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
 CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
+INCORRECT = pygame.mixer.Sound("sound/Incorrect.mp3")
 
 image_height = IMAGE.get_height()
 image_width = IMAGE.get_width()
@@ -45,7 +46,6 @@ panda_rect = PANDA.get_rect()
 
 # Calculate the new height of the image to maintain the aspect ratio
 scaled_height = int(image_height * (SCREEN_WIDTH / image_width))
-
 # Scale the image to fill the width of the screen while maintaining the aspect ratio
 scaled_image = pygame.transform.scale(IMAGE, (SCREEN_WIDTH, scaled_height))
 
@@ -176,7 +176,7 @@ def check_answer(answer, correct_answer):
     if int(answer) == int(correct_answer):
         #play sound
         CORRECT.play()
-        
+
         # Display user's input text
         correct = get_font(20).render('CORRECT', True, white)
         inputRect = correct.get_rect()
@@ -213,11 +213,11 @@ def question(numpandas, multiplier):
         bool: True if the user's answer is correct, False otherwise.
     """
     answer = ""
-    correct_answer = numpandas*multiplier
+    correct_answer = numpandas * multiplier
     run = True
 
     while run:
-        
+
         # Display question screen
         screen.blit(QUESTION_SCROLL, (25, 100))
         title = get_font(20).render("Answer the Following Question:", True, white)
@@ -244,21 +244,22 @@ def question(numpandas, multiplier):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:  # Check if Enter key is pressed to submit answer
                     if check_answer(answer, correct_answer):
-                       return True
+                        return True
                     else:
-                       return False
-                       run = False
+                        return False
+                        run = False
                 elif event.key == pygame.K_BACKSPACE:  # Check if Backspace key is pressed to delete characters
                     answer = answer[:-1]
                 else:
                     # Check if a printable character is pressed and append it to the answer
-                    if event.unicode.isprintable():
+                    if event.unicode.isdigit():
                         answer += event.unicode
 
         # Update the display
         pygame.display.update()
 
-def lose_screen(x_pos):
+
+def lose_screen(x_pos, username, password, gates):
     """
     Displays the lose screen when the player loses the game.
 
@@ -270,7 +271,10 @@ def lose_screen(x_pos):
     pygame.display.update()
     pygame.time.delay(2000)
     # play sound once
+    pygame.mixer.music.stop()
     LOSS.play()
+    player = Player(username, password)
+    player.load_player()
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -279,6 +283,13 @@ def lose_screen(x_pos):
         RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
         
         screen.blit(LOSE_SCREEN, (0, 0))
+
+        font = get_font(20)
+        level_surface = font.render(f"Current level: {player.get_div()}", True, "White")
+        screen.blit(level_surface, (130, 390))
+
+        score_surface = font.render(f"Score: {gates} / 5", True, "White")
+        screen.blit(score_surface, (520, 390))
 
         RETURN.changeColour(GAME_MOUSE_POS)
         RETURN.update(screen)
@@ -289,7 +300,7 @@ def lose_screen(x_pos):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if RETURN.checkInput(GAME_MOUSE_POS):
-                    run = False
+                    return
 
         if (660<MOUSE_X<685 and 390<MOUSE_Y<415):
             screen.blit(RESIZED_NEXT, (510, 249))
@@ -298,12 +309,13 @@ def lose_screen(x_pos):
         pygame.display.update()
     return 
 
-def win_screen():
+def win_screen(score):
     """
     Displays the win screen when the player wins the game.
     """
     
     # play sound once
+    pygame.mixer.music.stop()
     WIN.play()
 
     run = True
@@ -315,6 +327,13 @@ def win_screen():
             RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
             
             screen.blit(WIN_SCREEN, (0, 0))
+
+            # Create the new level update and progress status then place the font onto the screen
+            font = get_font(15)
+            score_surface = font.render(f"Your Division Level is Now: {score}", True, "White")
+            progress_surface = font.render("Your progress has been saved.", True, "White")
+            screen.blit(score_surface, (250, 395))
+            screen.blit(progress_surface, (240, 415))
 
             RETURN.changeColour(GAME_MOUSE_POS)
             RETURN.update(screen)
@@ -392,19 +411,24 @@ def start_game(username, password):
     gates = 0
 
     # initialize player
-    player = Player(name=username, password=password)
+    player = Player(username, password)
     player.load_player()
     current_question = Question(player)
     question_text = current_question.generate_question('*')
-    
+
     run = True
     # Main game loop
     while run:
+        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+        MOUSE_POS = pygame.mouse.get_pos()
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if BACK.checkInput(MOUSE_POS):
+                    return
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             if x > 200:
@@ -421,8 +445,9 @@ def start_game(username, password):
         # Check if arrow hits the panda
         if scroll == 0:
             if num_arrows >= num_pandas:
-                lose_screen(x)
-                run = False  # Exit the function if game ends
+                lose_screen(x, username, password, gates)
+                play_music("sound/RunningArmyMusic.mp3")
+                return
             else:
                 num_pandas -= num_arrows
             
@@ -449,9 +474,11 @@ def start_game(username, password):
             question_text = current_question.generate_question('*')
             gates += 1
             if gates == 5:
-                player.update_mul(str(int(player.get_mul()) + 1))
-                win_screen()
-                break
+                new_score = int(player.get_mul()) + 1
+                player.update_mul(str(new_score))
+                win_screen(new_score)
+                play_music("sound/RunningArmyMusic.mp3")
+                return
 
         # Clear the screen
         screen.fill((0, 0, 0))
@@ -461,12 +488,13 @@ def start_game(username, password):
         screen.blit(scaled_image, (0, scroll))
         screen.blit(GATE, (200, scroll - 125))
 
+        player = Player(username, password)
+        player.load_player()
         # draw current score and level
         score_text = get_font(20).render((f"Score: {gates}"), True, white)
         level_text = get_font(20).render((f"Level: {player.get_mul()}"), True, white)
-        screen.blit(score_text, (25, 20))
-        screen.blit(level_text, (25, 50))
-
+        screen.blit(score_text, (25, 50))
+        screen.blit(level_text, (25, 70))
 
         # Draw the panda and arrow
         amplitude = 10
@@ -497,8 +525,14 @@ def start_game(username, password):
             screen.blit(num1, (285, scroll - 85))
             screen.blit(num2, (485, scroll - 85))
 
+        BACK = Button(image = "images/back_button.png", pos = (40, 25), text_input = "", font = get_font(22), base_colour = "White", hovering_colour = "#b51f09")
+        BACK.update(screen)
+
+        if (10<MOUSE_X<45 and 10<MOUSE_Y<40):
+            screen.blit(RESIZED_BACK, (-120,-126))
+
         # Update the display
-        pygame.display.flip()
+        pygame.display.update()
 
         # Cap the frame rate
         pygame.time.Clock().tick(60)
@@ -550,8 +584,7 @@ def running_army(username, password):
                 if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
                     instruction1()
                 if RETURN_BUTTON.checkInput(MOUSE_POS):
-                    run = False
-                    break
+                    return
 
         # Update the display
         pygame.display.update()

@@ -314,8 +314,10 @@ def lose_screen(username, password, score):
     Returns:
     None
     """
+    # Stop playing the background music and then play the level incomplete music
     pygame.mixer.music.stop()
     LOSS.play()
+    # Create a new player instance and load the player's stats
     player = Player(username, password)
     player.load_player()
     while True:
@@ -473,7 +475,7 @@ def start_game(username, password):
             else:
                 display_incorrect_message = True
                 display_correct_message = False
-                INCORRECT.play()
+                # INCORRECT.play()
                 lives -= 1
 
             if score == 5:
