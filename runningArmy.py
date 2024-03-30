@@ -31,6 +31,7 @@ QUESTION_SCROLL = pygame.image.load("images/bigScroll.png")
 LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
 WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
 CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
+# INCORRECT = pygame.mixer.Sound("sound/Hover.mp3")
 
 image_height = IMAGE.get_height()
 image_width = IMAGE.get_width()
@@ -45,7 +46,6 @@ panda_rect = PANDA.get_rect()
 
 # Calculate the new height of the image to maintain the aspect ratio
 scaled_height = int(image_height * (SCREEN_WIDTH / image_width))
-
 # Scale the image to fill the width of the screen while maintaining the aspect ratio
 scaled_image = pygame.transform.scale(IMAGE, (SCREEN_WIDTH, scaled_height))
 
@@ -110,7 +110,7 @@ def instruction2():
         screen.blit(INSTRUCTION2, (0, 0))
         
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image))
+        INSTRUCTIONS_BACK.update(screen)
 
 
         for event in pygame.event.get():
@@ -118,7 +118,7 @@ def instruction2():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS) or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
                     run = False
 
         pygame.display.update()
@@ -145,7 +145,7 @@ def check_answer(answer, correct_answer):
     if int(answer) == int(correct_answer):
         #play sound
         CORRECT.play()
-        
+
         # Display user's input text
         correct = get_font(20).render('CORRECT', True, white)
         inputRect = correct.get_rect()
@@ -154,6 +154,9 @@ def check_answer(answer, correct_answer):
         correct = True
 
     else:
+        # Play sound
+        # INCORRECT.play()
+
         incorrect_lines = ["Incorrect", f"Correct Answer = {correct_answer}", f"Your Answer = {answer}"]
         line_height = get_font(20).get_height()
         for i, line in enumerate(incorrect_lines):

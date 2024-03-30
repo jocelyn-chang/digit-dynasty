@@ -433,7 +433,7 @@ def start_game(username, password):
             else:
                 display_incorrect_message = True
                 display_correct_message = False
-                INCORRECT.play()
+                # INCORRECT.play()
                 lives -= 1
 
             if score == 5:
