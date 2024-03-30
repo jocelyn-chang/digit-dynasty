@@ -135,7 +135,7 @@ def check_answer(answer, correct_answer):
         incorrect_lines = ["Incorrect", f"Correct Answer = {correct_answer}", f"Your Answer = {answer}"]
         line_height = get_font(20).get_height()
         for i, line in enumerate(incorrect_lines):
-            incorrect_text = get_font(20).render(line, True, white)
+            incorrect_text = get_font("Shojumaru", 20).render(line, True, white)
             inputRect = incorrect_text.get_rect()
             inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + i * line_height)  # Adjust position for each line
             screen.blit(incorrect_text, inputRect)

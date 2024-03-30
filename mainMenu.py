@@ -2,7 +2,6 @@
 import pygame, sys, csv
 from Button import Button
 from GameMap import load_map
-from Player import Player
 
 # Define screen dimensions
 SCREEN_WIDTH = 800
@@ -24,10 +23,6 @@ APPLE = pygame.transform.scale(pygame.image.load("images/apple.png"), (60, 60))
 RESIZED_APPLE = pygame.transform.scale(pygame.image.load("images/apple.png"), (80, 80))
 INSTRUCTOR_DASHBOARD_LOGIN = pygame.image.load("images/Instructor dashboard login.png")
 INSTRUCTOR_DASHBOARD = pygame.image.load("images/Instructor dashboard.png")
-DETAILED_STUDENT = pygame.image.load("images/detailed student.png")
-
-black = (0, 0, 0)
-white = (255, 255, 255)
 
 def get_font(font, size):
     if font == "Sawarabi":
@@ -211,7 +206,7 @@ def load_player(input_username, input_password):
 def play_music(file):
     pygame.mixer.init()
     pygame.mixer.music.load(file)
-    pygame.mixer.music.play(-1)
+    pygame.mixer.music.play()
 
 # Go to load screen 
 def load_game():
@@ -254,10 +249,7 @@ def load_game():
                     player_info = load_player(input_username, input_password)
 
                     if player_info:
-                        if input_username == "ADMIN" and input_password == "DD2024":
-                            debug_mode(input_username, input_password)
-                        else:
-                            load_map(input_username, input_password)
+                        load_map(input_username, input_password)
                         return
                     else:
                         player_not_found = True
@@ -395,12 +387,12 @@ def instructions():
 
         pygame.display.update()
 
-def student_details():
+def instructor_dashboard():
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.blit(INSTRUCTIONS, (0, 0))
+        SCREEN.blit(INSTRUCTOR_DASHBOARD, (0, 0))
         
         INSTRUCTIONS_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
         INSTRUCTIONS_BACK.update(SCREEN)
@@ -417,126 +409,6 @@ def student_details():
                     return
 
         pygame.display.update()
-
-# instructor screen with all students
-def instructor_dashboard():
-    # Load data from CSV
-    data = []
-    with open("data.csv", newline='') as csvfile:
-        csvreader = csv.reader(csvfile)
-        for row in csvreader:
-            data.append(row)
-
-    # Scrolling variables
-    scroll_y = 0
-    row_height = 30
-    scroll_area = pygame.Rect(90, 295, 615, 305)  # x, y, width, height
-
-    # Main loop for the instructor dashboard
-    running = True
-    while running:
-        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
-        GAME_MOUSE_POS = pygame.mouse.get_pos()
-
-        SCREEN.blit(INSTRUCTOR_DASHBOARD, (0, 0))
-
-        INSTRUCTIONS_BACK = Button(image="images/back_button.png", pos=(70, 55), text_input="", font=get_font("Shojumaru", 15), base_colour="White", hovering_colour="#b51f09")
-        INSTRUCTIONS_BACK.update(SCREEN)
-
-        if (40 < MOUSE_X < 75 and 40 < MOUSE_Y < 70):
-            SCREEN.blit(RESIZED_BACK, (-90, -96))
-
-        # Handle events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 4:  # Scroll up
-                    scroll_y = max(scroll_y - row_height, 0)
-                elif event.button == 5:  # Scroll down
-                    max_scroll = len(data) * row_height - scroll_area.height
-                    scroll_y = min(scroll_y + row_height, max_scroll)
-                elif INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    running = False
-
-                # Check if a name was clicked (left mouse button)
-                elif event.button == 1 and scroll_area.collidepoint(event.pos):
-                    for i, row in enumerate(data):
-                        text_surface = get_font("Shojumaru", 25).render(f'{row[0]}', True, pygame.Color('black'))
-                        text_width = text_surface.get_width()
-                        x_centered = SCREEN_WIDTH // 2 - text_width // 2
-                        name_rect = pygame.Rect(x_centered, i * row_height + scroll_area.top - scroll_y, text_width, row_height)
-                        if name_rect.collidepoint(event.pos):
-                            student_details(row)  # Pass the student's name to the student_details function
-                            break
-        
-        # Show title on the screen
-        title = get_font("Shojumaru", 30).render("Names: ", True, pygame.Color('black'))
-        title_centered = SCREEN_WIDTH // 2 - title.get_width() // 2
-        SCREEN.blit(title, (title_centered, 250))
-
-        # Render the visible portion of the list (only the first two columns)
-        for i, row in enumerate(data):
-            y = i * row_height + scroll_area.top - scroll_y
-            if scroll_area.top <= y <= scroll_area.bottom:
-                text_surface = get_font("Shojumaru", 25).render(f'{row[0]}', True, pygame.Color('black'))
-                text_width = text_surface.get_width()
-                x_centered = SCREEN_WIDTH // 2 - text_width // 2
-                SCREEN.blit(text_surface, (x_centered, y))
-
-        # Update the screen
-        pygame.display.update()
-
-    # Quit Pygame
-    return
-
-
-
-def student_details(student):
-
-    # Set the starting position for the text
-    x = 100  # Horizontal position
-    y = 100  # Vertical position
-    line_height = 50  # Space between lines
-
-
-
-    run = True
-    while run:
-        titles = [f"Name: {student[0]}", f"Password: {student[1]}", f"Addition Score: {student[2]}", f"Subtraction Score: {student[3]}", f"Multiplciation Score: {student[4]}", f"Division Score: {student[5]}", f"Boss Score: {student[6]}"]
-
-        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
-        GAME_MOUSE_POS = pygame.mouse.get_pos()
-
-        SCREEN.blit(DETAILED_STUDENT, (0, 0))
-        
-        INSTRUCTIONS_BACK = Button(image = "images/back_button.png", pos = (120, 115), text_input = "", font = get_font("Shojumaru",15), base_colour = "White", hovering_colour = "#b51f09")
-        INSTRUCTIONS_BACK.update(SCREEN)
-
-        # Render and blit each title to the screen
-        for i, line in enumerate(titles):
-            incorrect_text = get_font("Shojumaru",30).render(line, True, black)
-            inputRect = incorrect_text.get_rect()
-            inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4 + i * line_height)  # Adjust position for each line
-            SCREEN.blit(incorrect_text, inputRect)
-
-        
-        if (90<MOUSE_X<125 and 100<MOUSE_Y<130):
-            SCREEN.blit(RESIZED_BACK, (-40,-36))
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    return
-
-        pygame.display.update()
-
-    # Update the display
-    pygame.display.update()
 
 
 def instructor_dashboard_login():
@@ -574,7 +446,6 @@ def instructor_dashboard_login():
 
                     if input_password == "ddinstructor123":
                         instructor_dashboard()
-                        return
                     else:
                         player_not_found = True
 
@@ -589,152 +460,15 @@ def instructor_dashboard_login():
                     else:
                         password += event.unicode
 
-        input_box(SCREEN, password_rect, password, input_font, active = False, is_password = True)
+        input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
         
         if player_not_found:
             font = get_font('Shojumaru', 15)
-            text_surface = font.render('Invalid instructor code. Try again.', True, 'white')
+            text_surface = font.render('Player not found. Try again.', True, 'white')
             SCREEN.blit(text_surface, (255, 455))
 
         PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()
-
-def debug_mode(username, password):
-    print("in debug mode")
-    player = Player(name=username, password=password)
-    player.load_player()
-    input_font = get_font("Sawarabi",35)
-
-    # input for each box
-    add_input = ''
-    sub_input = ''
-    mult_input = ''
-    div_input = ''
-    boss_input = ''
-
-    # check if box is clicked
-    add_active = False
-    sub_active = False
-    mult_active = False
-    div_active = False
-    boss_active = False
-
-    # pos then size
-    add_rect = pygame.Rect(420, 100, 100, 50)
-    sub_rect = pygame.Rect(420, 180, 100, 50)
-    mult_rect = pygame.Rect(420, 260, 100, 50)
-    div_rect = pygame.Rect(420, 340, 100, 50)
-    boss_rect = pygame.Rect(420, 420, 100, 50)
-
-    while True:
-        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
-
-        SCREEN.blit(BACKGROUND, (0, 0))
-
-        START_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",22), base_colour = "White", hovering_colour = "#b51f09")
-        START_BACK.update(SCREEN)
-
-        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
-            SCREEN.blit(RESIZED_BACK, (-90,-96))
-        
-        PLAY_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "PLAY", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White")
-
-        subtitles = ["Addition Score:", "Subtraction Score:", "Multiplication Score:", "Division Score:", "Boss Battle Score:"]
-        y_coordinate = 115
-        for i, line in enumerate(subtitles):
-            subtitle_text = get_font('Shojumaru', 20).render(line, True, white)
-            inputRect = subtitle_text.get_rect()
-            inputRect.right = SCREEN_WIDTH // 2  # Adjust position for each line
-            inputRect.y = y_coordinate
-            y_coordinate += 80
-            SCREEN.blit(subtitle_text, inputRect)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.mixer.music.stop()
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if START_BACK.checkInput(event.pos):
-                    return
-                elif add_rect.collidepoint(event.pos):
-                    add_active = not add_active
-                    sub_active = False
-                    mult_active = False
-                    div_active = False
-                    boss_active = False
-                elif sub_rect.collidepoint(event.pos):
-                    sub_active = not sub_active
-                    add_active = False
-                    mult_active = False
-                    div_active = False
-                    boss_active = False
-                elif mult_rect.collidepoint(event.pos):
-                    mult_active = not mult_active
-                    add_active = False
-                    sub_active = False
-                    div_active = False
-                    boss_active = False
-                elif div_rect.collidepoint(event.pos):
-                    div_active = not div_active
-                    add_active = False
-                    sub_active = False
-                    mult_active = False
-                    boss_active = False
-                elif boss_rect.collidepoint(event.pos):
-                    boss_active = not boss_active
-                    add_active = False
-                    sub_active = False
-                    mult_active = False
-                    div_active = False
-                elif PLAY_BUTTON.checkInput(event.pos):
-                    load_map(username, password)
-                else:
-                    add_active = False
-                    sub_active = False
-                    mult_active = False
-                    div_active = False
-                    boss_active = False
-            if event.type== pygame.KEYDOWN:
-                if add_active:
-                    if event.key == pygame.K_BACKSPACE:
-                        add_input = add_input[:-1]
-                    else:
-                        add_input += event.unicode
-                elif sub_active:
-                    if event.key == pygame.K_BACKSPACE:
-                        sub_input = sub_input[:-1]
-                    else:
-                        sub_input += event.unicode
-                elif mult_active:
-                    if event.key == pygame.K_BACKSPACE:
-                        mult_input = mult_input[:-1]
-                    else:
-                        mult_input += event.unicode
-                elif div_active:
-                    if event.key == pygame.K_BACKSPACE:
-                        div_input = div_input[:-1]
-                    else:
-                        div_input += event.unicode
-                elif boss_active:
-                    if event.key == pygame.K_BACKSPACE:
-                        boss_input = boss_input[:-1]
-                    else:
-                        boss_input += event.unicode
-            player.update_add(add_input)
-            player.update_sub(sub_input)
-            player.update_mul(mult_input)
-            player.update_div(div_input)
-
-        input_box(SCREEN, add_rect, add_input, input_font, active = add_active)
-        input_box(SCREEN, sub_rect, sub_input, input_font, active = sub_active)
-        input_box(SCREEN, mult_rect, mult_input, input_font, active = mult_active)
-        input_box(SCREEN, div_rect, div_input, input_font, active = div_active)
-        input_box(SCREEN, boss_rect, boss_input, input_font, active = boss_active)
-        
-        PLAY_BUTTON.update(SCREEN)
-
-        pygame.display.update()
 
 def welcome_screen():
     run = True
@@ -749,13 +483,12 @@ def welcome_screen():
                 run = False
         pygame.display.update()
 
-
 # Main Menu screen
 def main_menu():
-    play_music("sound/EDM.mp3")
     welcome_screen()
 
     while True:
+        play_music("sound/EDM.mp3")
         SCREEN.blit(BACKGROUND, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
