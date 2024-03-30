@@ -75,14 +75,13 @@ def instruction1():
         
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
         INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(BACK, 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        
+        INSTRUCTIONS_BACK.update(screen)
+        INSTRUCTIONS_NEXT.update(screen)
+
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             screen.blit(RESIZED_BACK, (-90,-96))
         if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
             screen.blit(RESIZED_NEXT, (540, 324))
-
-        INSTRUCTIONS_BACK.update(screen)
-        INSTRUCTIONS_NEXT.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -93,7 +92,6 @@ def instruction1():
                     return
                 if INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
                     instruction2()
-                    return
 
         pygame.display.update()
 
