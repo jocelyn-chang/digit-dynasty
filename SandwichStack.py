@@ -321,26 +321,35 @@ def lose_screen(username, password, score):
     player = Player(username, password)
     player.load_player()
     while True:
+        # Obtain the position of the mouse
         MOUSE_POS = pygame.mouse.get_pos()
 
+        # Display the losing screen background
         SCREEN.blit(LOSE_SCREEN, (0, 0))
+        # Create the player's level and display it on the screen
         level_font = get_font("Shojumaru", 20)
         level_surface = level_font.render(f"Current level: {player.get_div()}", True, "White")
         SCREEN.blit(level_surface, (130, 340))
 
+        # Create the player's current score and display it on the screen
         score_font = get_font("Shojumaru", 20)
         score_surface = score_font.render(f"Score: {score} / 5", True, "White")
         SCREEN.blit(score_surface, (520, 340))
 
+        # Create a return button to go back to the title screen
         RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (SCREEN_WIDTH / 2, 440), text_input = "TITLE SCREEN", font = get_font("Shojumaru", 18), base_colour = "#b51f09", hovering_colour = "White")
         RETURN.changeColour(MOUSE_POS)
         RETURN.update(SCREEN)
 
+        # Check for events
         for event in pygame.event.get():
+            # If the user exits out of the screen, close pygame and exit the system
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Go back to the title screen if the "return" button
                 if RETURN.checkInput(MOUSE_POS):
                     return
         # Update the display
@@ -356,9 +365,9 @@ def play_music(file):
     Returns:
     None
     """
-    pygame.mixer.init()
-    pygame.mixer.music.load(file)
-    pygame.mixer.music.play(-1)
+    pygame.mixer.init()                 # Initialize the music function from PyGame
+    pygame.mixer.music.load(file)       # Load the sound file
+    pygame.mixer.music.play(-1)         # Play the sound constantly
 
 def start_game(username, password):
     """
@@ -372,20 +381,24 @@ def start_game(username, password):
     
     The function uses global variables for game state, such as the food items, panda character, and scores.
     """
+    # Obtain the mouse position
     MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
     MOUSE_POS = pygame.mouse.get_pos()
+
+    # Initialize variables
     lives = 3
     score = 0
-
     message_active = True
     display_correct_message = False
     display_incorrect_message = False
     message_duration = 2000
     message_start_time = 0
 
+    # Create a new player instance and load the player's stats
     player = Player(username, password)
     player.load_player()
 
+    # Create an initial answer bank and generate a question to start 
     answer_bank = [random.randint(1, 144) for _ in range(3)]  # Create an initial answer bank
     current_question = Question(player)
     correct_answer, question = current_question.generate_question("/")
