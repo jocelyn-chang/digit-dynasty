@@ -736,4 +736,4 @@ def start_game(username, password):
         # Update the display
         pygame.display.flip()
 
-arithmetic_emperor("test", "test")
+#arithmetic_emperor("test", "test")

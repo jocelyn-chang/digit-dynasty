@@ -3,7 +3,7 @@ import pygame, sys
 import random
 from Player import Player
 from Button import Button
-from Question import Question
+from question import Question
 
 # Initialize Pygame
 pygame.init()
