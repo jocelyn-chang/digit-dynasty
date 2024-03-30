@@ -73,6 +73,18 @@ black = (0, 0, 0)
 
 # Intructions screen
 def instruction1():
+    """
+    Display the first set of instructions for the game.
+
+    This function displays the instructions related to the BEDMAS (Brackets, Exponents, Division, Multiplication, Addition, Subtraction) concept of the game.
+    Users can navigate to the next set of instructions by clicking on the appropriate button.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -101,6 +113,18 @@ def instruction1():
         pygame.display.update()
 
 def instruction2():
+    """
+    Display the second set of instructions for the game.
+
+    This function displays the instructions related to the Arithmetic Emperor (AE) game mechanics.
+    Users can navigate back to the previous screen by clicking on the back button.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -123,6 +147,19 @@ def instruction2():
         pygame.display.update()
 
 def arithmetic_emperor(username, password):
+    """
+    Start the main menu game loop for the Arithmetic Emperor game.
+
+    This function initializes the game and allows players to interact with the main menu to start the game, view instructions, or return to the map screen.
+
+    Args:
+        username (str): The username of the player.
+        password (str): The password of the player.
+
+    Returns:
+        None
+    """
+
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
         SCREEN.blit(START_SCREEN, (0,0))
@@ -150,12 +187,38 @@ def arithmetic_emperor(username, password):
         pygame.display.update()
 
 def get_font(font, size):
+    """
+    Retrieve the font object based on the specified font name and size.
+
+    This function returns the appropriate font object based on the specified font name and size.
+
+    Args:
+        font (str): The name of the font.
+        size (int): The size of the font.
+
+    Returns:
+        pygame.font.Font: The font object.
+    """
     if font == "Sawarabi":
         return pygame.font.Font("fonts/SawarabiMincho-Regular.ttf", size)
     elif font == "Shojumaru":
         return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 def display_static_text(text, position, colour, max_width):
+    """
+    Display static text on the screen with word wrapping.
+
+    This function renders and displays static text on the screen with word wrapping if the text exceeds the specified maximum width.
+
+    Args:
+        text (str): The text to be displayed.
+        position (tuple): The position (x, y) where the text should be displayed.
+        colour (tuple): The colour of the text in RGB format.
+        max_width (int): The maximum width allowed for the text before word wrapping.
+
+    Returns:
+        list: A list of rendered lines of text.
+    """
     font = get_font("Sawarabi", 20)
     rendered_lines = []
     words = text.split()
@@ -181,6 +244,20 @@ def display_static_text(text, position, colour, max_width):
     return rendered_lines
    
 def display_basic_screen(emperorImage, emperorPos, emperorName):
+    """
+    Display the basic game screen with emperor and player information.
+
+    This function renders and displays the basic game screen with the emperor's image, position, and name, as well as the player's name and health bars.
+
+    Args:
+        emperorImage (pygame.Surface): The image of the emperor.
+        emperorPos (tuple): The position (x, y) of the emperor.
+        emperorName (str): The name of the emperor.
+
+    Returns:
+        None
+    """
+
     global emperorHealthDisplayFactor, playerHealthDisplayFactor, emperorHealth, playerHealth, emperorRotation, playerName
 
     #Draw the background image onto the screen
@@ -198,6 +275,22 @@ def display_basic_screen(emperorImage, emperorPos, emperorName):
     pygame.draw.rect(SCREEN, (239, 39, 39), pygame.Rect(543, 430, playerHealthDisplayFactor*playerHealth, 20))
 
 def attack_emperor(playerAttack, attackFrames, position, attacker, attackTypeText):
+    """
+    Perform an attack on the emperor.
+
+    This function calculates the damage inflicted on the emperor by the player's attack and updates the emperor's health accordingly.
+
+    Args:
+        playerAttack (int): The power of the player's attack.
+        attackFrames (list): The frames of the attack animation.
+        position (tuple): The position (x, y) where the attack animation should be displayed.
+        attacker (int): The identifier of the attacker (player or emperor).
+        attackTypeText (str): The text describing the type of attack.
+
+    Returns:
+        int: The updated health of the emperor.
+    """
+
     global emperorHealth, playerHealth, attackType, emperorRotation
 
     #if player attack type is super effective against emperor type
@@ -212,6 +305,22 @@ def attack_emperor(playerAttack, attackFrames, position, attacker, attackTypeTex
     return emperorHealth
 
 def attack_player(emperorAttackPower, attackFrames, position, attacker, attackTypeText, attackedEmperor):
+    """
+    Perform an attack on the player.
+
+    This function calculates the damage inflicted on the player by the emperor's attack and updates the player's health accordingly.
+
+    Args:
+        emperorAttackPower (int): The power of the emperor's attack.
+        attackFrames (list): The frames of the attack animation.
+        position (tuple): The position (x, y) where the attack animation should be displayed.
+        attacker (int): The identifier of the attacker (player or emperor).
+        attackTypeText (str): The text describing the type of attack.
+        attackedEmperor (bool): A flag indicating whether the emperor was attacked.
+
+    Returns:
+        int: The updated health of the player.
+    """
     global emperorHealth, playerHealth, emperorRotation
 
     random_number = random.uniform(1, 2)
@@ -241,6 +350,19 @@ def attack_player(emperorAttackPower, attackFrames, position, attacker, attackTy
     return playerHealth
 
 def check_answer(answer, correct_answer):
+    """
+    Check the correctness of the player's answer to a question.
+
+    This function compares the player's answer to the correct answer and displays feedback accordingly.
+
+    Args:
+        answer (str): The player's answer.
+        correct_answer (str): The correct answer.
+
+    Returns:
+        bool: True if the answer is correct, False otherwise.
+    """
+
     # Display question screen
     SCREEN.blit(QUESTIONSCROLL, (25, 100))
     title = get_font("Shojumaru", 25).render("Answer the Following Question:", True, white)
@@ -259,7 +381,7 @@ def check_answer(answer, correct_answer):
         correct = True
 
     else:
-        incorrect_lines = ["Incorrect", f"Correct Answer = {correct_answer}", f"Your Answer = {answer}"]
+        incorrect_lines = ["Incorrect", f"Correct Answer = {int(correct_answer)}", f"Your Answer = {answer}"]
         line_height = get_font("Shojumaru", 20).get_height()
         for i, line in enumerate(incorrect_lines):
             incorrect_text = get_font("Shojumaru", 20).render(line, True, white)
@@ -274,7 +396,17 @@ def check_answer(answer, correct_answer):
     return correct
 
 def generate_question_answer():
-    
+    """
+    Generate a random arithmetic question and its answer.
+
+    This function generates a random arithmetic question involving addition, subtraction, multiplication, or division, along with its correct answer.
+
+    Args:
+        None
+
+    Returns:
+        list: A list containing the arithmetic question and its correct answer.
+    """
     equationFound = False
     while True:
         num_operands = random.randint(2, 4)  # Random number of operands
@@ -297,6 +429,18 @@ def generate_question_answer():
     return [expression, result]
 
 def question():
+    """
+    Display a question and prompt the player for an answer.
+
+    This function generates a random arithmetic question, displays it on the screen, and prompts the player to input an answer.
+
+    Args:
+        None
+
+    Returns:
+        bool: True if the player's answer is correct, False otherwise.
+    """
+     
     global player
     answer = ""
     current_question = Question(player)
@@ -325,7 +469,6 @@ def question():
         inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100)  # Adjust position as needed
         SCREEN.blit(input_text, inputRect)
 
-        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -339,36 +482,62 @@ def question():
                     answer = answer[:-1]
                 else:
                     # Check if a printable character is pressed and append it to the answer
-                    if event.unicode.isprintable():
+                    if event.unicode.isdigit() or (event.unicode == '-' and len(answer) == 0):
                         answer += event.unicode
 
         # Update the display
         pygame.display.update()
 
 def animate_attack(attackFrames, position, attacker, attackTypeText):
-  global frame_index, emperorHealth, playerHealth, emperorRotation
-   
-  clock = pygame.time.Clock()
-  frame_delay = 10
+    """
+    Animate an attack on the screen.
 
-  for _ in range(len(attackFrames)):
-    # Draw the background image onto the screen
-    display_basic_screen(emperorImages[emperorRotation][0], emperorImages[emperorRotation][1], emperorNames[emperorRotation])
-    display_static_text(actionTexts[attacker] + attackTypeText, (40, 510), white, 300)
+    This function animates an attack on the screen by displaying a sequence of frames from the attack animation.
 
-    # Blit current frame onto the screen
-    SCREEN.blit(attackFrames[frame_index], position)  # Adjust the position as needed
+    Args:
+        attackFrames (list): The frames of the attack animation.
+        position (tuple): The position (x, y) where the attack animation should be displayed.
+        attacker (int): The identifier of the attacker (player or emperor).
+        attackTypeText (str): The text describing the type of attack.
 
-    # Increment frame index and loop back to the beginning if necessary
-    frame_index = (frame_index + 1) % len(attackFrames)
+    Returns:
+        None
+    """
 
-    # Update the display
-    pygame.display.update()
+    global frame_index, emperorHealth, playerHealth, emperorRotation
+    
+    clock = pygame.time.Clock()
+    frame_delay = 10
 
-    # Delay for specified time
-    clock.tick(frame_delay)
+    for _ in range(len(attackFrames)):
+        # Draw the background image onto the screen
+        display_basic_screen(emperorImages[emperorRotation][0], emperorImages[emperorRotation][1], emperorNames[emperorRotation])
+        display_static_text(actionTexts[attacker] + attackTypeText, (40, 510), white, 300)
+
+        # Blit current frame onto the screen
+        SCREEN.blit(attackFrames[frame_index], position)  # Adjust the position as needed
+
+        # Increment frame index and loop back to the beginning if necessary
+        frame_index = (frame_index + 1) % len(attackFrames)
+
+        # Update the display
+        pygame.display.update()
+
+        # Delay for specified time
+        clock.tick(frame_delay)
 
 def win_screen(score):
+    """
+    Display the win screen.
+
+    This function displays the win screen with a congratulatory message and the player's new level.
+
+    Args:
+        score (int): The player's new level.
+
+    Returns:
+        None
+    """
     global emperorHealth, playerHealth
     display_basic_screen(deadEmperorImages[emperorRotation][0], deadEmperorImages[emperorRotation][1], emperorNames[emperorRotation])
     display_static_text("Congratulations! The emperor has been defeated.", (40, 510), white, 300)
@@ -397,6 +566,18 @@ def win_screen(score):
         pygame.display.update()
 
 def lose_screen(username, password):
+    """
+    Display the lose screen.
+
+    This function displays the lose screen with a message indicating defeat and the player's current level.
+
+    Args:
+        username (str): The username of the player.
+        password (str): The password of the player.
+
+    Returns:
+        None
+    """
     global emperorHealth, playerHealth
     SCREEN.blit(DEADPANDASCREEN, (-1, 301))
     display_static_text("You have been defeated by the emperor.", (40, 510), white, 300)
@@ -427,6 +608,18 @@ def lose_screen(username, password):
         pygame.display.update()
 
 def start_game(username, password):
+    """
+    Start the main game loop.
+
+    This function initializes the game and allows players to interact with the main game screen to perform attacks and answer questions.
+
+    Args:
+        username (str): The username of the player.
+        password (str): The password of the player.
+
+    Returns:
+        None
+    """
     global frame_index, emperorHealthDisplayFactor, playerHealthDisplayFactor, emperorHealth, playerHealth, emperorLevel, emperorRotation, playerName, attackType, player
     player = Player(username, password)
     player.load_player()
@@ -453,12 +646,16 @@ def start_game(username, password):
     
     while True:
         #Get Mouse Pos
-        MOUSE_POS = pygame.mouse.get_pos()  
+        MOUSE_POS = pygame.mouse.get_pos() 
+        MOUSE_X, MOUSE_Y = MOUSE_POS 
     
         attackedEmperor = False 
 
         display_basic_screen(emperorImages[emperorRotation][0], emperorImages[emperorRotation][1], emperorNames[emperorRotation])
         display_static_text(actionTexts[0], (40, 510), white, 300)
+
+        if (10<MOUSE_X<45 and 10<MOUSE_Y<40):
+            SCREEN.blit(RESIZED_BACK, (-120,-126))
 
         #if player died
         if (playerHealth <= 0):
@@ -471,7 +668,10 @@ def start_game(username, password):
         SUB_BUTTON = Button(image = None, pos = (690, 520), text_input = "Subtraction", font = get_font("Sawarabi",24), base_colour = "black", hovering_colour = "#d73c37")
         MUL_BUTTON = Button(image = None, pos = (700, 560), text_input = "Multiplication", font = get_font("Sawarabi",24), base_colour = "black", hovering_colour = "#d73c37")
 
-        for button in [ADD_BUTTON, DIV_BUTTON, SUB_BUTTON, MUL_BUTTON]:
+        #Back Button
+        BACK = Button(image = "images/back_button.png", pos = (40, 25), text_input = "", font = get_font("Shojumaru", 22), base_colour = "White", hovering_colour = "#b51f09")
+
+        for button in [ADD_BUTTON, DIV_BUTTON, SUB_BUTTON, MUL_BUTTON, BACK]:
             button.changeColour(MOUSE_POS)
             button.update(SCREEN)
 
@@ -529,12 +729,10 @@ def start_game(username, password):
                         return
 
                     playerHealth = attack_player(emperorAttackPower, emperorAttackFrames, (-45, 170), 3, "", attackedEmperor)
-            
-        mouse_x, mouse_y = MOUSE_POS
-        font = pygame.font.Font(None, 36)
-        text = font.render(f"Mouse Position: ({mouse_x}, {mouse_y})", True, (0,0,0))
-        SCREEN.blit(text,(10,10))
-
+                
+                if BACK.checkInput(MOUSE_POS):
+                    return
+                
         # Update the display
         pygame.display.flip()
 

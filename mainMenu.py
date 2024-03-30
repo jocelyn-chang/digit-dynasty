@@ -41,7 +41,6 @@ def input_box(SCREEN, input_rect, text, font, active = False, is_password = Fals
     colour_active = pygame.Color('black')
     colour_passive = pygame.Color('gray15')
     colour = colour_active if active else colour_passive
-
     box = pygame.Surface((input_rect.width, input_rect.height), pygame.SRCALPHA)
     box.fill((255, 255, 255, 10))
     SCREEN.blit(box, input_rect.topleft)
