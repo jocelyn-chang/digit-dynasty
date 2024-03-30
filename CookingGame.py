@@ -422,7 +422,7 @@ def draw_screen(dumpling_positions, photo_positions, questions, level):
     pygame.display.flip()
 
 
-def playGame(username, password):
+def play_game(username, password):
     """
     Starts and manages the main game loop, handling gameplay, events, and transitions.
 
@@ -552,7 +552,7 @@ def cooking_game(username, password):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                     if START_BUTTON.checkInput(mouse_pos):
-                        playGame(username, password)
+                        play_game(username, password)
                     if INSTRUCTION_BUTTON.checkInput(mouse_pos):
                         instruction()
                     if RETURN_BUTTON.checkInput(mouse_pos):
