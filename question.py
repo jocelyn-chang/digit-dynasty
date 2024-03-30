@@ -25,7 +25,7 @@ class Question:
             return [q, ans]
             
             
-        if operation == '-':
+        elif operation == '-':
             level = int(self.player.get_sub())
             
             if level <= 5:
@@ -94,6 +94,47 @@ class Question:
             question = f"{dividend} / {num1}?"
 
             return [int(quotient), question]
+        
+        #Arithmetic Emperor Questions
+        else:
+            operandSymbols = ['+', '-', '*', '/']
+
+            level = int(self.player.get_bosses())
+            if level <= 5:
+                digits = (1, 3)   
+            elif 5 < level <= 10:
+                digits = (1, 4)  
+            elif 10 < level <= 15:
+                digits = (1, 5) 
+            elif 15 < level <= 20:
+                digits = (1, 6) 
+            elif 20 < level <= 25:
+                digits = (1, 7)
+            elif 25 < level <= 30:
+                digits = (1, 8) 
+            elif level > 30:
+                digits = (1, 9)
+
+            equationFound = False
+            while True:
+                num_operands = random.randint(2, 4)  # Random number of operands
+                operands = random.choices(operandSymbols, k=num_operands)  # Randomly select operands
+                numbers = [random.randint(digits[0], digits[1]) for _ in range(num_operands + 1)]  # Generate random numbers
+                
+                for i in range (len(operands)):
+                    if operands[i] == '/':
+                        if numbers[i]%numbers[i + 1] == 0:
+                            equationFound = True
+                        else:
+                            equationFound = False
+                            break
+
+                if equationFound:
+                    break
+
+            expression = ' '.join([f'{num} {op}' for num, op in zip(numbers[:-1], operands)]) + f' {numbers[-1]}'
+            result = eval(expression)
+            return [expression, result]
 
         # wrtie the question based on the operation given
         question = f"{num1} {operation} {num2}?"

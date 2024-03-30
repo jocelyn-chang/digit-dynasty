@@ -38,8 +38,8 @@ BACKBUTTON = pygame.transform.rotate(pygame.image.load("images/back_button.png")
 RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
 HAPPYPANDA = pygame.image.load("images/thumbsuppanda.png")
 
-emperorImages = [[EMPERORMONKEY, (460, 40)], [EMPERORPIG, (460, 10)], [EMPERORPHOENIX, (460, 20)], [EMPERORDRAGON, (480, -5)]]
-deadEmperorImages = [[DEADMONKEY, (420, 20)], [DEADPIG, (460, 30)], [DEADPHOENIX, (460, 40)], [DEADDRAGON, (410, -5)]]
+emperorImages = [[EMPERORMONKEY, (460, 40)], [EMPERORPHOENIX, (460, 20)], [EMPERORDRAGON, (480, -5)], [EMPERORPIG, (460, 10)]]
+deadEmperorImages = [[DEADMONKEY, (420, 20)], [DEADPHOENIX, (460, 40)], [DEADDRAGON, (410, -5)], [DEADPIG, (460, 30)]]
 
 #Load Attack Animation Frames
 emperorFramePaths = sorted(glob.glob('images/AE_emperor_attack/*.png')) 
@@ -63,9 +63,8 @@ frame_index = 0
 
 
 actionTexts = ["Choose an attack...", "You used ", "You missed your attack", "The emperor uses Blazing Fury!", "The emperor missed its attack!"]
-emperorNames = ["Emperor AddWukong", "Emperor DivPorkus", "Emperor SubPyrros", "Emperor MulSmaug"]
+emperorNames = ["Emperor AddWukong", "Emperor SubPyrros", "Emperor MulSmaug", "Emperor DivPorkus"]
 emperorTypes = ["Addition", "Subtraction", "Multiplication", "Division"]
-playerName = "Player Name"
 operandSymbols = ['+', '-', '*', '/']
 
 # define colours
@@ -182,7 +181,7 @@ def display_static_text(text, position, colour, max_width):
     return rendered_lines
    
 def display_basic_screen(emperorImage, emperorPos, emperorName):
-    global emperorHealthDisplayFactor, playerHealthDisplayFactor, emperorHealth, playerHealth, emperorRotation
+    global emperorHealthDisplayFactor, playerHealthDisplayFactor, emperorHealth, playerHealth, emperorRotation, playerName
 
     #Draw the background image onto the screen
     SCREEN.blit(BACKGROUND, (0, 0))
@@ -199,10 +198,17 @@ def display_basic_screen(emperorImage, emperorPos, emperorName):
     pygame.draw.rect(SCREEN, (239, 39, 39), pygame.Rect(543, 430, playerHealthDisplayFactor*playerHealth, 20))
 
 def attack_emperor(playerAttack, attackFrames, position, attacker, attackTypeText):
-    global emperorHealth, playerHealth
+    global emperorHealth, playerHealth, attackType, emperorRotation
 
-    animate_attack(attackFrames, position, attacker, attackTypeText)
-    emperorHealth = emperorHealth - playerAttack
+    #if player attack type is super effective against emperor type
+    if (attackType == emperorRotation - 1 or attackType - 3 == emperorRotation ):
+        animate_attack(attackFrames, position, attacker, attackTypeText + " It's super effective!")
+        emperorHealth = emperorHealth - (1.5 * playerAttack)
+        
+    else:
+        animate_attack(attackFrames, position, attacker, attackTypeText)
+        emperorHealth = emperorHealth - playerAttack
+
     return emperorHealth
 
 def attack_player(emperorAttackPower, attackFrames, position, attacker, attackTypeText, attackedEmperor):
@@ -242,6 +248,8 @@ def check_answer(answer, correct_answer):
     titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
     SCREEN.blit(title, titleRect)
 
+    correct = False
+
     if int(answer) == int(correct_answer):
         # Display user's input text
         correct = get_font("Shojumaru", 20).render('CORRECT', True, white)
@@ -251,12 +259,13 @@ def check_answer(answer, correct_answer):
         correct = True
 
     else:
-        # Display user's input text
-        incorrect = get_font("Shojumaru", 20).render(f"Incorrect, Correct answer = {correct_answer}  your answer = {answer}", True, white)
-        inputRect = incorrect.get_rect()
-        inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Adjust position as needed
-        SCREEN.blit(incorrect, inputRect)
-        correct = False
+        incorrect_lines = ["Incorrect", f"Correct Answer = {correct_answer}", f"Your Answer = {answer}"]
+        line_height = get_font("Shojumaru", 20).get_height()
+        for i, line in enumerate(incorrect_lines):
+            incorrect_text = get_font("Shojumaru", 20).render(line, True, white)
+            inputRect = incorrect_text.get_rect()
+            inputRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + i * line_height)  # Adjust position for each line
+            SCREEN.blit(incorrect_text, inputRect)
 
     # Update the display
     pygame.display.update()
@@ -288,8 +297,10 @@ def generate_question_answer():
     return [expression, result]
 
 def question():
+    global player
     answer = ""
-    questionAndAnswer = generate_question_answer()
+    current_question = Question(player)
+    questionAndAnswer = current_question.generate_question("Bedmas")
     question_text = questionAndAnswer[0]
     correct_answer = questionAndAnswer[1]
     run = True
@@ -416,7 +427,7 @@ def lose_screen(username, password):
         pygame.display.update()
 
 def start_game(username, password):
-    global frame_index, emperorHealthDisplayFactor, playerHealthDisplayFactor, emperorHealth, playerHealth, emperorLevel, emperorRotation
+    global frame_index, emperorHealthDisplayFactor, playerHealthDisplayFactor, emperorHealth, playerHealth, emperorLevel, emperorRotation, playerName, attackType, player
     player = Player(username, password)
     player.load_player()
 
@@ -424,10 +435,11 @@ def start_game(username, password):
     emperorLevel = int(player.get_bosses())
     emperorAttackPower = 20 + 2 * emperorLevel
     emperorHealth = 100 + 5 * emperorLevel
-    emperorRotation = emperorLevel % 3
+    emperorRotation = emperorLevel % 4
     
     #Set up Player Variables (each attack has base power of 20, and get stronger based on operand score)
     playerHealth = 100
+    playerName = player.get_name()
     addAttackPower = 20 + int(player.get_add())
     subAttackPower = 20 + int(player.get_sub())
     mulAttackPower = 20 + int(player.get_mul())
@@ -436,6 +448,8 @@ def start_game(username, password):
     #the health bar is 188 pixels, so need to get num pixels per 1 health
     emperorHealthDisplayFactor = 188/emperorHealth
     playerHealthDisplayFactor = 188/playerHealth
+
+    attackType = 0
     
     while True:
         #Get Mouse Pos
@@ -467,6 +481,7 @@ def start_game(username, password):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if ADD_BUTTON.checkInput(MOUSE_POS):
                     if question():
+                        attackType = 0
                         emperorHealth = attack_emperor(addAttackPower, addAttackFrames, (365, 25), 1, "Addition Anarchy!")
                         attackedEmperor = True
                     if (emperorHealth <= 0):
@@ -478,6 +493,7 @@ def start_game(username, password):
 
                 if SUB_BUTTON.checkInput(MOUSE_POS):
                     if question():
+                        attackType = 1
                         emperorHealth = attack_emperor(subAttackPower, subAttackFrames, (320, -30), 1, "Subtraction Storm!")
                         attackedEmperor = True
                     if (emperorHealth <= 0):
@@ -487,10 +503,11 @@ def start_game(username, password):
                         return
 
                     playerHealth = attack_player( emperorAttackPower, emperorAttackFrames, (-45, 170), 3, "", attackedEmperor)
-
-                if DIV_BUTTON.checkInput(MOUSE_POS):
+                
+                if MUL_BUTTON.checkInput(MOUSE_POS):
                     if question():
-                        emperorHealth = attack_emperor(divAttackPower, divAttackFrames, (290, 25), 1, "Division Disaster!")
+                        attackType = 2
+                        emperorHealth = attack_emperor(mulAttackPower, mulAttackFrames, (295, -80), 1, "Multiplication Magnetism!")
                         attackedEmperor = True
                     if (emperorHealth <= 0):
                         new_score = int(player.get_bosses()) + 1
@@ -500,9 +517,10 @@ def start_game(username, password):
 
                     playerHealth = attack_player(emperorAttackPower, emperorAttackFrames, (-45, 170), 3, "", attackedEmperor)
 
-                if MUL_BUTTON.checkInput(MOUSE_POS):
+                if DIV_BUTTON.checkInput(MOUSE_POS):
                     if question():
-                        emperorHealth = attack_emperor(mulAttackPower, mulAttackFrames, (295, -80), 1, "Multiplication Magnetism!")
+                        attackType = 3
+                        emperorHealth = attack_emperor(divAttackPower, divAttackFrames, (290, 25), 1, "Division Disaster!")
                         attackedEmperor = True
                     if (emperorHealth <= 0):
                         new_score = int(player.get_bosses()) + 1
