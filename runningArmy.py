@@ -1,8 +1,7 @@
 import pygame, sys, random, math
 from Button import Button
-from question import Question
+from Question import Question
 from Player import Player
-
 
 pygame.init()
 
@@ -20,110 +19,164 @@ RESIZED_BACK = pygame.image.load("images/resized_back.png")
 RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
 WIN_SCREEN = pygame.image.load("images/win_screen_mult.png")
 LOSE_SCREEN = pygame.image.load("images/lose_screen_mult.png")
-start_screen = pygame.image.load("images/Running Army Start Screen.png")
-image = pygame.image.load("images/running_army_bg.png")
-panda = pygame.transform.scale(pygame.image.load("images/panda1.png"), (50, 50))
-dead_panda = pygame.transform.scale(pygame.image.load("images/panda4.png"), (60, 60))
-gate = pygame.transform.scale(pygame.image.load("images/gates.png"), (400, 125))
-qbox = pygame.transform.scale(pygame.image.load("images/questionscreen.png"), (400, 125))
-arrow = pygame.transform.scale(pygame.image.load("images/parrow.png"), (50, 50))
-question_scroll = pygame.image.load("images/bigScroll.png")
-happypanda = pygame.image.load("images/thumbsuppanda.png")
+START_SCREEN = pygame.image.load("images/Running Army Start Screen.png")
+IMAGE = pygame.image.load("images/running_army_bg.png")
+PANDA = pygame.transform.scale(pygame.image.load("images/panda1.png"), (50, 50))
+DEAD_PANDA = pygame.transform.scale(pygame.image.load("images/panda4.png"), (60, 60))
+GATE = pygame.transform.scale(pygame.image.load("images/gates.png"), (400, 125))
+ARROW = pygame.transform.scale(pygame.image.load("images/parrow.png"), (50, 50))
+QUESTION_SCROLL = pygame.image.load("images/bigScroll.png")
 
-image_height = image.get_height()
-image_width = image.get_width()
+# Load Sounds
+LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
+WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
+CORRECT = pygame.mixer.Sound("sound/Correct.mp3")
+
+image_height = IMAGE.get_height()
+image_width = IMAGE.get_width()
 
 # define colours
 white = (255, 255, 255)
 
 # movement for panda/arrow
-arrow_rect = arrow.get_rect()
-panda_rect = panda.get_rect()
+arrow_rect = ARROW.get_rect()
+panda_rect = PANDA.get_rect()
 
 
 # Calculate the new height of the image to maintain the aspect ratio
 scaled_height = int(image_height * (SCREEN_WIDTH / image_width))
 
 # Scale the image to fill the width of the screen while maintaining the aspect ratio
-scaled_image = pygame.transform.scale(image, (SCREEN_WIDTH, scaled_height))
+scaled_image = pygame.transform.scale(IMAGE, (SCREEN_WIDTH, scaled_height))
 
-# get the font
 def get_font(size):
+    """
+    Returns a pygame font object with the specified size.
+
+    Args:
+        size (int): The size of the font.
+
+    Returns:
+        pygame.font.Font: A font object with the specified size.
+    """
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
-# Intructions screen
 def instruction1():
-    run = True
-    while run:
+    """
+    Displays the first instruction screen.
+
+    This screen shows the instructions for the division operation and has two buttons: one to go to the previous screen and one to proceed to the next
+    instruction screen. This function checks for a mouse input to determine which button has been clicked.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
+    while True:
+        # Obtain the mouse position on the screen
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
+        # Place the first instruction screen
         screen.blit(INSTRUCTION1, (0, 0))
-        
+
+        # Create the next and back buttons
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
         INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        
+        INSTRUCTIONS_BACK.update(screen)
+        INSTRUCTIONS_NEXT.update(screen)
+
+        # If the mouse hovers over the buttons, resize the button to be bigger
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             screen.blit(RESIZED_BACK, (-90,-96))
         if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
             screen.blit(RESIZED_NEXT, (540, 324))
 
-        INSTRUCTIONS_BACK.update(screen)
-        INSTRUCTIONS_NEXT.update(screen)
-
+        # Check for events
         for event in pygame.event.get():
+            # If the user exits out of the screen, close pygame and exit the system
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Go back to the title screen if the back button is pressed
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    run = False
+                    return
+                # Go to next instruction screen if the next button is pressed
                 if INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
                     instruction2()
-                    run = False
-
+        # Update the screen
         pygame.display.update()
 
 def instruction2():
-    run = True
-    while run:
+    """
+    Displays the second instruction screen.
+
+    This screen shows the instructions to play the game and has a button to back to the first instruction screen when clicked. It checks for the mouse position and input
+    to determine if the back button has been clicked.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
+    while True:
+        # Obtain the mouse position on the screen
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
+        # Place the second instruction screen
         screen.blit(INSTRUCTION2, (0, 0))
         
+        # Create the next and back buttons
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        
+        INSTRUCTIONS_BACK.update(screen)
+
+        # If the mouse hovers over the buttons, resize the button to be bigger
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             screen.blit(RESIZED_BACK, (-90,-96))
-        if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
-            screen.blit(RESIZED_NEXT, (540, 324))
 
-        INSTRUCTIONS_BACK.update(screen)
-        INSTRUCTIONS_NEXT.update(screen)
-
+        # Check for events
         for event in pygame.event.get():
+            # If the user exits out of the screen, close pygame and exit the system
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS) or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
-                    run = False
-
+                # Go back to the first instruction screen if the back button is pressed
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    return
+        # Update the screen
         pygame.display.update()
 
 def check_answer(answer, correct_answer):
-    # Display question screen
-    screen.blit(question_scroll, (25, 100))
+    """
+    Checks if the user's answer is correct and displays the result on the screen.
+
+    Args:
+        answer (str): The user's answer to the question.
+        correct_answer (str): The correct answer to the question.
+
+    Returns:
+        bool: True if the user's answer is correct, False otherwise.
+    """
+    screen.blit(QUESTION_SCROLL, (25, 100))
     title = get_font(25).render("Answer the Following Question:", True, white)
     titleRect = title.get_rect()
     titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
     screen.blit(title, titleRect)
     
     correct = False
-
+    
     if int(answer) == int(correct_answer):
+        #play sound
+        CORRECT.play()
+        
         # Display user's input text
         correct = get_font(20).render('CORRECT', True, white)
         inputRect = correct.get_rect()
@@ -149,6 +202,16 @@ def check_answer(answer, correct_answer):
 
 
 def question(numpandas, multiplier):
+    """
+    Displays a multiplication question and checks if the user's answer is correct.
+
+    Args:
+        numpandas (int): The number of pandas.
+        multiplier (int): The multiplier for the question.
+
+    Returns:
+        bool: True if the user's answer is correct, False otherwise.
+    """
     answer = ""
     correct_answer = numpandas*multiplier
     run = True
@@ -156,7 +219,7 @@ def question(numpandas, multiplier):
     while run:
         
         # Display question screen
-        screen.blit(question_scroll, (25, 100))
+        screen.blit(QUESTION_SCROLL, (25, 100))
         title = get_font(20).render("Answer the Following Question:", True, white)
         titleRect = title.get_rect()
         titleRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
@@ -196,14 +259,22 @@ def question(numpandas, multiplier):
         pygame.display.update()
 
 def lose_screen(x_pos):
+    """
+    Displays the lose screen when the player loses the game.
+
+    Args:
+        x_pos (int): The x position of the dead panda.
+    """
     run = True    
-    screen.blit(dead_panda, (x_pos-5, 385))
+    screen.blit(DEAD_PANDA, (x_pos-5, 385))
     pygame.display.update()
     pygame.time.delay(2000)
-
+    # play sound once
+    LOSS.play()
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
+        
         # Load buttons
         RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
         
@@ -228,10 +299,18 @@ def lose_screen(x_pos):
     return 
 
 def win_screen():
+    """
+    Displays the win screen when the player wins the game.
+    """
+    
+    # play sound once
+    WIN.play()
+
     run = True
     while run:
             MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
             GAME_MOUSE_POS = pygame.mouse.get_pos()
+
             # Load buttons
             RETURN = Button(image = pygame.image.load("images/scroll_button.png"), pos = (400, 500), text_input = "TITLE SCREEN", font = get_font(18), base_colour = "#b51f09", hovering_colour = "White")
             
@@ -256,6 +335,16 @@ def win_screen():
     return 
 
 def generate_arrows(incorrect_counter, num_pandas):
+    """
+    Generates the number of arrows based on the number of pandas and the incorrect counter.
+
+    Args:
+        incorrect_counter (int): The number of incorrect answers given by the player.
+        num_pandas (int): The number of pandas.
+
+    Returns:
+        int: The number of arrows to be generated.
+    """
     randomizer = random.randint(1, 100)
     if incorrect_counter == 0:
         if num_pandas < 4:
@@ -285,9 +374,16 @@ def generate_arrows(incorrect_counter, num_pandas):
     return num_arrows
 
 def start_game(username, password):
+    """
+    Starts the main game loop.
+
+    Args:
+        username (str): The username of the player.
+        password (str): The password of the player.
+    """
     # Scrolling variables
     scroll = 0
-    scroll_speed = 2
+    scroll_speed = 4
     x = (SCREEN_WIDTH) // 2
     speed = 5
     num_arrows = 1
@@ -363,7 +459,14 @@ def start_game(username, password):
         # Draw the scaled image twice to create the looping effect and gates
         screen.blit(scaled_image, (0, scroll - scaled_height))
         screen.blit(scaled_image, (0, scroll))
-        screen.blit(gate, (200, scroll - 125))
+        screen.blit(GATE, (200, scroll - 125))
+
+        # draw current score and level
+        score_text = get_font(20).render((f"Score: {gates}"), True, white)
+        level_text = get_font(20).render((f"Level: {player.get_mul()}"), True, white)
+        screen.blit(score_text, (25, 20))
+        screen.blit(level_text, (25, 50))
+
 
         # Draw the panda and arrow
         amplitude = 10
@@ -376,8 +479,8 @@ def start_game(username, password):
         arrow_rect.y = scroll - 450
         arrow_rect.x = x
 
-        screen.blit(panda, panda_rect)
-        screen.blit(arrow, (arrow_rect))
+        screen.blit(PANDA, panda_rect)
+        screen.blit(ARROW, (arrow_rect))
 
         # Display number of arrows and pandas
         arrow_text = get_font(20).render(str(num_arrows), True, white)
@@ -403,17 +506,30 @@ def start_game(username, password):
     return
 
 def play_music(file):
+    """
+    Starts the main game loop.
+
+    Args:
+        username (str): The username of the player.
+        password (str): The password of the player.
+    """
     pygame.mixer.init()
     pygame.mixer.music.load(file)
     pygame.mixer.music.play(-1)
 
 def running_army(username, password):
-    # Main game loop
+    """
+    Initializes and runs the "Running Army" game.
+
+    Args:
+        username (str): The username of the player.
+        password (str): The password of the player.
+    """
     play_music("sound/RunningArmyMusic.mp3")
     run = True
     while run:
         # display start screen
-        screen.blit(start_screen, (0,0))
+        screen.blit(START_SCREEN, (0,0))
         MOUSE_POS = pygame.mouse.get_pos()
 
         START_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 250), text_input = "START GAME", font = get_font(22), base_colour = "#b51f09", hovering_colour = "White")
@@ -426,7 +542,8 @@ def running_army(username, password):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BUTTON.checkInput(MOUSE_POS):
                     start_game(username, password)

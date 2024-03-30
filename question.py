@@ -9,7 +9,7 @@ class Question:
 
     def generate_question(self, operation):
         if operation == '+':
-            level = self.player.get_add()
+            level = int(self.player.get_add())
             if level < 5: # For single digit addition
                 num1 = random.randint(1, 9)
                 num2 = random.randint(1, 9)
