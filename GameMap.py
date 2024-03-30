@@ -69,12 +69,11 @@ def get_font(font, size):
         return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 def load_map(username, password):
-  player = Player(username, password)
-  player.load_player()
-
   run = True
   no_entry = False
   while run:
+    player = Player(username, password)
+    player.load_player()
 
     MULTTEMP = Button(pygame.image.load("images/templeright.png"), pos = (600, 131), text_input = "", font = get_font("Shojumaru", 15), base_colour = "White", hovering_colour = "#b51f09")
     TOPTEMP = Button(pygame.image.load("images/templetop.png"), pos = (372, 32), text_input = "", font = get_font("Shojumaru", 15), base_colour = "White", hovering_colour = "#b51f09")
@@ -160,6 +159,8 @@ def load_map(username, password):
             if LOCKTEMP.checkInput(MOUSE_POS):
               no_entry = True
 
+    player = Player(username, password)
+    player.load_player()
     font = get_font("Shojumaru", 18)
     name_surface = font.render(f"{player.get_name()}'s Game", True, "#a6d9db")
     add_surface = font.render(f"Addition: {player.get_add()}", True, "White")
