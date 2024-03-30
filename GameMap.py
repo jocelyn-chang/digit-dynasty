@@ -1,7 +1,7 @@
 import pygame, sys
 from Button import Button
 from Player import Player
-from runningArmy import running_army
+from RunningArmy import running_army
 from SnakeGame import snakeSums
 from CookingGame import cooking_game
 from SandwichStack import sandwich_stack
