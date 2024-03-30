@@ -235,11 +235,10 @@ def load_player(input_username, input_password):
 def play_music(file):
     pygame.mixer.init()
     pygame.mixer.music.load(file)
-    pygame.mixer.music.play()
+    pygame.mixer.music.play(-1)
 
 def debug_mode(username, password): 
     player = Player(username, password)
-    player.load_player()
     input_font = get_font("Sawarabi",35)
     
     # input for each box 
@@ -654,10 +653,10 @@ def welcome_screen():
 
 # Main Menu screen
 def main_menu():
+    play_music("sound/EDM.mp3")
     welcome_screen()
 
     while True:
-        play_music("sound/EDM.mp3")
         SCREEN.blit(BACKGROUND, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
