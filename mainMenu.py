@@ -242,11 +242,11 @@ def debug_mode(username, password):
     input_font = get_font("Sawarabi",35)
     
     # input for each box 
-    add_input = '' 
-    sub_input = '' 
-    mult_input = '' 
-    div_input = '' 
-    boss_input = '' 
+    add_input = '0' 
+    sub_input = '0' 
+    mult_input = '0' 
+    div_input = '0' 
+    boss_input = '0' 
     
     # check if box is clicked 
     add_active = False 
@@ -330,37 +330,39 @@ def debug_mode(username, password):
                     mult_active = False 
                     div_active = False 
                     boss_active = False 
-            if event.type== pygame.KEYDOWN: 
-                if add_active: 
-                    if event.key == pygame.K_BACKSPACE: 
-                        add_input = add_input[:-1] 
-                    else: 
-                        add_input += event.unicode 
-                elif sub_active: 
-                    if event.key == pygame.K_BACKSPACE: 
-                        sub_input = sub_input[:-1] 
-                    else: 
-                        sub_input += event.unicode 
-                elif mult_active: 
-                    if event.key == pygame.K_BACKSPACE: 
-                        mult_input = mult_input[:-1] 
-                    else: 
-                        mult_input += event.unicode 
-                elif div_active: 
-                    if event.key == pygame.K_BACKSPACE: 
-                        div_input = div_input[:-1] 
-                    else:
-                        div_input += event.unicode 
-                elif boss_active: 
-                    if event.key == pygame.K_BACKSPACE: 
-                        boss_input = boss_input[:-1] 
-                    else: 
-                        boss_input += event.unicode 
+            if event.type== pygame.KEYDOWN:
+                if add_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        add_input = add_input[:-1]
+                    elif event.unicode.isdigit():
+                        add_input += event.unicode
+                elif sub_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        sub_input = sub_input[:-1]
+                    elif event.unicode.isdigit():
+                        sub_input += event.unicode
+                elif mult_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        mult_input = mult_input[:-1]
+                    elif event.unicode.isdigit():
+                        mult_input += event.unicode
+                elif div_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        div_input = div_input[:-1]
+                    elif event.unicode.isdigit():
+                        div_input += event.unicode
+                elif boss_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        boss_input = boss_input[:-1]
+                    elif event.unicode.isdigit():
+                        boss_input += event.unicode
+
             
             player.update_add(add_input) 
             player.update_sub(sub_input) 
             player.update_mul(mult_input) 
             player.update_div(div_input) 
+            player.update_bosses(boss_input)
             
         input_box(SCREEN, add_rect, add_input, input_font, active = add_active) 
         input_box(SCREEN, sub_rect, sub_input, input_font, active = sub_active) 
