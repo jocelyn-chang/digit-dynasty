@@ -471,6 +471,7 @@ def playGame(username, password):
         # Wrong answer, show lose screen and exit loop
         if ans == 2: 
             lose_screen(correct_answer, questions[0])
+            play_music("sound/CookingGameMusic.mp3")
             done = True
             break
         
@@ -501,6 +502,7 @@ def playGame(username, password):
                 level = level + 1
                 player.update_sub(str(level))
             win_screen()
+            play_music("sound/CookingGameMusic.mp3")
             done = True
         
         
@@ -554,8 +556,7 @@ def cooking_game(username, password):
                     if INSTRUCTION_BUTTON.checkInput(mouse_pos):
                         instruction()
                     if RETURN_BUTTON.checkInput(mouse_pos):
-                        run = False
-                        break
+                        return
         # Update the display
         pygame.display.update()
 

@@ -63,64 +63,95 @@ def get_font(size):
 
 def instruction1():
     """
-    Displays the first instruction screen for how to use multiplication.
-    Allows the user to navigate to the next instruction screen or go back.
+    Displays the first instruction screen.
+
+    This screen shows the instructions for the division operation and has two buttons: one to go to the previous screen and one to proceed to the next
+    instruction screen. This function checks for a mouse input to determine which button has been clicked.
+
+    Parameters:
+    None
+
+    Returns:
+    None
     """
-    run = True
-    while run:
+    while True:
+        # Obtain the mouse position on the screen
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
+        # Place the first instruction screen
         screen.blit(INSTRUCTION1, (0, 0))
-        
+
+        # Create the next and back buttons
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
         INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image.load("images/back_button.png"), 180), pos = (680, 475), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        
+        INSTRUCTIONS_BACK.update(screen)
+        INSTRUCTIONS_NEXT.update(screen)
+
+        # If the mouse hovers over the buttons, resize the button to be bigger
         if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
             screen.blit(RESIZED_BACK, (-90,-96))
         if (690<MOUSE_X<705 and 465<MOUSE_Y<490):
             screen.blit(RESIZED_NEXT, (540, 324))
 
-        INSTRUCTIONS_BACK.update(screen)
-        INSTRUCTIONS_NEXT.update(screen)
-
+        # Check for events
         for event in pygame.event.get():
+            # If the user exits out of the screen, close pygame and exit the system
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Go back to the title screen if the back button is pressed
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
-                    run = False
+                    return
+                # Go to next instruction screen if the next button is pressed
                 if INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
                     instruction2()
-                    run = False
-
+        # Update the screen
         pygame.display.update()
 
 def instruction2():
     """
-    Displays the second instruction screen for how to play the game.
-    Allows the user to navigate back to the first instruction screen.
+    Displays the second instruction screen.
+
+    This screen shows the instructions to play the game and has a button to back to the first instruction screen when clicked. It checks for the mouse position and input
+    to determine if the back button has been clicked.
+
+    Parameters:
+    None
+
+    Returns:
+    None
     """
-    run = True
-    while run:
+    while True:
+        # Obtain the mouse position on the screen
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
+        # Place the second instruction screen
         screen.blit(INSTRUCTION2, (0, 0))
         
+        # Create the next and back buttons
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos = (70, 55), text_input = "", font = get_font(15), base_colour = "White", hovering_colour = "#b51f09")
-        INSTRUCTIONS_NEXT = Button(pygame.transform.rotate(pygame.image))
+        INSTRUCTIONS_BACK.update(screen)
 
+        # If the mouse hovers over the buttons, resize the button to be bigger
+        if (40<MOUSE_X<75 and 40<MOUSE_Y<70):
+            screen.blit(RESIZED_BACK, (-90,-96))
 
+        # Check for events
         for event in pygame.event.get():
+            # If the user exits out of the screen, close pygame and exit the system
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS) or INSTRUCTIONS_NEXT.checkInput(GAME_MOUSE_POS):
-                    run = False
-
+                # Go back to the first instruction screen if the back button is pressed
+                if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    return
+        # Update the screen
         pygame.display.update()
 
 def check_answer(answer, correct_answer):
