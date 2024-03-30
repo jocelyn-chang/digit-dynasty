@@ -520,8 +520,3 @@ def start_game(username, password):
         pygame.display.update()
         # Keep the game running at 60 FPS
         clock.tick(60)
-
-# Run the game
-username = "jocelyn"
-password = 12345678
-sandwich_stack(username, password)
