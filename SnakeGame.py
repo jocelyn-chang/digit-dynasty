@@ -4,7 +4,6 @@ import random
 from Player import Player
 from Button import Button
 from Question import Question
-from Question import Question
 
 # Initialize Pygame
 pygame.init()
