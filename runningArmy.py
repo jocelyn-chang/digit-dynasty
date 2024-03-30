@@ -1,6 +1,6 @@
 import pygame, sys, random, math
 from Button import Button
-from question import Question
+from Question import Question
 from Player import Player
 
 pygame.init()
