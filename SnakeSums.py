@@ -67,10 +67,10 @@ def get_font(size):
     and the given size.
 
     Parameters:
-        size (int): The size of the font in points.
+    - size (int): The size of the font in points.
 
     Returns:
-        pygame.font.Font: A Pygame font object.
+    - pygame.font.Font: A Pygame font object.
     """
     return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
@@ -79,7 +79,10 @@ def current_score(score):
     Displays the current score on the screen.
 
     Parameters:
-        score (int): The current score to display.
+    - score (int): The current score to display.
+
+    Returns:
+    None
     """
     shadow = get_font(25).render("Score: " + str(score), True, GREEN4)
     SCREEN.blit(shadow, [652, 12])  
@@ -91,7 +94,10 @@ def current_level(level):
     Displays the current level on the screen.
 
     Parameters:
-        level (int): The current level to display.
+    - level (int): The current level to display.
+
+    Returns:
+    None
     """
     shadow = get_font(25).render("Level: " + str(level), True, GREEN4)
     SCREEN.blit(shadow, [502, 12])  
@@ -103,8 +109,11 @@ def snake(snake_block, snake_list):
     Draws the snake on the screen.
 
     Parameters:
-        snake_block (int): The size of each block in the snake.
-        snake_list (list): List of coordinates for each block of the snake.
+    - snake_block (int): The size of each block in the snake.
+    - snake_list (list): List of coordinates for each block of the snake.
+
+    Returns:
+    None
     """
     for i in snake_list:
         # Draws each rectangle of the snake at the right coordinates
@@ -115,7 +124,10 @@ def time_left(time):
     Displays the time left for the question on the screen.
 
     Parameters:
-        time (int): The time left for the question.
+    - time (int): The time left for the question.
+
+    Returns:
+    None
     """
     shadow = get_font(25).render("Time Left: " + str(time), True, GREEN4)
     SCREEN.blit(shadow, [282, 62])
@@ -127,10 +139,10 @@ def options(correct_ans):
     Generates options for the question.
 
     Parameters:
-        correct_ans (int): The correct answer to the question.
+    - correct_ans (int): The correct answer to the question.
 
     Returns:
-        list: A list of option text surfaces.
+    - list: A list of option text surfaces.
     """
     # Altered by adding a random number
     opt1 = correct_ans + random.randint(1, 5)
@@ -173,6 +185,12 @@ def options(correct_ans):
 def instruction1():
     """
     Displays the first instruction screen.
+
+    Parameters:
+    None
+
+    Returns:
+    None
     """
     run = True
     while run:
@@ -212,6 +230,12 @@ def instruction1():
 def instruction2():
     """
     Displays the second instruction screen.
+
+    Parameters:
+    None
+
+    Returns:
+    None
     """
     run = True
     while run:
@@ -252,12 +276,11 @@ def fruit_coordinates(x1, y1):
     between them.
 
     Parameters:
-        x1 (int): X-coordinate of the snake head.
-        y1 (int): Y-coordinate of the snake head.
+    - x1 (int): X-coordinate of the snake head.
+    - y1 (int): Y-coordinate of the snake head.
 
     Returns:
-        list: A list of lists, each containing the X and Y coordinates
-        of a fruit.
+    - list: A list of lists, each containing the X and Y coordinates of a fruit.
     """
     # Randomize position of fruits
     fruit_coord = [[x1, y1]]
@@ -291,14 +314,11 @@ def fruit_eaten(fruit_coord, correct_ans):
     Also checks if the eaten fruit is the correct answer.
 
     Parameters:
-        fruit_coord (list): A list of lists, each containing the X and Y
-        coordinates of a fruit.
-        correct_ans (str): The letter corresponding to the correct answer
-        among options 'optA', 'optB', 'optC', 'optD'.
+    - fruit_coord (list): A list of lists, each containing the X and Y coordinates of a fruit.
+    - correct_ans (str): The letter corresponding to the correct answer among options 'optA', 'optB', 'optC', 'optD'.
 
     Returns:
-        int: 0 if no action needed, 1 if incorrect answer, 2 if correct
-        answer, 3 if snake hits wall.
+    - int: 0 if no action needed, 1 if incorrect answer, 2 if correct answer, 3 if snake hits wall.
     """
     snakex = fruit_coord[0][0]
     snakey = fruit_coord[0][1]
@@ -330,7 +350,10 @@ def end_screen(result):
     Display ending screen based on game result.
 
     Parameters:
-        result (bool): True for win, False for loss.
+    - result (bool): True for win, False for loss.
+
+    Returns:
+    None
     """
     # Play relative sound effects
     if result == False:
@@ -374,9 +397,12 @@ def response(correct, question, answer):
     Display response screen after answering a question.
 
     Parameters:
-        correct (bool): True if answer was correct, False otherwise.
-        question (str): The question text.
-        answer (str): The correct answer.
+    - correct (bool): True if answer was correct, False otherwise.
+    - question (str): The question text.
+    - answer (str): The correct answer.
+
+    Returns:
+    None
     """
     SCREEN.blit(OVERLAY, (0, 0))
     SCREEN.blit(QBOX, (141, 115))
@@ -416,8 +442,11 @@ def correct(question, answer):
     Display screen for correct answer.
 
     Parameters:
-        question (str): The question text.
-        answer (str): The correct answer.
+    - question (str): The question text.
+    - answer (str): The correct answer.
+
+    Returns:
+    None
     """
     shadow = get_font(50).render("Good Job!", True, GREEN4)
     main = get_font(50).render("Good Job!", True, WHITE)
@@ -796,6 +825,6 @@ def snake_sums(username, password):
     return
 
 # Run the game
-username = "jocelyn"
-password = 12345678
-snake_sums(username, password)
+# username = "jocelyn"
+# password = 12345678
+# snake_sums(username, password)
