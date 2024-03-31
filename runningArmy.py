@@ -598,5 +598,3 @@ def running_army(username, password):
     # Quit back to the game map
     pygame.mixer.music.stop()
     return
-
-running_army("hanwen", "12345678")
