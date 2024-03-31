@@ -191,6 +191,8 @@ def check_answer(answer, correct_answer):
         correct = True
 
     else:
+        # play sound
+        INCORRECT.play()
         incorrect_lines = ["Incorrect", f"Correct Answer = {correct_answer}", f"Your Answer = {answer}"]
         line_height = get_font("Shojumaru", 20).get_height()
         for i, line in enumerate(incorrect_lines):

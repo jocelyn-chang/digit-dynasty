@@ -726,9 +726,9 @@ def snakeSums(username, password):
 
 
 # Run the game
-username = "jocelyn"
-password = 12345678
-snakeSums(username, password)
+# username = "jocelyn"
+# password = 12345678
+# snakeSums(username, password)
 
 # # Import libraries and classes
 # import pygame, sys
