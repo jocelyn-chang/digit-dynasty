@@ -14,17 +14,17 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 # Creating screen
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('SNAKE GAME')
+SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption('SNAKE SUMS')
 
 # Initialize sounds for game
 LOSS = pygame.mixer.Sound("sound/LossSound.mp3")
 WIN = pygame.mixer.Sound("sound/LevelComplete.mp3")
 
 # Create dark overlay for question screen
-overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-overlay.set_alpha(128)  # Set transparency (0-255)
-overlay.fill((0, 0, 0))  # Fill with black
+OVERLAY = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+OVERLAY.set_alpha(128)  # Set transparency (0-255)
+OVERLAY.fill((0, 0, 0))  # Fill with black
 
 # Load images
 BACKGROUND = pygame.image.load("images/snakegamebg.png")
@@ -33,8 +33,7 @@ INSTRUCTION1 = pygame.image.load("images/additionInstructions.png")
 INSTRUCTION2 = pygame.image.load("images/snakeSumsInstructions.png")
 BACK = pygame.image.load("images/back_button.png")
 RESIZED_BACK = pygame.image.load("images/resized_back.png")
-RESIZED_NEXT = pygame.transform.rotate(
-    pygame.image.load("images/resized_back.png"), 180)
+RESIZED_NEXT = pygame.transform.rotate(pygame.image.load("images/resized_back.png"), 180)
 START_SCREEN = pygame.image.load("images/snakesumsstart.png")
 LOST_SCREEN = pygame.image.load("images/lostscreensnake.png")
 WIN_SCREEN = pygame.image.load("images/winscreensnake.png")
@@ -42,116 +41,87 @@ WIN_SCREEN = pygame.image.load("images/winscreensnake.png")
 # Load fruit images and scale to the right size
 FRUIT_SIZE = (50, 50)
 BORDER_SIZE = (60, 60)
-FRUIT_A = pygame.transform.scale(pygame.image.load(
-    "images/orangea.png").convert_alpha(), FRUIT_SIZE)
-FRUIT_B = pygame.transform.scale(pygame.image.load(
-    "images/orangeb.png").convert_alpha(), FRUIT_SIZE)
-FRUIT_C = pygame.transform.scale(pygame.image.load(
-    "images/orangec.png").convert_alpha(), FRUIT_SIZE)
-FRUIT_D = pygame.transform.scale(pygame.image.load(
-    "images/oranged.png").convert_alpha(), FRUIT_SIZE)
-FRUIT_BORDER = pygame.transform.scale(pygame.image.load(
-    "images/orangeborder.png").convert_alpha(), BORDER_SIZE)
+FRUIT_A = pygame.transform.scale(pygame.image.load("images/orangea.png").convert_alpha(), FRUIT_SIZE)
+FRUIT_B = pygame.transform.scale(pygame.image.load("images/orangeb.png").convert_alpha(), FRUIT_SIZE)
+FRUIT_C = pygame.transform.scale(pygame.image.load("images/orangec.png").convert_alpha(), FRUIT_SIZE)
+FRUIT_D = pygame.transform.scale(pygame.image.load("images/oranged.png").convert_alpha(), FRUIT_SIZE)
+FRUIT_BORDER = pygame.transform.scale(pygame.image.load("images/orangeborder.png").convert_alpha(), BORDER_SIZE)
 
 # Clock for controlling game speed
 clock = pygame.time.Clock()
 
 # Colors
 GOLD3 = (179, 152, 96)
-
 GREEN2 = (153, 216, 196)
 GREEN4 = (88, 133, 120)
-
 BLACK = (0, 0, 0)
-white = (255, 255, 255)
+WHITE = (255, 255, 255)
 
 # Snake block size and speed
 snake_block = 20
 snake_speed = 8
 
 # Access the font style with changeable size
-
-
 def get_font(size):
-    return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
+  return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
 # Function to display current score
-
-
 def current_score(score):
-    # Shadow text
-    shadow = get_font(25).render("Score: " + str(score), True, GREEN4)
-    screen.blit(shadow, [652, 12])  # Displays text
+  shadow = get_font(25).render("Score: " + str(score), True, GREEN4)
+  SCREEN.blit(shadow, [652, 12])  
+  main = get_font(25).render("Score: " + str(score), True, WHITE)
+  SCREEN.blit(main, [650, 10]) 
 
-    # Main text
-    main = get_font(25).render("Score: " + str(score), True, white)
-    screen.blit(main, [650, 10])  # Displays text
-
-# Function to display current score
-
-
+# Function to display current level
 def current_level(level):
-    # Shadow text
-    shadow = get_font(25).render("Level: " + str(level), True, GREEN4)
-    screen.blit(shadow, [502, 12])  # Displays text
-
-    # Main text
-    main = get_font(25).render("Level: " + str(level), True, white)
-    screen.blit(main, [500, 10])  # Displays text
+  shadow = get_font(25).render("Level: " + str(level), True, GREEN4)
+  SCREEN.blit(shadow, [502, 12])  
+  main = get_font(25).render("Level: " + str(level), True, WHITE)
+  SCREEN.blit(main, [500, 10])  
 
 # Function to draw the snake
-
-
 def snake(snake_block, snake_list):
-    for i in snake_list:
-        # Draws each rectangle of the snake at the right coordinates
-        pygame.draw.rect(screen, GREEN2, [
-                         i[0], i[1], snake_block, snake_block])
+  for i in snake_list:
+    # Draws each rectangle of the snake at the right coordinates
+    pygame.draw.rect(SCREEN, GREEN2, [i[0], i[1], snake_block, snake_block])
 
 # Shows the time left for the question
-
-
-def timeLeft(time):
-    # Shadow text
-    shadow = get_font(25).render("Time Left: " + str(time), True, GREEN4)
-    screen.blit(shadow, [282, 62])
-
-    # Main text
-    main = get_font(25).render("Time Left: " + str(time), True, white)
-    screen.blit(main, [280, 60])
+def time_left(time):
+  shadow = get_font(25).render("Time Left: " + str(time), True, GREEN4)
+  SCREEN.blit(shadow, [282, 62])
+  main = get_font(25).render("Time Left: " + str(time), True, WHITE)
+  SCREEN.blit(main, [280, 60])
 
 # Generates the options for the question
-
-
-def options(correctAns):
+def options(correct_ans):
     # altered by adding a random number
-    opt1 = correctAns + random.randint(1, 5)
+    opt1 = correct_ans + random.randint(1, 5)
     # altered by subtracting a random number below the answer
-    opt2 = correctAns - random.randint(1, correctAns-1)
+    opt2 = correct_ans - random.randint(1, correct_ans-1)
     # altered by multiplying by a percentage of the answer
-    opt3 = int(float(correctAns) * (10+random.randint(1, 5))//10)
+    opt3 = int(float(correct_ans) * (10+random.randint(1, 5))//10)
 
-    if opt3 == opt2 or opt3 == opt1 or opt3 == correctAns:  # changing opt3 if it rounds to a repeat number
+    while opt3 == opt2 or opt3 == opt1 or opt3 == correct_ans:  # changing opt3 if it rounds to a repeat number
         opt3 += 1
 
-    optList = [opt1, opt2, opt3, correctAns]  # list of options
+    opt_list = [opt1, opt2, opt3, correct_ans]  # list of options
 
     # Picks out and assigns a random option from the list
-    optA = random.choice(optList)
-    optList.remove(optA)
-    if optA == correctAns:
-        rightChoice = "optA"
-    optB = random.choice(optList)
-    optList.remove(optB)
-    if optB == correctAns:
-        rightChoice = "optB"
-    optC = random.choice(optList)
-    optList.remove(optC)
-    if optC == correctAns:
-        rightChoice = "optC"
-    optD = random.choice(optList)
-    if optD == correctAns:
-        rightChoice = "optD"
+    optA = random.choice(opt_list)
+    opt_list.remove(optA)
+    if optA == correct_ans:
+        right_choice = "optA"
+    optB = random.choice(opt_list)
+    opt_list.remove(optB)
+    if optB == correct_ans:
+        right_choice = "optB"
+    optC = random.choice(opt_list)
+    opt_list.remove(optC)
+    if optC == correct_ans:
+        right_choice = "optC"
+    optD = random.choice(opt_list)
+    if optD == correct_ans:
+        right_choice = "optD"
 
     # Turn each option into text
     a = get_font(25).render(str(optA), True, BLACK)
@@ -159,18 +129,16 @@ def options(correctAns):
     c = get_font(25).render(str(optC), True, BLACK)
     d = get_font(25).render(str(optD), True, BLACK)
 
-    return [a, b, c, d, rightChoice]
+    return [a, b, c, d, right_choice]
 
-# Intructions screen
-
-
+# Display first instruction screen
 def instruction1():
     run = True
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        screen.blit(INSTRUCTION1, (0, 0))
+        SCREEN.blit(INSTRUCTION1, (0, 0))
 
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos=(
             70, 55), text_input="", font=get_font(15), base_colour="White", hovering_colour="#b51f09")
@@ -178,13 +146,14 @@ def instruction1():
             680, 475), text_input="", font=get_font(15), base_colour="White", hovering_colour="#b51f09")
 
         if (40 < MOUSE_X < 75 and 40 < MOUSE_Y < 70):
-            screen.blit(RESIZED_BACK, (-90, -96))
+            SCREEN.blit(RESIZED_BACK, (-90, -96))
         if (690 < MOUSE_X < 705 and 465 < MOUSE_Y < 490):
-            screen.blit(RESIZED_NEXT, (540, 324))
+            SCREEN.blit(RESIZED_NEXT, (540, 324))
 
-        INSTRUCTIONS_BACK.update(screen)
-        INSTRUCTIONS_NEXT.update(screen)
+        INSTRUCTIONS_BACK.update(SCREEN)
+        INSTRUCTIONS_NEXT.update(SCREEN)
 
+        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -198,14 +167,14 @@ def instruction1():
 
         pygame.display.update()
 
-
+# Display second instruction screen
 def instruction2():
     run = True
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
 
-        screen.blit(INSTRUCTION2, (0, 0))
+        SCREEN.blit(INSTRUCTION2, (0, 0))
 
         INSTRUCTIONS_BACK = Button(pygame.image.load("images/back_button.png"), pos=(
             70, 55), text_input="", font=get_font(15), base_colour="White", hovering_colour="#b51f09")
@@ -213,13 +182,14 @@ def instruction2():
             680, 475), text_input="", font=get_font(15), base_colour="White", hovering_colour="#b51f09")
 
         if (40 < MOUSE_X < 75 and 40 < MOUSE_Y < 70):
-            screen.blit(RESIZED_BACK, (-90, -96))
+            SCREEN.blit(RESIZED_BACK, (-90, -96))
         if (690 < MOUSE_X < 705 and 465 < MOUSE_Y < 490):
-            screen.blit(RESIZED_NEXT, (540, 324))
+            SCREEN.blit(RESIZED_NEXT, (540, 324))
 
-        INSTRUCTIONS_BACK.update(screen)
-        INSTRUCTIONS_NEXT.update(screen)
-
+        INSTRUCTIONS_BACK.update(SCREEN)
+        INSTRUCTIONS_NEXT.update(SCREEN)
+        
+        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -230,10 +200,10 @@ def instruction2():
 
         pygame.display.update()
 
-
-def foodCoordinates(x1, y1):
+# Create a list of coordinates for the fruit
+def fruit_coordinates(x1, y1):
     # Randomize position of fruits
-    foodCoord = [[x1, y1]]
+    fruit_coord = [[x1, y1]]
     i = 0
     min_distance = 100
     while i < 4:
@@ -244,7 +214,7 @@ def foodCoordinates(x1, y1):
                          (snake_block + 50)) / 10.0) * 10.0
             # Check distance from existing coordinates
             too_close = False
-            for coord in foodCoord:
+            for coord in fruit_coord:
                 distance = ((num1 - coord[0]) ** 2 +
                             (num2 - coord[1]) ** 2) ** 0.5
                 if distance < min_distance:
@@ -252,38 +222,40 @@ def foodCoordinates(x1, y1):
                     break
             if not too_close:
                 break
-        foodCoord.append([num1, num2])
+        fruit_coord.append([num1, num2])
         i += 1
-    return foodCoord
+    return fruit_coord
 
-# Check if food's been eaten
-
-
-def foodEaten(foodCoord, correctAns):
-    snakex = foodCoord[0][0]
-    snakey = foodCoord[0][1]
-    if correctAns == "optA":
+# Check if fruit has been eaten
+def fruit_eaten(fruit_coord, correct_ans):
+    snakex = fruit_coord[0][0]
+    snakey = fruit_coord[0][1]
+    if correct_ans == "optA":
         answer = 1
-    if correctAns == "optB":
+    if correct_ans == "optB":
         answer = 2
-    if correctAns == "optC":
+    if correct_ans == "optC":
         answer = 3
-    if correctAns == "optD":
+    if correct_ans == "optD":
         answer = 4
     i = 1
     while i < 5:
-        if snakex >= (foodCoord[i][0]-25) and snakex <= (foodCoord[i][0]+35) and snakey >= (foodCoord[i][1]-25) and snakey <= (foodCoord[i][1]+45):
+        if snakex >= (fruit_coord[i][0]-25) and snakex <= (fruit_coord[i][0]+35) and snakey >= (fruit_coord[i][1]-25) and snakey <= (fruit_coord[i][1]+45):
+            # if fruit eaten is not the answer
             if i != answer:
                 return 1
+            # if fruit eaten is the answer
             else:
                 return 2
         i += 1
+    # if snake hits the wall
     if snakex == 0 or snakex == 800 or snakey == 0 or snakey == 600:
         return 3
     return 0
 
-
+# Displays ending screen based on result being True or False
 def end_screen(result):
+    # Play relative sound effects
     if result == False:
         pygame.mixer.init()
         pygame.mixer.music.load("sound/LossSound.mp3")
@@ -296,15 +268,17 @@ def end_screen(result):
         MOUSE_POS = pygame.mouse.get_pos()
 
         if result == True:
-            screen.blit(WIN_SCREEN, (0, 0))
+            SCREEN.blit(WIN_SCREEN, (0, 0))
         else:
-            screen.blit(LOST_SCREEN, (0, 0))
+            SCREEN.blit(LOST_SCREEN, (0, 0))
 
+        # Button to return to title screen
         RETURN = Button(image=pygame.image.load("images/scroll_button.png"), pos=(400, 500),
-                        text_input="RETURN", font=get_font(18), base_colour="#b51f09", hovering_colour="White")
+                        text_input="TITLE SCREEN", font=get_font(18), base_colour="#b51f09", hovering_colour="White")
         RETURN.changeColour(MOUSE_POS)
-        RETURN.update(screen)
+        RETURN.update(SCREEN)
 
+        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -316,79 +290,62 @@ def end_screen(result):
 
         pygame.display.update()
 
-
+# Display ending response screen
 def response(correct, question, answer):
-    screen.blit(overlay, (0, 0))
-    screen.blit(QBOX, (141, 115))
-    # Shadow text
-    shadow = get_font(25).render("Press Space To Continue", True, GREEN4)
-    # Main text
-    main = get_font(25).render("Press Space To Continue", True, white)
+    SCREEN.blit(OVERLAY, (0, 0))
+    SCREEN.blit(QBOX, (141, 115))
 
-    screen.blit(shadow, [199, 525])
-    screen.blit(main, [197, 523])
-    # Shadow text
+    shadow = get_font(25).render("Press Space To Continue", True, GREEN4)
+    main = get_font(25).render("Press Space To Continue", True, WHITE)
+    SCREEN.blit(shadow, [199, 525])
+    SCREEN.blit(main, [197, 523])
+    
+    # Display correct answer
+    q = get_font(25).render(question, True, BLACK)
+    ans = get_font(25).render("Correct Answer: " + str(answer), True, BLACK)
+    SCREEN.blit(q, [328, 308])
+    SCREEN.blit(ans, [245, 387])
+
     if correct == False:
         shadow = get_font(50).render("Nice Try!", True, GREEN4)
-        # Main text
-        main = get_font(50).render("Nice Try!", True, white)
-        screen.blit(shadow, [256, 212])
-        screen.blit(main, [256, 210])
-        q = get_font(25).render(question, True, BLACK)
-        # Main text
-        ans = get_font(25).render(
-            "Correct Answer: " + str(answer), True, BLACK)
-        screen.blit(q, [328, 308])
-        screen.blit(ans, [245, 387])
+        main = get_font(50).render("Nice Try!", True, WHITE)
+        SCREEN.blit(shadow, [256, 212])
+        SCREEN.blit(main, [256, 210])
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
             end_screen(False)
             return True
     else:
         shadow = get_font(50).render("Good Job!", True, GREEN4)
-        # Main text
-        main = get_font(50).render("Good Job!", True, white)
-        screen.blit(shadow, [245, 212])
-        screen.blit(main, [243, 210])
-        q = get_font(25).render(question, True, BLACK)
-        # Main text
-        ans = get_font(25).render(
-            "Correct Answer: " + str(answer), True, BLACK)
-        screen.blit(q, [328, 308])
-        screen.blit(ans, [245, 387])
+        main = get_font(50).render("Good Job!", True, WHITE)
+        SCREEN.blit(shadow, [245, 212])
+        SCREEN.blit(main, [243, 210])
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
             end_screen(True)
             return True
-        # result = False
-        # fruit_delay = 4
-        # countdown = 600
 
-
+# Display correct screen
 def correct(question, answer):
-    good = get_font(50).render("Good Job!", True, GREEN4)
-    # Main text
-    good1 = get_font(50).render("Good Job!", True, white)
-    screen.blit(good, [245, 212])
-    screen.blit(good1, [243, 210])
+    shadow = get_font(50).render("Good Job!", True, GREEN4)
+    main = get_font(50).render("Good Job!", True, WHITE)
+    SCREEN.blit(shadow, [245, 212])
+    SCREEN.blit(main, [243, 210])
     q = get_font(25).render(question, True, BLACK)
-    # Main text
     ans = get_font(25).render("Correct Answer: " + str(answer), True, BLACK)
-    screen.blit(q, [328, 308])
-    screen.blit(ans, [245, 387])
+    SCREEN.blit(q, [328, 308])
+    SCREEN.blit(ans, [245, 387])
 
-
+# Function to help play music
 def play_music(file):
     pygame.mixer.init()
     pygame.mixer.music.load(file)
     pygame.mixer.music.play(-1)
 
 # Main game function
-
-
 def game(user):
     dontrun = 1
-    doneYet = 0
+    done = 0
     result = False
     fruit_delay = 4
     run = True
@@ -401,8 +358,8 @@ def game(user):
     currQNA = Question(user).generate_question(
         "+")  # gets question and the answer
     currQ = currQNA[0]
-    correctAns = currQNA[1]
-    optionList = options(correctAns)  # creates list of answer options
+    correct_ans = currQNA[1]
+    optionList = options(correct_ans)  # creates list of answer options
 
     # Initialize change in coordinates
     x1_change = 0
@@ -413,18 +370,18 @@ def game(user):
     snake_len = 1
 
     # Randomize and create coordinates for each orange
-    foodCoord = foodCoordinates(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+    fruit_coord = fruit_coordinates(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 
     # Delay the question screen
     elements_delay_counter = 5
 
     # Adjust counter according to level, 10 seconds for < 5 and 30 seconds otherwise
     if level < 5:
-        countdown = 600
-        timerDown = 10
+        count_down = 600
+        timer_down = 10
     else:
-        countdown = 1800
-        timerDown = 30
+        count_down = 1800
+        timer_down = 30
 
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
@@ -435,27 +392,23 @@ def game(user):
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if BACK.checkInput(MOUSE_POS):
-                    return
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # print("MOUSE DOWN")
-                    # print(MOUSE_X)
-                    # print(MOUSE_Y)
-                    if FRUIT_AB.checkInput(MOUSE_POS):
-                        select = 1
-                        pause = False
-                    elif FRUIT_BB.checkInput(MOUSE_POS):
-                        select = 2
-                        pause = False
-                    elif FRUIT_CB.checkInput(MOUSE_POS):
-                        select = 3
-                        pause = False
-                    elif FRUIT_DB.checkInput(MOUSE_POS):
-                        select = 4
-                        pause = False
+                  return
+                elif FRUIT_AB.checkInput(MOUSE_POS):
+                  select = 1
+                  pause = False
+                elif FRUIT_BB.checkInput(MOUSE_POS):
+                  select = 2
+                  pause = False
+                elif FRUIT_CB.checkInput(MOUSE_POS):
+                  select = 3
+                  pause = False
+                elif FRUIT_DB.checkInput(MOUSE_POS):
+                  select = 4
+                  pause = False
 
-                    # Control snake movement when not paused
+        # Control snake movement when not paused
         if not pause:
-            # Refresh the direction changes
+            # Refresh the direction changes if snake was paused
             if snake_pause:
                 x1_change = 0
                 y1_change = 0
@@ -494,114 +447,105 @@ def game(user):
 
             # Update snake position
             if not snake_pause:
-                foodCoord[0][0] += x1_change
-                foodCoord[0][1] += y1_change
+                fruit_coord[0][0] += x1_change
+                fruit_coord[0][1] += y1_change
 
-            snake_list.append([foodCoord[0][0], foodCoord[0][1]])
+            snake_list.append([fruit_coord[0][0], fruit_coord[0][1]])
 
             # If snake length exceeds current length, remove the tail
             if len(snake_list) > snake_len:
                 del snake_list[0]
 
-        # Draw elements on screen
-        screen.blit(BACKGROUND, (0, 0))
-        # Blit overlay on top of everything
+        # Generate question screen
+        SCREEN.blit(BACKGROUND, (0, 0))
         if elements_delay_counter > 0:
             elements_delay_counter -= 1
             pause = True
         elif dontrun == 1:
-            if countdown > 0 and pause == True and timerDown > 0 and result is False:
+            if count_down > 0 and pause == True and timer_down > 0 and result is False:
                 snake_pause = True
-                if countdown == 600:
+                if count_down == 600:
                     currQNA = Question(user).generate_question("+")
                     currQ = currQNA[0]
-                    correctAns = currQNA[1]
-                    optionList = options(correctAns)
-                countdown -= 1
-                screen.blit(overlay, (0, 0))
-                screen.blit(QBOX, (141, 115))
-                timeLeft(timerDown)
+                    correct_ans = currQNA[1]
+                    optionList = options(correct_ans)
+                count_down -= 1
+                SCREEN.blit(OVERLAY, (0, 0))
+                SCREEN.blit(QBOX, (141, 115))
+                time_left(timer_down)
                 # Shadow text
                 shadow = get_font(65).render(currQ, True, GOLD3)
                 # Main text
-                main = get_font(65).render(currQ, True, white)
+                main = get_font(65).render(currQ, True, WHITE)
                 if level < 5:
-                    screen.blit(shadow, [242, 182])
-                    screen.blit(main, [240, 180])
+                    SCREEN.blit(shadow, [242, 182])
+                    SCREEN.blit(main, [240, 180])
                 else:
-                    screen.blit(shadow, [202, 182])
-                    screen.blit(main, [200, 180])
+                    SCREEN.blit(shadow, [202, 182])
+                    SCREEN.blit(main, [200, 180])
                 # Shadow text
                 shadow = get_font(25).render(
                     "Select Your Answer", True, GREEN4)
                 # Main text
-                main = get_font(25).render("Select Your Answer", True, white)
+                main = get_font(25).render("Select Your Answer", True, WHITE)
 
-                screen.blit(shadow, [235, 525])
-                screen.blit(main, [233, 523])
+                SCREEN.blit(shadow, [235, 525])
+                SCREEN.blit(main, [233, 523])
 
-                screen.blit(optionList[0], [315, 290])
-                screen.blit(optionList[1], [315, 395])
-                screen.blit(optionList[2], [505, 290])
-                screen.blit(optionList[3], [505, 395])
-                screen.blit(FRUIT_A, [245, 280])
-                screen.blit(FRUIT_B, [245, 385])
-                screen.blit(FRUIT_C, [438, 280])
-                screen.blit(FRUIT_D, [438, 385])
+                SCREEN.blit(optionList[0], [315, 290])
+                SCREEN.blit(optionList[1], [315, 395])
+                SCREEN.blit(optionList[2], [505, 290])
+                SCREEN.blit(optionList[3], [505, 395])
+                SCREEN.blit(FRUIT_A, [245, 280])
+                SCREEN.blit(FRUIT_B, [245, 385])
+                SCREEN.blit(FRUIT_C, [438, 280])
+                SCREEN.blit(FRUIT_D, [438, 385])
                 FRUIT_AB = Button(FRUIT_A, pos=(270, 305), text_input="", font=get_font(
                     22), base_colour="White", hovering_colour="#b51f09")
-                FRUIT_AB.update(screen)
+                FRUIT_AB.update(SCREEN)
                 FRUIT_BB = Button(FRUIT_B, pos=(270, 410), text_input="", font=get_font(
                     22), base_colour="White", hovering_colour="#b51f09")
-                FRUIT_BB.update(screen)
+                FRUIT_BB.update(SCREEN)
                 FRUIT_CB = Button(FRUIT_C, pos=(463, 305), text_input="", font=get_font(
                     22), base_colour="White", hovering_colour="#b51f09")
-                FRUIT_CB.update(screen)
+                FRUIT_CB.update(SCREEN)
                 FRUIT_DB = Button(FRUIT_D, pos=(463, 410), text_input="", font=get_font(
                     22), base_colour="White", hovering_colour="#b51f09")
-                FRUIT_DB.update(screen)
+                FRUIT_DB.update(SCREEN)
                 if (235 < MOUSE_X < 315 and 260 < MOUSE_Y < 350):
-                    screen.blit(FRUIT_BORDER, [240, 275])
-                    screen.blit(FRUIT_A, [245, 280])
+                    SCREEN.blit(FRUIT_BORDER, [240, 275])
+                    SCREEN.blit(FRUIT_A, [245, 280])
                 elif (235 < MOUSE_X < 315 and 375 < MOUSE_Y < 445):
                     # elif (245<MOUSE_X<295 and 385<MOUSE_Y<435):
-                    screen.blit(FRUIT_BORDER, [240, 380])
-                    screen.blit(FRUIT_B, [245, 385])
+                    SCREEN.blit(FRUIT_BORDER, [240, 380])
+                    SCREEN.blit(FRUIT_B, [245, 385])
                 elif (428 < MOUSE_X < 498 and 260 < MOUSE_Y < 350):
-                    screen.blit(FRUIT_BORDER, [433, 275])
-                    screen.blit(FRUIT_C, [438, 280])
+                    SCREEN.blit(FRUIT_BORDER, [433, 275])
+                    SCREEN.blit(FRUIT_C, [438, 280])
                 elif (428 < MOUSE_X < 498 and 375 < MOUSE_Y < 445):
-                    screen.blit(FRUIT_BORDER, [433, 380])
-                    screen.blit(FRUIT_D, [438, 385])
-                # for event in pygame.event.get():
-                #   if event.type == pygame.MOUSEBUTTONDOWN:
-                #     print("MOUSE DOWN")
-                #     print(MOUSE_X)
-                #     print(MOUSE_Y)
-
-                    # if FRUIT_AB.checkInput(MOUSE_POS):
-                    #   pause = False
-                if countdown % 10 == 0 and timerDown > 0:
-                    timerDown -= 1
+                    SCREEN.blit(FRUIT_BORDER, [433, 380])
+                    SCREEN.blit(FRUIT_D, [438, 385])
+                if count_down % 10 == 0 and timer_down > 0:
+                    timer_down -= 1
                 snake_pause = True
             elif result is True:
-                screen.blit(overlay, (0, 0))
-                screen.blit(QBOX, (141, 115))
+                SCREEN.blit(OVERLAY, (0, 0))
+                SCREEN.blit(QBOX, (141, 115))
                 # Shadow text
                 shadow = get_font(25).render(
                     "Press Space To Continue", True, GREEN4)
                 # Main text
                 main = get_font(25).render(
-                    "Press Space To Continue", True, white)
+                    "Press Space To Continue", True, WHITE)
 
-                screen.blit(shadow, [199, 525])
-                screen.blit(main, [197, 523])
-                correct(currQ, correctAns)
+                SCREEN.blit(shadow, [199, 525])
+                SCREEN.blit(main, [197, 523])
+                correct(currQ, correct_ans)
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_SPACE]:
                     result = False
                     fruit_delay = 4
-                    countdown = 600
+                    count_down = 600
             else:
                 pause = False
 
@@ -613,64 +557,64 @@ def game(user):
                     current_score(snake_len - 1)
                     current_level(int(user.get_add()))
                     if select == 1:
-                        screen.blit(
-                            FRUIT_BORDER, ((foodCoord[1][0]) - 5, (foodCoord[1][1]) - 5))
+                        SCREEN.blit(
+                            FRUIT_BORDER, ((fruit_coord[1][0]) - 5, (fruit_coord[1][1]) - 5))
                     elif select == 2:
-                        screen.blit(
-                            FRUIT_BORDER, ((foodCoord[2][0]) - 5, (foodCoord[2][1]) - 5))
+                        SCREEN.blit(
+                            FRUIT_BORDER, ((fruit_coord[2][0]) - 5, (fruit_coord[2][1]) - 5))
                     elif select == 3:
-                        screen.blit(
-                            FRUIT_BORDER, ((foodCoord[3][0]) - 5, (foodCoord[3][1]) - 5))
+                        SCREEN.blit(
+                            FRUIT_BORDER, ((fruit_coord[3][0]) - 5, (fruit_coord[3][1]) - 5))
                     elif select == 4:
-                        screen.blit(
-                            FRUIT_BORDER, ((foodCoord[4][0]) - 5, (foodCoord[4][1]) - 5))
-                    screen.blit(FRUIT_A, (foodCoord[1][0], foodCoord[1][1]))
-                    screen.blit(FRUIT_B, (foodCoord[2][0], foodCoord[2][1]))
-                    screen.blit(FRUIT_C, (foodCoord[3][0], foodCoord[3][1]))
-                    screen.blit(FRUIT_D, (foodCoord[4][0], foodCoord[4][1]))
+                        SCREEN.blit(
+                            FRUIT_BORDER, ((fruit_coord[4][0]) - 5, (fruit_coord[4][1]) - 5))
+                    SCREEN.blit(FRUIT_A, (fruit_coord[1][0], fruit_coord[1][1]))
+                    SCREEN.blit(FRUIT_B, (fruit_coord[2][0], fruit_coord[2][1]))
+                    SCREEN.blit(FRUIT_C, (fruit_coord[3][0], fruit_coord[3][1]))
+                    SCREEN.blit(FRUIT_D, (fruit_coord[4][0], fruit_coord[4][1]))
 
-        doneYet = foodEaten(foodCoord, optionList[4])
+        done = fruit_eaten(fruit_coord, optionList[4])
         BACK = Button(image="images/back_button.png", pos=(40, 25), text_input="",
                       font=get_font(22), base_colour="White", hovering_colour="#b51f09")
-        BACK.update(screen)
+        BACK.update(SCREEN)
 
         if (10 < MOUSE_X < 45 and 10 < MOUSE_Y < 40):
-            screen.blit(RESIZED_BACK, (-120, -126))
-        if doneYet == 2:
+            SCREEN.blit(RESIZED_BACK, (-120, -126))
+        if done == 2:
             if (snake_len - 1) == 4:
                 result = False
-                plss = response(True, currQ, correctAns)
+                plss = response(True, currQ, correct_ans)
                 elements_delay_counter = 1
                 if plss == True:
                     new_score = int(user.get_add()) + 1
                     user.update_add(str(new_score))
                     return
             elif level < 5 and dontrun == 1:
-                foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
+                fruit_coord = fruit_coordinates(fruit_coord[0][0], fruit_coord[0][1])
                 snake_len += 1
                 elements_delay_counter = 1
                 fruit_delay = 4
-                countdown = 600
-                timerDown = 10
+                count_down = 600
+                timer_down = 10
                 select = 0
                 result = True
             elif dontrun == 1:
-                foodCoord = foodCoordinates(foodCoord[0][0], foodCoord[0][1])
+                fruit_coord = fruit_coordinates(fruit_coord[0][0], fruit_coord[0][1])
                 snake_len += 1
                 elements_delay_counter = 1
                 fruit_delay = 4
-                countdown = 1800
-                timerDown = 30
+                count_down = 1800
+                timer_down = 30
                 select = 0
                 result = True
-        if doneYet == 1:
+        elif done == 1:
             result = False
             dontrun = 0
-            plss = response(False, currQ, correctAns)
+            plss = response(False, currQ, correct_ans)
             elements_delay_counter = 1
             if plss == True:
                 return
-        if doneYet == 3:
+        elif done == 3:
             end_screen(False)
             return
 
@@ -689,7 +633,7 @@ def snakeSums(username, password):
     run = True
     while run:
         # display start screen
-        screen.blit(START_SCREEN, (0, 0))
+        SCREEN.blit(START_SCREEN, (0, 0))
         MOUSE_POS = pygame.mouse.get_pos()
 
         START_BUTTON = Button(image=pygame.image.load("images/scroll_button.png"), pos=(395, 250),
@@ -701,7 +645,7 @@ def snakeSums(username, password):
 
         for button in [START_BUTTON, INSTRUCTION_BUTTON, RETURN_BUTTON]:
             button.changeColour(MOUSE_POS)
-            button.update(screen)
+            button.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
