@@ -1,5 +1,5 @@
 """
-This module implements the logic and the requirements to run teh Sandwich Stack game using Pygame. It is a game
+This module implements the logic and the requirements to run the Sandwich Stack game using Pygame. It is a game
 where the player uses the left and right arrow keys to move a panda character left and right of the screen to
 catch falling food to answer the required math questions. The game includes a start, instruction, win, loss,
 and game screen, as well as movement mechanics and the logic for collision detection.
