@@ -61,50 +61,89 @@ WHITE = (255, 255, 255)
 snake_block = 20
 snake_speed = 8
 
-# Access the font style with changeable size
 def get_font(size):
-  return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
+    """
+    Loads and returns a Pygame font object based on the font file "Shojumaru-Regular.ttf"
+    and the given size.
 
-# Function to display current score
+    Parameters:
+        size (int): The size of the font in points.
+
+    Returns:
+        pygame.font.Font: A Pygame font object.
+    """
+    return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
+
 def current_score(score):
-  shadow = get_font(25).render("Score: " + str(score), True, GREEN4)
-  SCREEN.blit(shadow, [652, 12])  
-  main = get_font(25).render("Score: " + str(score), True, WHITE)
-  SCREEN.blit(main, [650, 10]) 
+    """
+    Displays the current score on the screen.
 
-# Function to display current level
+    Parameters:
+        score (int): The current score to display.
+    """
+    shadow = get_font(25).render("Score: " + str(score), True, GREEN4)
+    SCREEN.blit(shadow, [652, 12])  
+    main = get_font(25).render("Score: " + str(score), True, WHITE)
+    SCREEN.blit(main, [650, 10]) 
+
 def current_level(level):
-  shadow = get_font(25).render("Level: " + str(level), True, GREEN4)
-  SCREEN.blit(shadow, [502, 12])  
-  main = get_font(25).render("Level: " + str(level), True, WHITE)
-  SCREEN.blit(main, [500, 10])  
+    """
+    Displays the current level on the screen.
 
-# Function to draw the snake
+    Parameters:
+        level (int): The current level to display.
+    """
+    shadow = get_font(25).render("Level: " + str(level), True, GREEN4)
+    SCREEN.blit(shadow, [502, 12])  
+    main = get_font(25).render("Level: " + str(level), True, WHITE)
+    SCREEN.blit(main, [500, 10])  
+
 def snake(snake_block, snake_list):
-  for i in snake_list:
-    # Draws each rectangle of the snake at the right coordinates
-    pygame.draw.rect(SCREEN, GREEN2, [i[0], i[1], snake_block, snake_block])
+    """
+    Draws the snake on the screen.
 
-# Shows the time left for the question
+    Parameters:
+        snake_block (int): The size of each block in the snake.
+        snake_list (list): List of coordinates for each block of the snake.
+    """
+    for i in snake_list:
+        # Draws each rectangle of the snake at the right coordinates
+        pygame.draw.rect(SCREEN, GREEN2, [i[0], i[1], snake_block, snake_block])
+
 def time_left(time):
-  shadow = get_font(25).render("Time Left: " + str(time), True, GREEN4)
-  SCREEN.blit(shadow, [282, 62])
-  main = get_font(25).render("Time Left: " + str(time), True, WHITE)
-  SCREEN.blit(main, [280, 60])
+    """
+    Displays the time left for the question on the screen.
 
-# Generates the options for the question
+    Parameters:
+        time (int): The time left for the question.
+    """
+    shadow = get_font(25).render("Time Left: " + str(time), True, GREEN4)
+    SCREEN.blit(shadow, [282, 62])
+    main = get_font(25).render("Time Left: " + str(time), True, WHITE)
+    SCREEN.blit(main, [280, 60])
+
 def options(correct_ans):
-    # altered by adding a random number
-    opt1 = correct_ans + random.randint(1, 5)
-    # altered by subtracting a random number below the answer
-    opt2 = correct_ans - random.randint(1, correct_ans-1)
-    # altered by multiplying by a percentage of the answer
-    opt3 = int(float(correct_ans) * (10+random.randint(1, 5))//10)
+    """
+    Generates options for the question.
 
-    while opt3 == opt2 or opt3 == opt1 or opt3 == correct_ans:  # changing opt3 if it rounds to a repeat number
+    Parameters:
+        correct_ans (int): The correct answer to the question.
+
+    Returns:
+        list: A list of option text surfaces.
+    """
+    # Altered by adding a random number
+    opt1 = correct_ans + random.randint(1, 5)
+    # Altered by subtracting a random number below the answer
+    opt2 = correct_ans - random.randint(1, correct_ans-1)
+    # Altered by multiplying by a percentage of the answer
+    opt3 = int(float(correct_ans) * (10+random.randint(1, 5))//10)
+    
+    # Changing opt3 if it rounds to a repeat number
+    while opt3 == opt2 or opt3 == opt1 or opt3 == correct_ans:  
         opt3 += 1
 
-    opt_list = [opt1, opt2, opt3, correct_ans]  # list of options
+    opt_list = [opt1, opt2, opt3, correct_ans]
 
     # Picks out and assigns a random option from the list
     optA = random.choice(opt_list)
@@ -131,8 +170,10 @@ def options(correct_ans):
 
     return [a, b, c, d, right_choice]
 
-# Display first instruction screen
 def instruction1():
+    """
+    Displays the first instruction screen.
+    """
     run = True
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
@@ -167,8 +208,11 @@ def instruction1():
 
         pygame.display.update()
 
-# Display second instruction screen
+
 def instruction2():
+    """
+    Displays the second instruction screen.
+    """
     run = True
     while run:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
@@ -200,8 +244,21 @@ def instruction2():
 
         pygame.display.update()
 
-# Create a list of coordinates for the fruit
 def fruit_coordinates(x1, y1):
+    """
+    Create a list of coordinates for the fruit.
+
+    Randomly generates coordinates for 4 fruits with a minimum distance
+    between them.
+
+    Parameters:
+        x1 (int): X-coordinate of the snake head.
+        y1 (int): Y-coordinate of the snake head.
+
+    Returns:
+        list: A list of lists, each containing the X and Y coordinates
+        of a fruit.
+    """
     # Randomize position of fruits
     fruit_coord = [[x1, y1]]
     i = 0
@@ -226,8 +283,23 @@ def fruit_coordinates(x1, y1):
         i += 1
     return fruit_coord
 
-# Check if fruit has been eaten
 def fruit_eaten(fruit_coord, correct_ans):
+    """
+    Check if fruit has been eaten by the snake.
+
+    Checks if the snake's head overlaps with any of the fruit coordinates.
+    Also checks if the eaten fruit is the correct answer.
+
+    Parameters:
+        fruit_coord (list): A list of lists, each containing the X and Y
+        coordinates of a fruit.
+        correct_ans (str): The letter corresponding to the correct answer
+        among options 'optA', 'optB', 'optC', 'optD'.
+
+    Returns:
+        int: 0 if no action needed, 1 if incorrect answer, 2 if correct
+        answer, 3 if snake hits wall.
+    """
     snakex = fruit_coord[0][0]
     snakey = fruit_coord[0][1]
     if correct_ans == "optA":
@@ -253,8 +325,13 @@ def fruit_eaten(fruit_coord, correct_ans):
         return 3
     return 0
 
-# Displays ending screen based on result being True or False
 def end_screen(result):
+    """
+    Display ending screen based on game result.
+
+    Parameters:
+        result (bool): True for win, False for loss.
+    """
     # Play relative sound effects
     if result == False:
         pygame.mixer.init()
@@ -292,8 +369,15 @@ def end_screen(result):
 
         pygame.display.update()
 
-# Display ending response screen
 def response(correct, question, answer):
+    """
+    Display response screen after answering a question.
+
+    Parameters:
+        correct (bool): True if answer was correct, False otherwise.
+        question (str): The question text.
+        answer (str): The correct answer.
+    """
     SCREEN.blit(OVERLAY, (0, 0))
     SCREEN.blit(QBOX, (141, 115))
 
@@ -327,8 +411,14 @@ def response(correct, question, answer):
             end_screen(True)
             return True
 
-# Display correct screen
 def correct(question, answer):
+    """
+    Display screen for correct answer.
+
+    Parameters:
+        question (str): The question text.
+        answer (str): The correct answer.
+    """
     shadow = get_font(50).render("Good Job!", True, GREEN4)
     main = get_font(50).render("Good Job!", True, WHITE)
     SCREEN.blit(shadow, [245, 212])
@@ -338,14 +428,32 @@ def correct(question, answer):
     SCREEN.blit(q, [328, 308])
     SCREEN.blit(ans, [245, 387])
 
-# Function to help play music
 def play_music(file):
+    """
+    Play music during the game.
+
+    Parameters:
+    - file (str): The file path of the music file.
+
+    Returns:
+    None
+    """
     pygame.mixer.init()
     pygame.mixer.music.load(file)
     pygame.mixer.music.play(-1)
 
-# Main game function
 def game(user):
+    """
+    Main game function for Snake Sums, takes care of event handling.
+
+    Runs the game loop, handles gameplay, questions, and user input.
+
+    Parameters:
+    - user (Player): The player object containing user information.
+
+    Returns:
+    None
+    """
     no_run = 1
     done = 0
     result = False
@@ -630,8 +738,22 @@ def game(user):
 
     pygame.quit()
 
-# Run Snake Sums
 def snake_sums(username, password):
+    """
+    Initializes and displays the Snake Sums start screen, allowing the player to start the game, 
+    view instructions, or return to the main menu. This function serves as the entry point to the game, 
+    setting up the environment, and managing player interactions with the game's initial options.
+
+    Upon selecting an option, the function either launches the game loop, displays the game instructions, or exits back to the main menu. 
+    It also initializes and plays the background music for the start screen.
+
+    Parameters:
+    - username (str): The player's username, used for loading and saving player data.
+    - password (str): The player's password, used for authentication when loading and saving data.
+
+    Returns:
+    None
+    """
     play_music("sound/SnakeSumsMusic.mp3")
     user = Player(name=username, password=password)
     user.load_player()
@@ -672,9 +794,6 @@ def snake_sums(username, password):
     # Quit back to the game map
     pygame.mixer.music.stop()
     return
-
-# pygame.quit()
-
 
 # Run the game
 username = "jocelyn"
