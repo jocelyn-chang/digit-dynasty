@@ -69,6 +69,27 @@ class TestCookingGame(unittest.TestCase):
         mock_get.return_value = [pygame.event.Event(pygame.MOUSEBUTTONDOWN, {'pos': (40, 25)})]
         result = handle_events([], pygame.Rect(0, 0, 0, 0), [])
         self.assertEqual(result, 3)
+    
+    @patch('CookingGame.pygame.event.get')
+    def test_space_bar_incorrect_dumplings(self, mock_get):
+        """
+        Simulates pressing the space bar to check if the player has the correct number of dumplings
+        as per the current question. Adjusts the test environment to accurately reflect the game
+        state and verifies that `handle_events` properly evaluates the scenario and returns the
+        expected result indicating an incorrect answer.
+        """
+        global number_of_dumplings  # Ensure this matches how it's used in the actual game logic
+        dumpling_positions = [(100, 100), (150, 150), (125, 125)]  # Setup to match expected answer
+        central_area = pygame.Rect(100, 100, 200, 200)
+        questions = [("How many dumplings?", 2)]  # Current question expecting 2 dumplings
+
+        # Simulate pressing the space bar
+        mock_get.return_value = [pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_SPACE})]
+        
+        result = handle_events(dumpling_positions, central_area, questions)
+
+        self.assertEqual(result, 2, "handle_events should return 2 for incorrect number of dumplings")
+
 
 if __name__ == '__main__':
     unittest.main()
