@@ -3,11 +3,32 @@ from Player import Player
 
 #inherits stuff from player class
 class Question:
+    """
+    A class to generate arithmetic questions based on the player's level.
+
+    Attributes:
+        player (Player): The player for whom the question is being generated.
+    """
 
     def __init__(self, player):
+        """
+        Initializes the Question object with a player.
+
+        Args:
+            player (Player): The player for whom the question is being generated.
+        """
         self.player = player
 
     def generate_question(self, operation):
+        """
+        Generates an arithmetic question based on the player's level and the specified operation.
+
+        Args:
+            operation (str): The arithmetic operation for the question ('+', '-', '*', '/', or 'emperor').
+
+        Returns:
+            list: A list containing the question as a string and the answer as an integer or float.
+        """
         if operation == '+':
             level = int(self.player.get_add())
             if level < 5: # For single digit addition
