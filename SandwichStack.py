@@ -421,7 +421,6 @@ def start_game(username, password):
     # This will be used to display the previous correct answer if the player gets the wrong answer
     answers = [correct_answer, correct_answer]
     previous_answer = answers[0]
-    level = player.get_mul()
 
     # Re-use the global variables to keep the current state
     global current_food, current_food_rect, current_answer, answer_text_surface, answer_text_rect
@@ -504,6 +503,7 @@ def start_game(username, password):
             SCREEN.blit(HEART_EMPTY, (450, 90))
             SCREEN.blit(HEART_EMPTY, (500, 90))
 
+        level = player.get_div()
         # Place the player's current division power and their score out of 5
         level_surface = font.render(f'Level: {level}', True, "White")
         score_surface = font.render(f'Score: {score} / 5', True, "White")
