@@ -209,9 +209,6 @@ def handle_events(dumpling_positions, central_area, questions):
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                return
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             mouse_x, mouse_y = pygame.mouse.get_pos()

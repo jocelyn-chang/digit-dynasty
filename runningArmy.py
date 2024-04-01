@@ -255,9 +255,6 @@ def question(numpandas, multiplier):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    return
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:  # Check if Enter key is pressed to submit answer
                     if check_answer(answer, correct_answer):
