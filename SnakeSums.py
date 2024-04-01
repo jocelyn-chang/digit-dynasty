@@ -1,3 +1,8 @@
+"""
+This module implements the logic and the requirements to run the Snake Sums game using Pygame. It is a game
+where the player uses all four arrow keys to move a snake character around the garden map to eat the fruit with the corresponding correct answer.
+The game includes a start, instruction, win, loss, and game screen, as well as movement mechanics and the logic for collision detection.
+"""
 # Import libraries and classes
 import pygame
 import sys

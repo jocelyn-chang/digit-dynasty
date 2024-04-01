@@ -31,13 +31,36 @@ INSTRUCTOR_DASHBOARD_LOGIN = pygame.image.load("images/Instructor dashboard logi
 INSTRUCTOR_DASHBOARD = pygame.image.load("images/Instructor dashboard.png")
 
 def get_font(font, size):
+    """
+    Get the Pygame font object based on the font name and size.
+
+    Parameters:
+    - font (str): The name of the font.
+    - size (int): The size of the font.
+
+    Returns:
+    - pygame.font.Font: The Pygame font object.
+    """
     if font == "Sawarabi":
         return pygame.font.Font("fonts/SawarabiMincho-Regular.ttf", size)
     elif font == "Shojumaru":
         return pygame.font.Font("fonts/Shojumaru-Regular.ttf", size)
 
-# Create a function to create the input boxes
 def input_box(SCREEN, input_rect, text, font, active = False, is_password = False):
+    """
+    Create an input box on the screen.
+
+    Parameters:
+    - SCREEN (pygame.Surface): The Pygame surface to draw on.
+    - input_rect (pygame.Rect): The rectangle defining the input box.
+    - text (str): The text to display in the input box.
+    - font (pygame.font.Font): The font object for the text.
+    - active (bool): Whether the input box is active.
+    - is_password (bool): Whether the input is for a password (displayed as *).
+
+    Returns:
+    None
+    """
     colour_active = pygame.Color('black')
     colour_passive = pygame.Color('gray15')
     colour = colour_active if active else colour_passive
@@ -64,8 +87,17 @@ def input_box(SCREEN, input_rect, text, font, active = False, is_password = Fals
 
     SCREEN.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
 
-# Write to the csv file
 def append_to_csv(username, password):
+    """
+    Append a new player's information to the CSV file.
+
+    Parameters:
+    - username (str): The username of the player.
+    - password (str): The password of the player.
+
+    Returns:
+    None
+    """
     name = username
     password = password
     addition = "0"
@@ -85,8 +117,17 @@ def append_to_csv(username, password):
         writer = csv.writer(file)
         writer.writerow(row)
 
-# Method to check if player already exists
 def username_exists(username, filepath = "data.csv"):
+    """
+    Check if a username already exists in the CSV file.
+
+    Parameters:
+    - username (str): The username to check.
+    - filepath (str): The path to the CSV file.
+
+    Returns:
+    - bool: True if the username exists, False otherwise.
+    """
     with open("data.csv", newline = '') as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
@@ -94,22 +135,46 @@ def username_exists(username, filepath = "data.csv"):
                 return True
     return False
 
-# Method to validate the username entered
 def validate_username(username):
+    """
+    Validate the format of a username.
+
+    Parameters:
+    - username (str): The username to validate.
+
+    Returns:
+    - bool: True if the username is valid, False otherwise.
+    """
     if not username.isalnum():
         return False
     return True
 
-# Method to validate the password entered
 def validate_password(password):
+    """
+    Validate the format of a password.
+
+    Parameters:
+    - password (str): The password to validate.
+
+    Returns:
+    - bool: True if the password is valid, False otherwise.
+    """
     if len(password) < 8 or len(password) > 16:
         return False
     if not password.isalnum():
         return False
     return True
 
-# Go to login screen
 def start_game():
+    """
+    Start the game and handle user input for new player registration.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
     username = ''
     password = ''
     username_active = False
@@ -215,8 +280,24 @@ def start_game():
         PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()             
 
-# Function to load a previous player's information
 def load_player(input_username, input_password):
+    """
+    Load player information from the data.csv file based on username and password.
+
+    Parameters:
+    - input_username (str): The input username.
+    - input_password (str): The input password.
+
+    Returns:
+    - dict or None: A dictionary containing player information if found, else None.
+        Contains:
+            - 'Name': The player's username.
+            - 'Addition': The player's addition score.
+            - 'Subtraction': The player's subtraction score.
+            - 'Multiplication': The player's multiplication score.
+            - 'Division': The player's division score.
+            - 'Bosses': The player's bosses defeated.
+    """
     with open("data.csv", newline = '') as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
@@ -235,11 +316,30 @@ def load_player(input_username, input_password):
     return None
 
 def play_music(file):
+    """
+    Play background music.
+
+    Parameters:
+    - file (str): The path to the music file.
+
+    Returns:
+    None
+    """
     pygame.mixer.init()
     pygame.mixer.music.load(file)
     pygame.mixer.music.play(-1)
 
 def debug_mode(username, password): 
+    """
+    Enter debug mode for player skills modification.
+
+    Parameters:
+    - username (str): The player's username.
+    - password (str): The player's password.
+
+    Returns:
+    None
+    """
     player = Player(username, password)
     input_font = get_font("Sawarabi", 35)
     
@@ -379,8 +479,16 @@ def debug_mode(username, password):
         
         pygame.display.update() 
 
-# Go to load screen 
 def load_game():
+    """
+    Load game screen for entering username and password.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
     username = ''
     password = ''
     username_active = False
@@ -464,8 +572,16 @@ def load_game():
         PLAY_BUTTON.update(SCREEN)
         pygame.display.flip()
 
-# Go to the high score table
 def high_score():
+    """
+    Display the high score table.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
     # Define constants for layout
     HEADER_SIZE = 17
     SCORE_SIZE = 20
@@ -544,8 +660,16 @@ def high_score():
 
         pygame.display.update()
 
-# Intructions screen
 def instructions():
+    """
+    Display the instructions screen.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -572,6 +696,15 @@ def instructions():
         pygame.display.update()
 
 def instructor_dashboard():
+    """
+    Display the instructor dashboard screen.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
     while True:
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
         GAME_MOUSE_POS = pygame.mouse.get_pos()
@@ -599,6 +732,15 @@ def instructor_dashboard():
 
 
 def instructor_dashboard_login():
+    """
+    Display the login screen for the instructor dashboard.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
     password = ''
     password_active = False
     player_not_found = False
@@ -659,6 +801,15 @@ def instructor_dashboard_login():
         pygame.display.flip()
 
 def welcome_screen():
+    """
+    Display the welcome screen.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
     run = True
     while run:
         SCREEN.blit(WELCOME_SCREEN, (0, 0))
@@ -671,8 +822,16 @@ def welcome_screen():
                 run = False
         pygame.display.update()
 
-# Main Menu screen
 def main_menu():
+    """
+    Display the main menu screen.
+    
+    Parameters:
+    None
+    
+    Returns:
+    None
+    """
     play_music("sound/EDM.mp3")
     welcome_screen()
 
