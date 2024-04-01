@@ -8,7 +8,7 @@ import pygame, sys
 from Button import Button
 from Player import Player
 from RunningArmy import running_army
-from SnakeGame import snakeSums
+from SnakeSums import snake_sums
 from CookingGame import cooking_game
 from SandwichStack import sandwich_stack
 from ArithmeticEmperor import arithmetic_emperor
@@ -99,6 +99,9 @@ def load_map(username, password):
       if event.type == pygame.QUIT:
           pygame.quit()
           sys.exit()
+      if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_ESCAPE:
+            return
     
     # Draw the background image onto the screen
     # If the player's ability powers are too low, display the locked middle temple screen
@@ -138,7 +141,7 @@ def load_map(username, password):
       if event.type == pygame.MOUSEBUTTONDOWN:
          if TOPTEMP.checkInput(MOUSE_POS):
             pygame.mixer.music.stop()
-            snakeSums(username, password)
+            snake_sums(username, password)
             play_music("sound/EDM.mp3")
     
     # Logic for the Running Army temple
