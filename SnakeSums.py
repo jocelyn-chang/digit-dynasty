@@ -142,7 +142,7 @@ def options(correct_ans):
     - correct_ans (int): The correct answer to the question.
 
     Returns:
-    - list: A list of option text surfaces.
+    - list: A list of four options.
     """
     # Altered by adding a random number
     opt1 = correct_ans + random.randint(1, 5)
@@ -823,8 +823,3 @@ def snake_sums(username, password):
     # Quit back to the game map
     pygame.mixer.music.stop()
     return
-
-# Run the game
-# username = "jocelyn"
-# password = 12345678
-# snake_sums(username, password)
