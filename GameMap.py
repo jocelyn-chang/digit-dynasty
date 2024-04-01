@@ -99,6 +99,9 @@ def load_map(username, password):
       if event.type == pygame.QUIT:
           pygame.quit()
           sys.exit()
+      if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_ESCAPE:
+            return
     
     # Draw the background image onto the screen
     # If the player's ability powers are too low, display the locked middle temple screen

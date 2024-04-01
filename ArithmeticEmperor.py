@@ -562,6 +562,9 @@ def win_screen(score):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if RETURN.checkInput(MOUSE_POS):
                     return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
 
         pygame.display.update()
 
@@ -603,6 +606,9 @@ def lose_screen(username, password):
                 pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if RETURN.checkInput(MOUSE_POS):
+                    return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
                     return
 
         pygame.display.update()
@@ -678,6 +684,9 @@ def start_game(username, password):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if ADD_BUTTON.checkInput(MOUSE_POS):
                     if question():
