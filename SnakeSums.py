@@ -523,7 +523,7 @@ def game(user):
     elements_delay_counter = 5
 
     # Adjust counter according to level, 10 seconds for < 5 and 30 seconds otherwise
-    if level < 5:
+    if level < 6:
         count_down = 600
         timer_down = 10
     else:
@@ -742,7 +742,7 @@ def game(user):
                     user.update_add(str(new_score))
                     return
             # Play another round below level five
-            elif level < 5 and no_run == 1:
+            elif level < 6 and no_run == 1:
                 fruit_coord = fruit_coordinates(fruit_coord[0][0], fruit_coord[0][1])
                 snake_len += 1
                 elements_delay_counter = 1
