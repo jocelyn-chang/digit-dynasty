@@ -169,7 +169,10 @@ def load_map(username, password):
         SCREEN.blit(RESIZED_MIDDLETEMP, (323, 180))
         if event.type == pygame.MOUSEBUTTONDOWN:
             if MIDTEMP.checkInput(MOUSE_POS):
+              pygame.mixer.music.stop()
               arithmetic_emperor(username, password)
+              play_music("sound/EDM.mp3")
+              
     else:
        # Otherwise, let them go into the boss battle
        if (350<MOUSE_X<450 and 220<MOUSE_Y<380):

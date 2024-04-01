@@ -1,7 +1,13 @@
+"""
+This module implements the logic and the requirements to run the  Cooking game using Pygame. It is a game
+where the player uses the left and right arrow keys to add/remove dumplings on the plate to answer the questions on the order. The game includes a start, instruction, win, loss,
+and game screen, as well as movement mechanics and the logic for collision detection.
+"""
+
 import pygame, sys
 import random
 from Button import Button
-from Question import Question
+from question import Question
 from Player import Player
 
 # Initialize Pygame
