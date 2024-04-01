@@ -4,7 +4,7 @@ import sys
 import random
 from Player import Player
 from Button import Button
-from Question import Question
+from question import Question
 
 # Initialize Pygame
 pygame.init()
@@ -728,7 +728,7 @@ def snakeSums(username, password):
 # Run the game
 username = "jocelyn"
 password = 12345678
-snakeSums(username, password)
+#snakeSums(username, password)
 
 # # Import libraries and classes
 # import pygame, sys

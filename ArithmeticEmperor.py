@@ -3,7 +3,7 @@ import glob
 import random
 from Button import Button
 from Player import Player
-from Question import Question
+from question import Question
 
 pygame.init()
 
@@ -161,8 +161,9 @@ def arithmetic_emperor(username, password):
     Returns:
         None
     """
-
-    while True:
+    play_music("sound/arithmeticEmperorMusic.mp3")
+    run = True
+    while run:
         MOUSE_POS = pygame.mouse.get_pos()
         SCREEN.blit(START_SCREEN, (0,0))
 
@@ -183,10 +184,14 @@ def arithmetic_emperor(username, password):
                 if INSTRUCTION_BUTTON.checkInput(MOUSE_POS):
                      instruction1()
                 if RETURN_BUTTON.checkInput(MOUSE_POS):
-                     return
+                     run = False
 
         # Update the display
         pygame.display.update()
+    
+    # Quit back to the game map
+    pygame.mixer.music.stop()
+    return
 
 def get_font(font, size):
     """
@@ -288,7 +293,7 @@ def play_music(file):
     pygame.mixer.music.load(file)
     pygame.mixer.music.play(-1)
 
-def attack_emperor(player_attack, attack_frames, position, attacker, attack_type_text):
+def attack_emperor(player_attack, attack_frames, position, attacker, attack_type_text, emperor_health, player_health, attack_type, emperor_rotation):
     """
     Perform an attack on the emperor.
 
@@ -305,8 +310,6 @@ def attack_emperor(player_attack, attack_frames, position, attacker, attack_type
         int: The updated health of the emperor.
     """
 
-    global emperor_health, player_health, attack_type, emperor_rotation
-
     #if player attack type is super effective against emperor type
     if (attack_type == emperor_rotation - 1 or attack_type - 3 == emperor_rotation ):
         animate_attack(attack_frames, position, attacker, attack_type_text + " It's super effective!")
@@ -318,7 +321,7 @@ def attack_emperor(player_attack, attack_frames, position, attacker, attack_type
 
     return emperor_health
 
-def attack_player(emperor_attack_power, attack_frames, position, attacker, attack_type_text, attacked_emperor):
+def attack_player(emperor_attack_power, attack_frames, position, attacker, attack_type_text, attacked_emperor, emperor_health, player_health, emperor_rotation):
     """
     Perform an attack on the player.
 
@@ -335,7 +338,6 @@ def attack_player(emperor_attack_power, attack_frames, position, attacker, attac
     Returns:
         int: The updated health of the player.
     """
-    global emperor_health, player_health, emperor_rotation
 
     random_number = random.uniform(1, 2)
 
@@ -413,39 +415,6 @@ def check_answer(answer, correct_answer):
     pygame.time.delay(3000)
     
     return correct
-
-def generate_question_answer():
-    """
-    Generate a random arithmetic question and its answer.
-
-    This function generates a random arithmetic question involving addition, subtraction, multiplication, or division, along with its correct answer.
-
-    Args:
-        None
-
-    Returns:
-        list: A list containing the arithmetic question and its correct answer.
-    """
-    equation_found= False
-    while True:
-        num_operands = random.randint(2, 4)  # Random number of operands
-        operands = random.choices(OPERAND_SYMBOLS, k=num_operands)  # Randomly select operands
-        numbers = [random.randint(1, 10) for _ in range(num_operands + 1)]  # Generate random numbers
-        
-        for i in range (len(operands)):
-            if operands[i] == '/':
-                if numbers[i]%numbers[i + 1] == 0:
-                    equation_found= True
-                else:
-                    equation_found= False
-                    break
-
-        if equation_found:
-            break
-
-    expression = ' '.join([f'{num} {op}' for num, op in zip(numbers[:-1], operands)]) + f' {numbers[-1]}'
-    result = eval(expression)
-    return [expression, result]
 
 def question():
     """
@@ -687,7 +656,8 @@ def start_game(username, password):
         #if player died
         if (player_health <= 0):
             lose_screen(username, password)
-            return
+            play_music("sound/arithmeticEmperorMusic.mp3")
+            return player_health
 
         #Attack Buttons
         ADD_BUTTON = Button(image = None, pos = (500, 520), text_input = "Addition", font = get_font("Sawarabi",24), base_colour = "black", hovering_colour = "#d73c37")
@@ -709,53 +679,57 @@ def start_game(username, password):
                 if ADD_BUTTON.checkInput(MOUSE_POS):
                     if question():
                         attack_type = 0
-                        emperor_health = attack_emperor(add_attack_power, ADD_ATTACK_FRAMES, (365, 25), 1, "Addition Anarchy!")
+                        emperor_health = attack_emperor(add_attack_power, ADD_ATTACK_FRAMES, (365, 25), 1, "Addition Anarchy!", emperor_health, player_health, attack_type, emperor_rotation)
                         attacked_emperor = True
                     if (emperor_health <= 0):
                         new_score = int(player.get_bosses()) + 1
                         player.update_bosses(str(new_score))
                         win_screen(new_score)
-                        return
-                    player_health = attack_player(emperor_attack_power, EMPEROR_ATTACK_FRAMES, (-45, 170), 3, "", attacked_emperor)
+                        play_music("sound/arithmeticEmperorMusic.mp3")
+                        return emperor_health
+                    player_health = attack_player(emperor_attack_power, EMPEROR_ATTACK_FRAMES, (-45, 170), 3, "", attacked_emperor, emperor_health, player_health, emperor_rotation)
 
                 if SUB_BUTTON.checkInput(MOUSE_POS):
                     if question():
                         attack_type = 1
-                        emperor_health = attack_emperor(sub_attack_power, SUB_ATTACK_FRAMES, (320, -30), 1, "Subtraction Storm!")
+                        emperor_health = attack_emperor(sub_attack_power, SUB_ATTACK_FRAMES, (320, -30), 1, "Subtraction Storm!", emperor_health, player_health, attack_type, emperor_rotation)
                         attacked_emperor = True
                     if (emperor_health <= 0):
                         new_score = int(player.get_bosses()) + 1
                         player.update_bosses(str(new_score))
                         win_screen(new_score)
-                        return
+                        play_music("sound/arithmeticEmperorMusic.mp3")
+                        return emperor_health
 
-                    player_health = attack_player( emperor_attack_power, EMPEROR_ATTACK_FRAMES, (-45, 170), 3, "", attacked_emperor)
+                    player_health = attack_player( emperor_attack_power, EMPEROR_ATTACK_FRAMES, (-45, 170), 3, "", attacked_emperor, emperor_health, player_health, emperor_rotation)
                 
                 if MUL_BUTTON.checkInput(MOUSE_POS):
                     if question():
                         attack_type = 2
-                        emperor_health = attack_emperor(mul_attack_power, MUL_ATTACK_FRAMES, (295, -80), 1, "Multiplication Magnetism!")
+                        emperor_health = attack_emperor(mul_attack_power, MUL_ATTACK_FRAMES, (295, -80), 1, "Multiplication Magnetism!", emperor_health, player_health, attack_type, emperor_rotation)
                         attacked_emperor = True
                     if (emperor_health <= 0):
                         new_score = int(player.get_bosses()) + 1
                         player.update_bosses(str(new_score))
                         win_screen(new_score)
-                        return
+                        play_music("sound/arithmeticEmperorMusic.mp3")
+                        return emperor_health
 
-                    player_health = attack_player(emperor_attack_power, EMPEROR_ATTACK_FRAMES, (-45, 170), 3, "", attacked_emperor)
+                    player_health = attack_player(emperor_attack_power, EMPEROR_ATTACK_FRAMES, (-45, 170), 3, "", attacked_emperor, emperor_health, player_health, emperor_rotation)
 
                 if DIV_BUTTON.checkInput(MOUSE_POS):
                     if question():
                         attack_type = 3
-                        emperor_health = attack_emperor(div_attack_power, DIV_ATTACK_FRAMES, (290, 25), 1, "Division Disaster!")
+                        emperor_health = attack_emperor(div_attack_power, DIV_ATTACK_FRAMES, (290, 25), 1, "Division Disaster!", emperor_health, player_health, attack_type, emperor_rotation)
                         attacked_emperor = True
                     if (emperor_health <= 0):
                         new_score = int(player.get_bosses()) + 1
                         player.update_bosses(str(new_score))
                         win_screen(new_score)
-                        return
+                        play_music("sound/arithmeticEmperorMusic.mp3")
+                        return emperor_health
 
-                    player_health = attack_player(emperor_attack_power, EMPEROR_ATTACK_FRAMES, (-45, 170), 3, "", attacked_emperor)
+                    player_health = attack_player(emperor_attack_power, EMPEROR_ATTACK_FRAMES, (-45, 170), 3, "", attacked_emperor, emperor_health, player_health, emperor_rotation)
                 
                 if BACK.checkInput(MOUSE_POS):
                     return

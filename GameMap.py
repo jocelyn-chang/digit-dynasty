@@ -1,7 +1,7 @@
 import pygame, sys
 from Button import Button
 from Player import Player
-from RunningArmy import running_army
+from runningArmy import running_army
 from SnakeGame import snakeSums
 from CookingGame import cooking_game
 from SandwichStack import sandwich_stack
@@ -151,7 +151,10 @@ def load_map(username, password):
         SCREEN.blit(RESIZED_MIDDLETEMP, (323, 180))
         if event.type == pygame.MOUSEBUTTONDOWN:
             if MIDTEMP.checkInput(MOUSE_POS):
+              pygame.mixer.music.stop()
               arithmetic_emperor(username, password)
+              play_music("sound/EDM.mp3")
+              
     else:
        if (350<MOUSE_X<450 and 220<MOUSE_Y<380):
         SCREEN.blit(RESIZED_LOCKBOSS, (342, 203))
