@@ -1,5 +1,5 @@
 """
-This module implements the logic and the requirements to run teh Sandwich Stack game using Pygame. It is a game
+This module implements the logic and the requirements to run the Sandwich Stack game using Pygame. It is a game
 where the player uses the left and right arrow keys to move a panda character left and right of the screen to
 catch falling food to answer the required math questions. The game includes a start, instruction, win, loss,
 and game screen, as well as movement mechanics and the logic for collision detection.
@@ -143,6 +143,9 @@ def instruction1():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Go back to the title screen if the back button is pressed
@@ -189,6 +192,9 @@ def instruction2():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Go back to the first instruction screen if the back button is pressed
@@ -235,6 +241,9 @@ def sandwich_stack(username, password):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Start the game if the "start" button is clicked
@@ -290,6 +299,9 @@ def win_screen(score):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Go back to the title screen if the "return" button
@@ -347,6 +359,9 @@ def lose_screen(username, password, score):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Go back to the title screen if the "return" button
@@ -425,6 +440,9 @@ def start_game(username, password):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             # If the user left clicks
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Go back to the title screen
