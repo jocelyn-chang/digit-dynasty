@@ -386,7 +386,9 @@ def generate_arrows(incorrect_counter, num_pandas):
     """
     randomizer = random.randint(1, 100)
     if incorrect_counter == 0:
-        if num_pandas < 4:
+        if num_pandas == 1:
+            num_arrows = 0
+        elif num_pandas < 4:
             num_arrows = 1
         elif num_pandas < 6:
             num_arrows = 2
