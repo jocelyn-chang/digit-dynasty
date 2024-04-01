@@ -1,6 +1,6 @@
 import pygame, sys, random, math
 from Button import Button
-from Question import Question
+from question import Question
 from Player import Player
 
 pygame.init()
@@ -106,6 +106,9 @@ def instruction1():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Go back to the title screen if the back button is pressed
@@ -152,6 +155,9 @@ def instruction2():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             # If the user clicks using the left mouse key
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Go back to the first instruction screen if the back button is pressed
@@ -191,6 +197,8 @@ def check_answer(answer, correct_answer):
         correct = True
 
     else:
+        # play sound
+        INCORRECT.play()
         incorrect_lines = ["Incorrect", f"Correct Answer = {correct_answer}", f"Your Answer = {answer}"]
         line_height = get_font("Shojumaru", 20).get_height()
         for i, line in enumerate(incorrect_lines):
@@ -247,6 +255,9 @@ def question(numpandas, multiplier):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:  # Check if Enter key is pressed to submit answer
                     if check_answer(answer, correct_answer):
@@ -304,6 +315,9 @@ def lose_screen(x_pos, username, password, gates):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if RETURN.checkInput(GAME_MOUSE_POS):
                     return
@@ -348,6 +362,9 @@ def win_screen(score):
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        return
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if RETURN.checkInput(GAME_MOUSE_POS):
                         return
@@ -432,6 +449,9 @@ def start_game(username, password):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if BACK.checkInput(MOUSE_POS):
                     return
@@ -584,6 +604,9 @@ def running_army(username, password):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BUTTON.checkInput(MOUSE_POS):
                     start_game(username, password)

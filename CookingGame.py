@@ -7,7 +7,7 @@ and game screen, as well as movement mechanics and the logic for collision detec
 import pygame, sys
 import random
 from Button import Button
-from Question import Question
+from question import Question
 from Player import Player
 
 # Initialize Pygame
@@ -131,6 +131,9 @@ def instruction():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(game_mouse_pos):
                     run = False
@@ -176,6 +179,9 @@ def tutorial():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(game_mouse_pos):
                     return
@@ -203,6 +209,9 @@ def handle_events(dumpling_positions, central_area, questions):
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                return
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -321,6 +330,9 @@ def lose_screen(correct_order, question):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if RETURN.checkInput(game_mouse_pos):
                     run = False
@@ -362,6 +374,9 @@ def win_screen():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if RETURN.checkInput(game_mouse_pos):
                     return
@@ -556,6 +571,9 @@ def cooking_game(username, password):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN:
                     if START_BUTTON.checkInput(mouse_pos):
                         play_game(username, password)

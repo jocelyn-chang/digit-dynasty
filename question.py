@@ -1,14 +1,40 @@
+"""
+This module implements the logic and the requirements to generate a new question.
+"""
+# Import appropriate libraries
 import random
 from Player import Player
 
-#inherits stuff from player class
 class Question:
+    """
+    A class to generate arithmetic questions based on the player's level.
+
+    Attributes:
+        player (Player): The player for whom the question is being generated.
+    """
 
     def __init__(self, player):
+        """
+        Initializes the Question object with a player.
+
+        Parameters:
+            player (Player): The player for whom the question is being generated.
+        """
         self.player = player
 
     def generate_question(self, operation):
+        """
+        Generates an arithmetic question based on the player's level and the specified operation.
+
+        Parameters:
+            operation (str): The arithmetic operation for the question ('+', '-', '*', '/', or 'emperor').
+
+        Returns:
+            list: A list containing the question as a string and the answer as an integer or float.
+        """
+        # For the addition operation
         if operation == '+':
+            # Obtain the current player's level
             level = int(self.player.get_add())
             if level < 5: # For single digit addition
                 num1 = random.randint(1, 9)
@@ -20,21 +46,26 @@ class Question:
                 num1 = random.randint(1, 99)
                 num2 = random.randint(1, 99)
 
+            # Calculate the answer
             ans = num1 + num2
+            # Create the question format
             q = str(num1) + " + " + str(num2) + " = ?"
+            # Return the question and answer
             return [q, ans]
             
-            
+        # For the subtraction operation
         elif operation == '-':
+            # Obtain the current player's level
             level = int(self.player.get_sub())
             
-            if level <= 5:
-                digits = (1, 9) # single digits   
+            if level <= 5: # For single digit
+                digits = (1, 9)
             elif level <=10:
                 digits = (1, 20)
-            else:
-                digits = (1, 50) #double digits
+            else: # For double digits
+                digits = (1, 50)
             
+            # Create random numbers
             num1 = random.randint(*digits)
             num2 = random.randint(*digits)
 
@@ -42,9 +73,12 @@ class Question:
             if num2 > num1:
                 num1, num2 = num2, num1  # Swap values
             
+            # Calculate the answer
             ans = num1 - num2
 
+        # For the multiplication operation
         elif operation == '*':
+            # Obtain the current player's level
             level = int(self.player.get_mul())
             if level <= 5:
                 digits = (2, 4)  # Single-digit numbers    
@@ -61,17 +95,23 @@ class Question:
             elif level > 30:
                 digits = (2, 30)
             
+            # Create random numbers
             num1 = random.randint(*digits)
             num2 = random.randint(*digits)
 
+            # If the numbers are the same set and the second number is 1, then increment the second number by 1
             if num2 == num1:
                 if num2 == 1:
                     num2+=1
+                # Otherwise, decrement the second number by 1
                 else:
                     num2-=1
+            # Return the two number
             return [num1, num2]
         
+        # For the divison operation
         elif operation == "/":
+            # Obtain the current player's level
             level = int(self.player.get_div())
             if level <= 5:
                 digits = (1, 2)  # Dividing numbers from 4 and below
@@ -86,16 +126,20 @@ class Question:
             elif 25 < level <= 30:
                 digits = (1, 12)  # Dividing numbers from 144 and below
 
+            # Generate the numbers randomly
             num1 = random.randint(*digits)
             num2 = random.randint(*digits)
 
+            # Calculate the correct answer
             dividend = num1 * num2
             quotient = dividend / num1
+            # Format the question
             question = f"{dividend} / {num1}?"
 
+            # Return the question and answer
             return [int(quotient), question]
         
-        #Arithmetic Emperor Questions
+        # For Arithemetic Emperor
         else:
             operandSymbols = ['+', '-', '*', '/']
 
@@ -136,7 +180,8 @@ class Question:
             result = eval(expression)
             return [expression, result]
 
-        # wrtie the question based on the operation given
+        # Wrtie the question based on the operation given
         question = f"{num1} {operation} {num2}?"
     
+        # Return the question and answer
         return [question, ans]

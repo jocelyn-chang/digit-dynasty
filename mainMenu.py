@@ -144,6 +144,9 @@ def start_game():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BACK.checkInput(GAME_MOUSE_POS):
                     return
@@ -238,7 +241,7 @@ def play_music(file):
 
 def debug_mode(username, password): 
     player = Player(username, password)
-    input_font = get_font("Sawarabi",35)
+    input_font = get_font("Sawarabi", 35)
     
     # input for each box 
     add_input = '0' 
@@ -264,13 +267,13 @@ def debug_mode(username, password):
     while True: 
         MOUSE_X, MOUSE_Y = pygame.mouse.get_pos() 
         SCREEN.blit(BACKGROUND, (0, 0)) 
-        START_BACK = Button(image = "images/back_button.png", pos = (70, 55), text_input = "", font = get_font("Shojumaru",22), base_colour = "White", hovering_colour = "#b51f09") 
+        START_BACK = Button(image="images/back_button.png", pos=(70, 55), text_input="", font=get_font("Shojumaru", 22), base_colour="White", hovering_colour="#b51f09") 
         START_BACK.update(SCREEN) 
         
-        if (40<MOUSE_X<75 and 40<MOUSE_Y<70): 
-            SCREEN.blit(RESIZED_BACK, (-90,-96)) 
+        if (40 < MOUSE_X < 75 and 40 < MOUSE_Y < 70): 
+            SCREEN.blit(RESIZED_BACK, (-90, -96)) 
             
-        PLAY_BUTTON = Button(image = pygame.image.load("images/scroll_button.png"), pos = (395, 531), text_input = "PLAY", font = get_font("Shojumaru",22), base_colour = "#b51f09", hovering_colour = "White") 
+        PLAY_BUTTON = Button(image=pygame.image.load("images/scroll_button.png"), pos=(395, 531), text_input="PLAY", font=get_font("Shojumaru", 22), base_colour="#b51f09", hovering_colour="White") 
         subtitles = ["Addition Score:", "Subtraction Score:", "Multiplication Score:", "Division Score:", "Boss Battle Score:"] 
         y_coordinate = 115 
         for i, line in enumerate(subtitles): 
@@ -288,6 +291,9 @@ def debug_mode(username, password):
                 pygame.mixer.music.stop() 
                 pygame.quit() 
                 sys.exit() 
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN: 
                 if START_BACK.checkInput(event.pos): 
                     return 
@@ -329,7 +335,7 @@ def debug_mode(username, password):
                     mult_active = False 
                     div_active = False 
                     boss_active = False 
-            if event.type== pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
                 if add_active:
                     if event.key == pygame.K_BACKSPACE:
                         add_input = add_input[:-1]
@@ -355,19 +361,19 @@ def debug_mode(username, password):
                         boss_input = boss_input[:-1]
                     elif event.unicode.isdigit():
                         boss_input += event.unicode
-
             
-            player.update_add(add_input) 
-            player.update_sub(sub_input) 
-            player.update_mul(mult_input) 
-            player.update_div(div_input) 
-            player.update_bosses(boss_input)
-            
-        input_box(SCREEN, add_rect, add_input, input_font, active = add_active) 
-        input_box(SCREEN, sub_rect, sub_input, input_font, active = sub_active) 
-        input_box(SCREEN, mult_rect, mult_input, input_font, active = mult_active) 
-        input_box(SCREEN, div_rect, div_input, input_font, active = div_active) 
-        input_box(SCREEN, boss_rect, boss_input, input_font, active = boss_active) 
+        # Update player scores if input is numeric, otherwise set to 0
+        player.update_add(add_input if add_input.isdigit() else '0') 
+        player.update_sub(sub_input if sub_input.isdigit() else '0') 
+        player.update_mul(mult_input if mult_input.isdigit() else '0') 
+        player.update_div(div_input if div_input.isdigit() else '0') 
+        player.update_bosses(boss_input if boss_input.isdigit() else '0')
+        
+        input_box(SCREEN, add_rect, add_input, input_font, active=add_active) 
+        input_box(SCREEN, sub_rect, sub_input, input_font, active=sub_active) 
+        input_box(SCREEN, mult_rect, mult_input, input_font, active=mult_active) 
+        input_box(SCREEN, div_rect, div_input, input_font, active=div_active) 
+        input_box(SCREEN, boss_rect, boss_input, input_font, active=boss_active) 
         
         PLAY_BUTTON.update(SCREEN) 
         
@@ -443,6 +449,9 @@ def load_game():
                         password = password[:-1]
                     else:
                         password += event.unicode
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
 
         input_box(SCREEN, username_rect, username, input_font, active = username_active)
         input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
@@ -529,6 +538,9 @@ def high_score():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if SCORE_BACK.checkInput(GAME_MOUSE_POS):
                     return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
 
         pygame.display.update()
 
@@ -553,6 +565,9 @@ def instructions():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
                     return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
 
         pygame.display.update()
 
@@ -575,6 +590,9 @@ def instructor_dashboard():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
                     return
 
         pygame.display.update()
@@ -608,6 +626,9 @@ def instructor_dashboard_login():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if LOAD_BACK.checkInput(GAME_MOUSE_POS):
+                    return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
                     return
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
                     player_not_found = False
