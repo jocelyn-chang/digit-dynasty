@@ -627,10 +627,11 @@ def instructor_dashboard_login():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if LOAD_BACK.checkInput(GAME_MOUSE_POS):
                     return
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    return
-                elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
+                if password_rect.collidepoint(event.pos):
+                    password_active = not password_active
+                else:
+                    password_active = False
+                if PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
                     player_not_found = False
                     input_password = password
 
@@ -638,12 +639,9 @@ def instructor_dashboard_login():
                         instructor_dashboard()
                     else:
                         player_not_found = True
-
-                elif password_rect.collidepoint(event.pos):
-                    password_active = not password_active
-                else:
-                    password_active = False
-            if event.type== pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
                 if password_active:
                     if event.key == pygame.K_BACKSPACE:
                         password = password[:-1]
