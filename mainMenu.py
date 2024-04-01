@@ -144,6 +144,9 @@ def start_game():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BACK.checkInput(GAME_MOUSE_POS):
                     return
@@ -288,6 +291,9 @@ def debug_mode(username, password):
                 pygame.mixer.music.stop() 
                 pygame.quit() 
                 sys.exit() 
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
             if event.type == pygame.MOUSEBUTTONDOWN: 
                 if START_BACK.checkInput(event.pos): 
                     return 
@@ -443,6 +449,9 @@ def load_game():
                         password = password[:-1]
                     else:
                         password += event.unicode
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
 
         input_box(SCREEN, username_rect, username, input_font, active = username_active)
         input_box(SCREEN, password_rect, password, input_font, active = password_active, is_password = True)
@@ -529,6 +538,9 @@ def high_score():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if SCORE_BACK.checkInput(GAME_MOUSE_POS):
                     return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
 
         pygame.display.update()
 
@@ -553,6 +565,9 @@ def instructions():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
                     return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
 
         pygame.display.update()
 
@@ -575,6 +590,9 @@ def instructor_dashboard():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INSTRUCTIONS_BACK.checkInput(GAME_MOUSE_POS):
+                    return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
                     return
 
         pygame.display.update()
@@ -608,6 +626,9 @@ def instructor_dashboard_login():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if LOAD_BACK.checkInput(GAME_MOUSE_POS):
+                    return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
                     return
                 elif PLAY_BUTTON.checkInput(GAME_MOUSE_POS):
                     player_not_found = False
