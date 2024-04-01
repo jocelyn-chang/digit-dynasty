@@ -36,10 +36,10 @@ class Question:
         if operation == '+':
             # Obtain the current player's level
             level = int(self.player.get_add())
-            if level < 5: # For single digit addition
+            if level < 6: # For single digit addition
                 num1 = random.randint(1, 9)
                 num2 = random.randint(1, 9)
-            elif level < 10:
+            elif level < 11:
                 num1 = random.randint(1, 49)
                 num2 = random.randint(1, 49)
             else: # For double digit addition
