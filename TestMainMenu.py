@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, mock_open
-from mainMenu import append_to_csv, username_exists, validate_username, validate_password, load_player
+from MainMenu import append_to_csv, username_exists, validate_username, validate_password, load_player
 
 class TestMainMenu(unittest.TestCase):
     @patch("builtins.open", new_callable=mock_open)
